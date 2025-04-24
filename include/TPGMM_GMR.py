@@ -10,6 +10,7 @@ import rosbag
 from gaussian_mixture_model.msg import GaussianMixture, Gaussian
 from geometry_msgs.msg import PoseArray, Pose
 from copy import deepcopy
+from tp_gmm.msg import GaussianMixture, Gaussian
 class TPGMM_GMR(object):
     def __init__(self, nbStates, nbFrames, nbVar):
         self.model = model(nbStates, nbFrames, nbVar, None, None, None, None, None)
@@ -64,7 +65,7 @@ class TPGMM_GMR(object):
         return Data_posearray, DataAll
     
     # Converts the learnded GMM into a format that gmm_rviz_converter node can visualize it in Rviz
-    def convertToGM(self, r, down_sample_factor):
+    def convertToGM(self, r, down_sample_factor): # frame_id)
 
         ## converting to GaussianMixture() msg 
         nbGaussians = r.Mu.shape[1]
@@ -81,6 +82,8 @@ class TPGMM_GMR(object):
             gmm.gaussians.append(copy.deepcopy(g))
         gmm.weights = self.model.Priors # or r.H
         gmm.bic = r.Data.shape[1]*down_sample_factor
+        gmm.bic = r.Data.shape[1]
+        gmm.header.frame_id = frame_id
 
         # print("r.Mu[:,1,0] == r.Mu[:,1,-1]: ", r.Mu[:,1,0] == r.Mu[:,1,-1]) # debuging.
         ## Writing to rosbag

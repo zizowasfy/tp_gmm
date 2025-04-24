@@ -27,3 +27,9 @@ After visualizing the TPGMM in Rviz:
   - visualize the TPGMM in Rviz
   - doRegression 
 
+
+
+ITRA Project ----------------------
+
+- So far, nbStates (nb of Gaussians) = 2, diagRegularizationFactor = 0.000001 is good
+  Also  , nbStates (nb of Gaussians) = 5, diagRegularizationFactor = 0.01 is good

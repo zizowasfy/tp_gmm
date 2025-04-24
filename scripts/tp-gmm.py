@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # ROS stuff
 import rospy
+from tp_gmm.msg import GaussianMixture
 from std_msgs.msg import Float32
 from geometry_msgs.msg import Pose, PointStamped, PoseArray
 from sensor_msgs.msg import JointState
@@ -101,6 +102,7 @@ class TPGMM:
             pickle.dump(demons_info1, fp)
             print("demons_info1: ", demons_info1)
 
+        # NOTE: Uncomment/Run this only when need to train with new data
         ## COMMENTING this only to make the code run faster while debugging
         # Running demons_to_samples.ipynb
         # with open(scripts_dir + "demons_to_samples.ipynb") as f:
