@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # ROS stuff
 import rospy
-from tp_gmm.msg import GaussianMixture
 from std_msgs.msg import Float32
 from geometry_msgs.msg import Pose, PointStamped, PoseArray
 from sensor_msgs.msg import JointState
-from gaussian_mixture_model.msg import GaussianMixture
+# from gaussian_mixture_model.msg import GaussianMixture
+from tp_gmm.msg import GaussianMixture
 from tp_gmm.srv import *
 from moveit_msgs.msg import MoveGroupActionResult
 from trajectory_msgs.msg import JointTrajectoryPoint
@@ -81,9 +81,9 @@ class TPGMM:
         ## Initialization of parameters and properties------------------------------------------------------------------------- #
         self.nbSamples = self.demons_info2['nbDemons']  # nb of demonstrations
         self.nbVar = 4      # Dim !!
-        self.nbFrames = 2 
+        self.nbFrames = 3
         self.nbStates = 5  # nb of Gaussians
-        self.nbData = self.demons_info2['ref_nbpoints']#-1
+        self.nbData = self.demons_info2['ref_nbpoints']-1 # If the -1 is put in the DTW in demons_to_samples.ipynb, then -1 here has to be put too.
         self.down_sample_factor = self.demons_info2['down_sample_factor']
 
         self.tpGMM()
@@ -144,46 +144,67 @@ class TPGMM:
     # @njit
     def tpGMMGMR(self, req):
         total_rep_time = time.time()
+
+        # Sorting the Task Parameters into Frames format ----------------------------------------------------------------------------------------- #
+        frames_array = [req.start_pose.pose, req.goal_pose.pose]
+        frames_array.extend(req.obstacles_poses.poses)
+        # print(frames_array)
+
         # Reproduction with generated parameters in Cartesian Space ------------------------------------------------------------------------------ #
-        self.frame1_pose = req.start_pose.pose
-        self.frame2_pose = req.goal_pose.pose         
-        # self.getFramePoses()
+
+        # self.frame1_pose = req.start_pose.pose
+        # self.frame2_pose = req.goal_pose.pose    
+        # # self.getFramePoses()
         newP = deepcopy(self.slist[self.demons_info2['demons_nums'].index(self.demons_info2['ref'])].p)
- 
-        newb1 = np.array([[0], [self.frame1_pose.position.x], [self.frame1_pose.position.y], [self.frame1_pose.position.z]], dtype=object)
-        newb2 = np.array([[0], [self.frame2_pose.position.x], [self.frame2_pose.position.y], [self.frame2_pose.position.z]], dtype=object)
 
-        rA1 = R.from_quat([self.frame1_pose.orientation.x, self.frame1_pose.orientation.y, self.frame1_pose.orientation.z, self.frame1_pose.orientation.w])
-        rA2 = R.from_quat([self.frame2_pose.orientation.x, self.frame2_pose.orientation.y, self.frame2_pose.orientation.z, self.frame2_pose.orientation.w])
-        newA1 = np.vstack(( np.array([1,0,0,0]), np.hstack(( np.zeros((3,1)), rA1.as_matrix() )) )) # TODO: Quat2rotMat
-        newA2 = np.vstack(( np.array([1,0,0,0]), np.hstack(( np.zeros((3,1)), rA2.as_matrix() )) )) # TODO: Quat2rotMat
+        print("newP.shape = ", newP.shape) # (3,47) = (nbFrames, nbData)
 
-        # newP_loop_time = time.time()
-        # for k in range(self.nbData):
-        #     newP[0, k].b = newb1
-        #     newP[1, k].b = newb2            
-        #     newP[0, k].A = newA1
-        #     newP[1, k].A = newA2
-        #     newP[0, k].invA = np.linalg.inv(newA1) # TOTRY: with and without invA
-        #     newP[1, k].invA = np.linalg.inv(newA2) # TOTRY: with and without invA
-        # print("... newP_loop_time: ", time.time() - newP_loop_time)
+        # for f, frame in enumerate(frames_array):
+        for f in range(self.nbFrames):
+            ## This snippet is to move the center point of the obstale as if it lies in the top of the obstacle of z height 0.2. This is just a quick fix to make the GMM avoid colliding with the virtual obstacle in RViz
+            ## This can be properly fixed by taking proper demons and emphasize of the obstacle avoidance.
+            if f > 1:
+                newb1 = np.array([[0], [frames_array[f].position.x], [frames_array[f].position.y], [frames_array[f].position.z+0.1]], dtype=object)
+            else:    
+                newb1 = np.array([[0], [frames_array[f].position.x], [frames_array[f].position.y], [frames_array[f].position.z]], dtype=object)
+            ##\ This snippet is to move the center of the obstale as if it lies in the top of the obstacle of z height 0.2. This is just a quick fix!
 
-        # newP_tile_time = time.time()
-        newP[0,0].b = newb1
-        newP[1,0].b = newb2
-        newP[0,0].A = newA1
-        newP[1,0].A = newA2
-        newP[0,0].invA = np.linalg.inv(newA1)
-        newP[1,0].invA = np.linalg.inv(newA2)
+            # newb1 = np.array([[0], [frames_array[f].position.x], [frames_array[f].position.y], [frames_array[f].position.z]], dtype=object)
+            # # newb2 = np.array([[0], [self.frame2_pose.position.x], [self.frame2_pose.position.y], [self.frame2_pose.position.z]], dtype=object)
+
+            rA1 = R.from_quat([frames_array[f].orientation.x, frames_array[f].orientation.y, frames_array[f].orientation.z, frames_array[f].orientation.w])
+            # rA2 = R.from_quat([self.frame2_pose.orientation.x, self.frame2_pose.orientation.y, self.frame2_pose.orientation.z, self.frame2_pose.orientation.w])
+            newA1 = np.vstack(( np.array([1,0,0,0]), np.hstack(( np.zeros((3,1)), rA1.as_matrix() )) )) # TODO: Quat2rotMat
+            # newA2 = np.vstack(( np.array([1,0,0,0]), np.hstack(( np.zeros((3,1)), rA2.as_matrix() )) )) # TODO: Quat2rotMat
+
+            # newP_loop_time = time.time()
+            # for k in range(self.nbData):
+            #     newP[0, k].b = newb1
+            #     newP[1, k].b = newb2            
+            #     newP[0, k].A = newA1
+            #     newP[1, k].A = newA2
+            #     newP[0, k].invA = np.linalg.inv(newA1) # TOTRY: with and without invA
+            #     newP[1, k].invA = np.linalg.inv(newA2) # TOTRY: with and without invA
+            # print("... newP_loop_time: ", time.time() - newP_loop_time)
+
+            # newP_tile_time = time.time()
+            newP[f,0].b = newb1
+            # newP[1,0].b = newb2
+            newP[f,0].A = newA1
+            # newP[1,0].A = newA2
+            newP[f,0].invA = np.linalg.inv(newA1)
+            # newP[1,0].invA = np.linalg.inv(newA2)
+            
         newPP = np.tile(newP[:,0][:, np.newaxis], newP.shape[1])
         # print("... newPP_loop_time: ", time.time() - newP_tile_time)
 
         reproduce_time = time.time()
-        rnew = self.TPGMMGMR.reproduce(newPP, newb1[1:,:])
+        start_point = np.array([[0], [frames_array[0].position.x], [frames_array[0].position.y], [frames_array[0].position.z]], dtype=object)
+        rnew = self.TPGMMGMR.reproduce(newPP, start_point[1:,:])
         print("... reproduce_time: ", time.time() - reproduce_time)
         
         ## Saving and Publishing GMM in Cartesian Space
-        gmm = self.TPGMMGMR.convertToGM(rnew, self.down_sample_factor)
+        gmm = self.TPGMMGMR.convertToGM(rnew, self.down_sample_factor, req.frame_id)
         self.tpgmm_viz_pub.publish(gmm)
         # print("GMM is Published!")
         # rospy.sleep(3)
@@ -323,7 +344,7 @@ class TPGMM:
         #\ Uncomment this when using samplefromGMM()
 
         ## Convert to GMM and Save as bag file 
-        gmm = self.TPGMMGMR.convertToGM(q_rnew, self.down_sample_factor)
+        gmm = self.TPGMMGMR.convertToGM(q_rnew, self.down_sample_factor, req.frame_id)
         # print("... q_rnew_time: ", time.time() - q_rnew_time)
 
         ## Publishing for Visualization

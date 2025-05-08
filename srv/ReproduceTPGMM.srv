@@ -1,4 +1,5 @@
 string frame_id
 geometry_msgs/PoseStamped start_pose
 geometry_msgs/PoseStamped goal_pose
+geometry_msgs/PoseArray obstacles_poses
 ---

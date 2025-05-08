@@ -32,7 +32,7 @@
 #define GMM_RVIZ_CONVERTER_H
 
 #define PARAM_NAME_INPUT_TOPIC     "input_topic"
-#define PARAM_DEFAULT_INPUT_TOPIC  "/gmm/mix" // "/gmm_rviz_converter_input"
+#define PARAM_DEFAULT_INPUT_TOPIC  "/gmm/cartesian_space" // "/gmm/mix" | "/gmm_rviz_converter_input"
 
 #define PARAM_NAME_OUTPUT_TOPIC    "output_topic"
 #define PARAM_DEFAULT_OUTPUT_TOPIC "/gmm_rviz_converter_output"
