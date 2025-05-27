@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 ######
-# This script is written to record trajectories (which are used as demonstrations) for tpgmm training, using UR10e/panda in simulation not real. 
+# This script is written to record trajectories (which are used as demonstrations) for tpgmm training, using the real teleop panda-panda. 
 ######
 
 # Python 2/3 compatibility imports
@@ -22,6 +22,8 @@ from moveit_msgs.msg import MoveGroupActionResult, BoundingVolume, Constraints, 
 from moveit_msgs.srv import GetPositionFK
 from geometry_msgs.msg import Pose, PoseStamped, PoseArray, Quaternion
 from std_msgs.msg import String, Float32MultiArray
+from franka_msgs.msg import FrankaState
+from sensor_msgs.msg import JointState
 from tp_gmm.srv import ReproduceTPGMM
 
 from moveit_commander.conversions import pose_to_list
@@ -43,7 +45,7 @@ from scipy.spatial.transform import Rotation as R
 
 ## END_SUB_TUTORIAL
 
-save_dir = "/home/zizo/Data_dir/panda_sim_demons/"
+save_dir = "/home/zizo/Data_dir/panda_real_demons/"
 
 def all_close(goal, actual, tolerance):
     """
@@ -89,7 +91,9 @@ class MoveGroupPythonInterfaceTutorial(object):
 
         ## Instantiate a `RobotCommander`_ object. Provides information such as the robot's
         ## kinematic model and the robot's current joint states
-        robot = moveit_commander.RobotCommander(robot_description= ns + "/robot_description", ns=ns)
+
+        # robot = moveit_commander.RobotCommander(robot_description= ns + "/robot_description", ns=ns)
+        robot = moveit_commander.RobotCommander(robot_description= ns + "robot_description", ns=ns)
 
         ## Instantiate a `PlanningSceneInterface`_ object.  This provides a remote interface
         ## for getting, setting, and updating the robot's internal understanding of the
@@ -103,7 +107,8 @@ class MoveGroupPythonInterfaceTutorial(object):
         ## arm planning group.
         ## This interface can be used to plan and execute motions:
         group_name = gn
-        move_group = moveit_commander.MoveGroupCommander(group_name, robot_description= ns + "/robot_description", ns=ns[1:], wait_for_servers=20)
+        # move_group = moveit_commander.MoveGroupCommander(group_name, robot_description= ns + "/robot_description", ns=ns[1:], wait_for_servers=20)
+        move_group = moveit_commander.MoveGroupCommander(group_name, robot_description= ns + "robot_description", ns=ns[1:], wait_for_servers=20)
 
         ## END_SUB_TUTORIAL
 
@@ -126,7 +131,7 @@ class MoveGroupPythonInterfaceTutorial(object):
         group_names = robot.get_group_names()
         print("============ Available Planning Groups:", robot.get_group_names())
 
-        move_group.set_planning_time(3.0)
+        move_group.set_planning_time(5.0)
         print("============ Planning Timeout:", move_group.get_planning_time())
 
         move_group.set_planner_id("RRT")
@@ -141,21 +146,8 @@ class MoveGroupPythonInterfaceTutorial(object):
         print("")
         ## END_SUB_TUTORIAL
 
-        self.start_pose_pub = rospy.Publisher(ns + "/start_pose", PoseStamped, queue_size=1)
-        self.goal_pose_pub = rospy.Publisher(ns + "/goal_pose", PoseStamped, queue_size=1)
-        # self.posearray_pub = rospy.Publisher(ns + "/planned_trajectory/posearray", PoseArray, queue_size=1)
-        # self.obstacles_pub = rospy.Publisher("/obstacles", PoseArray, queue_size=1)
 
-        rospy.Subscriber(ns + "/move_group/result", MoveGroupActionResult, self.move_group_result_callback)
-        rospy.Subscriber(ns + "/gmm/learned_trajectory", PoseArray, self.solveFK)
-        rospy.Subscriber("/gmm_moveit", BoundingVolume, self.get_gmm_constraint)
-
-        self.reproduceTPGMM_req = rospy.ServiceProxy('ReproduceTPGMM_service', ReproduceTPGMM)
-
-
-        rospy.sleep(0.5)
-
-        # Misc variables
+        ## Variables
         self.ns = ns
         self.frame_id = fi
         self.box_name = ""
@@ -166,111 +158,40 @@ class MoveGroupPythonInterfaceTutorial(object):
         self.eef_link = eef_link
         self.group_names = group_names
 
+        self.demon_rosbag = None
         self.start_pose = None
         self.goal_pose = None
         self.record_bags = False
-        self.save_bag = False
+        self.save_bag = True
         self.demon_num = 1
         self.gmm_bounding_volume = None
 
-    def go_to_joint_state(self):
-        # Copy class variables to local variables to make the web tutorials more clear.
-        # In practice, you should use the class variables directly unless you have a good
-        # reason not to.
-        move_group = self.move_group
+        ## Publishers and Subscribers
+        self.start_pose_pub = rospy.Publisher(ns + "/start_pose", PoseStamped, queue_size=1)
+        self.goal_pose_pub = rospy.Publisher(ns + "/goal_pose", PoseStamped, queue_size=1)
+        # self.posearray_pub = rospy.Publisher(ns + "/planned_trajectory/posearray", PoseArray, queue_size=1)
+        self.obstacles_pub = rospy.Publisher("/obstacles", PoseArray, queue_size=1)
 
-        ## BEGIN_SUB_TUTORIAL plan_to_joint_state
-        ##
-        ## Planning to a Joint Goal
-        ## ^^^^^^^^^^^^^^^^^^^^^^^^
-        ## The Panda's zero configuration is at a `singularity <https://www.quora.com/Robotics-What-is-meant-by-kinematic-singularity>`_, so the first
-        ## thing we want to do is move it to a slightly better configuration.
-        ## We use the constant `tau = 2*pi <https://en.wikipedia.org/wiki/Turn_(angle)#Tau_proposals>`_ for convenience:
-        # We get the joint values from the group and change some of the values:
-        joint_goal = move_group.get_current_joint_values()
-        joint_goal[0] = 0.0
-        joint_goal[1] = -0.7853981633974483
-        joint_goal[2] =  0.0  # 0
-        joint_goal[3] = -2.356194490192345  # -tau / 8
-        joint_goal[4] = 0.0  # 0
-        joint_goal[5] = 1.5707963267948966 # -tau / 4
-        joint_goal[6] = 0.7853981633974483 # 0
-        # joint_goal[7] = 0.035 # tau / 6  # 1/6 of a turn
-        # joint_goal[8] = 0.035
+        # rospy.Subscriber(ns + "/panda_teleop/follower_state_controller/franka_states", FrankaState, self.frankaStates_callback)
+        # rospy.Subscriber(ns + "/panda_teleop/follower_state_controller/joint_states", JointState, self.jointStates_callback)
+        rospy.Subscriber("/gmm_moveit", BoundingVolume, self.get_gmm_constraint)
 
-        # The go command can be called with joint values, poses, or without any
-        # parameters if you have already set the pose or joint target for the group
-        move_group.go(joint_goal, wait=True)
+        self.reproduceTPGMM_req = rospy.ServiceProxy('ReproduceTPGMM_service', ReproduceTPGMM)
 
-        # Calling ``stop()`` ensures that there is no residual movement
-        move_group.stop()
+        rospy.sleep(0.5)
 
-        ## END_SUB_TUTORIAL
 
-        # For testing:
-        current_joints = move_group.get_current_joint_values()
-        return all_close(joint_goal, current_joints, 0.01)
+    # def frankaStates_callback(self, msg):
+    #     if self.record_bags:           
+    #         self.demon_rosbag.write(self.ns + "/panda_teleop/follower_state_controller/franka_states", msg)
 
-    def go_to_pose(self, target_pose, execute = True):
-        # Copy class variables to local variables to make the web tutorials more clear.
-        # NOTE: In practice, you should use the class variables directly unless you have a good
-        # reason not to.
-        # move_group = self.move_group
+    #     return None
 
-        self.move_group.set_pose_target(target_pose)
-
-        ## Now, we call the planner to compute the plan and execute it.
-        ## `go()` returns a boolean indicating whether the planning and execution was successful.
-        # success = self.move_group.go(wait=wait)
-        plan = self.move_group.plan(target_pose)
-        if execute: self.move_group.execute(plan[1], wait=True) # Commented this to speed up the recording of demons
-
-        # Calling `stop()` ensures that there is no residual movement
-        self.move_group.stop()
-        # It is always good to clear your targets after planning with poses.
-        # Note: there is no equivalent function for clear_joint_value_targets().
-        self.move_group.clear_pose_targets()
-
-        ## END_SUB_TUTORIAL
-
-        # For testing:
-        # Note that since this section of code will not be included in the tutorials
-        # we use the class variable rather than the copied state variable
-        current_pose = self.move_group.get_current_pose()
-        return all_close(target_pose, current_pose, 0.01)
-
-    ## FK solution is solved in move_group_interface.cpp (solveFKforPlannedTraj()). Then this callback function solveFK() here receives the posearray for the trajectory in cartesian space
-    def solveFK(self, msg):
-        if self.record_bags:
-            wbag = rosbag.Bag(save_dir + "demon_{}.bag".format(self.demon_num), 'w')
-            
-            wbag.write(self.ns + "/start_pose", self.start_pose)
-            wbag.write(self.ns + "/goal_pose", self.goal_pose)
-            wbag.write(self.ns + "/obstacles", self.obstacles_posesarray)
-            wbag.write(self.ns + "/move_group/result", self.move_group_result)
-
-            nbpoints = len(msg.poses)
-            print("Number of Points in Planned Trajectory: ", nbpoints)
-
-            wbag.write(self.ns + "/gmm/learned_trajectory", msg)
-            # self.posearray_pub.publish(msg)
-            wbag.close()
-
-        if len(msg.poses) <= 0:
-            self.save_bag = False
-        else: 
-            self.save_bag = True
-        
-        return None
-
-    # def solveFK(self, joint_value_target):
-    #     rospy.wait_for_service(self.ns + "/compute_fk")
-    #     fk  = rospy.ServiceProxy(self.ns + "/compute_fk", GetPositionFK)
-    #     fk_solution = fk()
-    
-        
-    def move_group_result_callback(self, msg):
-        self.move_group_result = msg
+    # def jointStates_callback(self, msg):
+    #     if self.record_bags:           
+    #         self.demon_rosbag.write(self.ns + "/panda_teleop/follower_state_controller/joint_states", msg)
+    #         # print("joint_states", msg.position[0])
+    #     return None
 
     # def setObstacles(self):
     def setObstacles(self, X, Y, Z):
@@ -278,8 +199,9 @@ class MoveGroupPythonInterfaceTutorial(object):
         self.scene.remove_world_object()
 
         # nb_obstacles = random.randint(1,5)
-        nb_obstacles = 2
+        nb_obstacles = 1
         self.obstacles_posesarray = PoseArray()
+        self.obstacles_posesarray.header.frame_id = self.frame_id
         for obs in range(nb_obstacles):
             obstacle_pose = PoseStamped()
             obstacle_pose.header.frame_id = self.frame_id
@@ -295,8 +217,9 @@ class MoveGroupPythonInterfaceTutorial(object):
             obstacle_pose.pose.orientation.w = q.w # 0
             self.obstacles_posesarray.poses.append(deepcopy(obstacle_pose.pose))
         
-            self.scene.add_box("obstacle_{}".format(obs), obstacle_pose, size=(0.1, 0.05, 0.15)) #(0.15, 0.05, 0.2)
-        # self.obstacles_pub.publish(self.obstacles_posesarray)
+            self.scene.add_box("obstacle_{}".format(obs), obstacle_pose, size=(0.15, 0.05, 0.2)) #(0.1, 0.05, 0.15)
+
+        self.obstacles_pub.publish(self.obstacles_posesarray)
 
     def setStartnGoalFromRosbag(self, exp_number):
 
@@ -352,7 +275,7 @@ class MoveGroupPythonInterfaceTutorial(object):
         start_pose = PoseStamped()
         start_pose.header.frame_id = self.frame_id
         start_pose.pose.position.x = random.uniform(0.35, 0.55)
-        start_pose.pose.position.y = random.uniform(-0.0, 0.43) #(-0.47, 0.47)
+        start_pose.pose.position.y = random.uniform(-0.43, 0.0) #(-0.47, 0.47)
         start_pose.pose.position.z = random.uniform(0.5, 0.6)
         q = self.EulerToQuat(radians(180), radians(0), radians(random.randint(-70,70))) # roll (x), pitch (y), yaw (z) # panda
         # q = self.EulerToQuat(radians(0), radians(0), radians(random.randint(-70,70))) # roll (x), pitch (y), yaw (z) # ur10
@@ -369,8 +292,8 @@ class MoveGroupPythonInterfaceTutorial(object):
         goal_pose = PoseStamped()
         goal_pose.header.frame_id = self.frame_id
         goal_pose.pose.position.x = random.uniform(0.35, 0.65)
-        goal_pose.pose.position.y = random.uniform(-0.43, 0.0) #-0.47, 0.47
-        goal_pose.pose.position.z = random.uniform(0.08, 0.1)+0.1  # + 0.2
+        goal_pose.pose.position.y = random.uniform(-0.0, 0.43) #-0.47, 0.47
+        goal_pose.pose.position.z = random.uniform(0.08, 0.1) # + 0.2
         q = self.EulerToQuat(radians(180), radians(0), radians(random.randint(-70,70))) # roll (x), pitch (y), yaw (z) # panda
         # q = self.EulerToQuat(radians(0), radians(0), radians(random.randint(-70,70))) # roll (x), pitch (y), yaw (z) # ur10
 
@@ -408,8 +331,7 @@ class MoveGroupPythonInterfaceTutorial(object):
         return q
 
     def recordTrajectories(self):
-        ## Start in the Ready joints positions
-        self.go_to_joint_state()
+
         rospy.sleep(0.1)
 
         nb_of_experiments = 10
@@ -422,26 +344,31 @@ class MoveGroupPythonInterfaceTutorial(object):
             print("")
             ans = input("======== Do you Want to Proceed with these Task Parameters (start and goal poses)?! ======== ")
             if ans == 'y' or ans =='Y':
-                self.go_to_pose(start_pose)
+
+                # self.demon_rosbag = rosbag.Bag(save_dir + "demon_{}.bag".format(self.demon_num), 'w')
+                self.record_bags = True
                 rospy.sleep(0.1)
 
-                self.record_bags = True # Flag to get ready to start recording
-                self.go_to_pose(goal_pose, execute=False)
-                self.record_bags = False # Resetting the Flag to not record
-                rospy.sleep(0.1)
+                # self.demon_rosbag.write(self.ns + "/obstacles", self.obstacles_posesarray)
+                self.obstacles_pub.publish(self.obstacles_posesarray)
 
+                print(" ### Demon recording has started! ###\n ")
+                
                 ## This to unsave the Demons that are not good.
                 save = input("======== Do you Want to Save this Demon?! ======== ")
                 if save == 'n' or save == 'N': self.save_bag = False
 
                 if self.save_bag: self.demon_num += 1
 
-            elif ans == 's': # To reset the robot's configuration and go to home position
-                ## Going to Ready joints positions
-                self.go_to_joint_state()
+                self.record_bags = False
+                self.save_bag = True
                 rospy.sleep(0.1)
+                # self.demon_rosbag.close()
             else: 
                 print("===== Skipping this experiment =====")
+            
+            # self.record_bags = False
+
 
         print("Demonstrations were recorded in Time: ", rospy.Time.now().to_sec() - start_time)
 
@@ -522,8 +449,8 @@ def main():
         )
 
         namespace = ''
-        frame_id = 'panda_link0'
-        group_name = 'panda_manipulator'
+        frame_id = 'follower_link0'
+        group_name = 'follower'
 
         tutorial = MoveGroupPythonInterfaceTutorial(ns=namespace, gn=group_name, fi=frame_id) # '/ur10_1' 
 

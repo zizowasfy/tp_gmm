@@ -81,7 +81,7 @@ class TPGMM:
         ## Initialization of parameters and properties------------------------------------------------------------------------- #
         self.nbSamples = self.demons_info2['nbDemons']  # nb of demonstrations
         self.nbVar = 4      # Dim !!
-        self.nbFrames = 3
+        self.nbFrames = 2
         self.nbStates = 5  # nb of Gaussians
         self.nbData = self.demons_info2['ref_nbpoints']-1 # If the -1 is put in the DTW in demons_to_samples.ipynb, then -1 here has to be put too.
         self.down_sample_factor = self.demons_info2['down_sample_factor']
