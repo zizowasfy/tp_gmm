@@ -18,11 +18,11 @@ private:
 public:
     gmmMoveit(ros::NodeHandle nh)
     {   
-        gmm_markerarray_sub = nh.subscribe("/gmm_rviz_converter_output", 1, &gmmMoveit::onGMM, this);
+        gmm_markerarray_sub = nh.subscribe("gmm_rviz_converter_output", 1, &gmmMoveit::onGMM, this);
 
-        gmm_constraint_pub = nh.advertise<moveit_msgs::BoundingVolume>("/gmm_moveit", 1);
+        gmm_constraint_pub = nh.advertise<moveit_msgs::BoundingVolume>("gmm_moveit", 1);
 
-        gmmViz_pub = nh.advertise<visualization_msgs::MarkerArray>("/solid_primitives_viz", 1);
+        gmmViz_pub = nh.advertise<visualization_msgs::MarkerArray>("solid_primitives_viz", 1);
     }
 
     void onGMM(visualization_msgs::MarkerArrayPtr msg)

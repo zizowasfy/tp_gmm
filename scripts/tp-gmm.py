@@ -32,8 +32,8 @@ class TPGMM:
         rospy.Service("StartTPGMM_service", StartTPGMM, self.startTPGMM)
         rospy.Service("ReproduceTPGMM_service", ReproduceTPGMM, self.tpGMMGMR)
 
-        self.tpgmm_pub = rospy.Publisher('/gmm/mix', GaussianMixture, queue_size=1)
-        self.regress_traj_pub = rospy.Publisher('/gmm/regressed_trajectory', PoseArray, queue_size=1)
+        self.tpgmm_pub = rospy.Publisher('gmm/mix', GaussianMixture, queue_size=1)
+        self.regress_traj_pub = rospy.Publisher('gmm/regressed_trajectory', PoseArray, queue_size=1)
 
         self.demonsToSamples_flag = False   
         self.demonsToSamples()
@@ -121,54 +121,56 @@ class TPGMM:
         # self.tpGMMGMR()
 
     def tpGMMGMR(self, req): # TODO for tomorrow (6/9/2023): complete the req by assigning the values to frame_pose1&2
-        # Reproduction with generated parameters------------------------------------------------------------------------------ #
-        self.frame1_pose = req.start_pose.pose
-        self.frame2_pose = req.goal_pose.pose         
-        self.getFramePoses()
-        newP = deepcopy(self.slist[self.demons_info2['demons_nums'].index(self.demons_info2['ref'])].p)
-        print("self.demons_info2['demons_nums'].index(self.demons_info2['ref']) = ", self.demons_info2['demons_nums'].index(self.demons_info2['ref']))
-        # newP = p(np.zeros((self.nbVar,self.nbVar)), np.zeros((self.nbVar,1)), np.zeros((self.nbVar,self.nbVar)), self.nbStates)
-        newb1 = np.array([[0], [self.frame1_pose.position.x], [self.frame1_pose.position.y], [self.frame1_pose.position.z]], dtype=object)
-        newb2 = np.array([[0], [self.frame2_pose.position.x], [self.frame2_pose.position.y], [self.frame2_pose.position.z]], dtype=object)
+        try:
+            # Reproduction with generated parameters------------------------------------------------------------------------------ #
+            self.frame1_pose = req.start_pose.pose
+            self.frame2_pose = req.goal_pose.pose         
+            # self.getFramePoses() # commented this while recording RobotToRobot experiments
+            newP = deepcopy(self.slist[self.demons_info2['demons_nums'].index(self.demons_info2['ref'])].p)
+            print("self.demons_info2['demons_nums'].index(self.demons_info2['ref']) = ", self.demons_info2['demons_nums'].index(self.demons_info2['ref']))
+            # newP = p(np.zeros((self.nbVar,self.nbVar)), np.zeros((self.nbVar,1)), np.zeros((self.nbVar,self.nbVar)), self.nbStates)
+            newb1 = np.array([[0], [self.frame1_pose.position.x], [self.frame1_pose.position.y], [self.frame1_pose.position.z]], dtype=object)
+            newb2 = np.array([[0], [self.frame2_pose.position.x], [self.frame2_pose.position.y], [self.frame2_pose.position.z]], dtype=object)
 
-        # print([self.frame1_pose.orientation.x, self.frame1_pose.orientation.y, self.frame1_pose.orientation.z, self.frame1_pose.orientation.w])
-        rA1 = R.from_quat([self.frame1_pose.orientation.x, self.frame1_pose.orientation.y, self.frame1_pose.orientation.z, self.frame1_pose.orientation.w])
-        rA2 = R.from_quat([self.frame2_pose.orientation.x, self.frame2_pose.orientation.y, self.frame2_pose.orientation.z, self.frame2_pose.orientation.w])
-        newA1 = np.vstack(( np.array([1,0,0,0]), np.hstack(( np.zeros((3,1)), rA1.as_matrix() )) )) # TODO: Quat2rotMat
-        newA2 = np.vstack(( np.array([1,0,0,0]), np.hstack(( np.zeros((3,1)), rA2.as_matrix() )) )) # TODO: Quat2rotMat
-        # print(newA1)
-        # print(newb1)
-        for k in range(self.nbData):
-            newP[0, k].b = newb1
-            newP[1, k].b = newb2            
-            newP[0, k].A = newA1
-            newP[1, k].A = newA2
-            newP[0, k].invA = np.linalg.pinv(newA1) # TOTRY: with and without invA
-            newP[1, k].invA = np.linalg.pinv(newA2) # TOTRY: with and without invA
+            # print([self.frame1_pose.orientation.x, self.frame1_pose.orientation.y, self.frame1_pose.orientation.z, self.frame1_pose.orientation.w])
+            rA1 = R.from_quat([self.frame1_pose.orientation.x, self.frame1_pose.orientation.y, self.frame1_pose.orientation.z, self.frame1_pose.orientation.w])
+            rA2 = R.from_quat([self.frame2_pose.orientation.x, self.frame2_pose.orientation.y, self.frame2_pose.orientation.z, self.frame2_pose.orientation.w])
+            newA1 = np.vstack(( np.array([1,0,0,0]), np.hstack(( np.zeros((3,1)), rA1.as_matrix() )) )) # TODO: Quat2rotMat
+            newA2 = np.vstack(( np.array([1,0,0,0]), np.hstack(( np.zeros((3,1)), rA2.as_matrix() )) )) # TODO: Quat2rotMat
+            # print(newA1)
+            # print(newb1)
+            for k in range(self.nbData):
+                newP[0, k].b = newb1
+                newP[1, k].b = newb2            
+                newP[0, k].A = newA1
+                newP[1, k].A = newA2
+                newP[0, k].invA = np.linalg.pinv(newA1) # TOTRY: with and without invA
+                newP[1, k].invA = np.linalg.pinv(newA2) # TOTRY: with and without invA
 
-        rnew = self.TPGMMGMR.reproduce(newP, newb1[1:,:])
+            rnew = self.TPGMMGMR.reproduce(newP, newb1[1:,:])
 
-        # Saving GMM to rosbag ------------------------------------------------------------------------------------------------------------ #
-        gmm = self.TPGMMGMR.convertToGM(rnew, req.frame_id)
-        
-        self.tpgmm_pub.publish(gmm)
-        print("GMM is Published!")
+            # Saving GMM to rosbag ------------------------------------------------------------------------------------------------------------ #
+            gmm = self.TPGMMGMR.convertToGM(rnew, req.frame_id)
+            
+            self.tpgmm_pub.publish(gmm)
+            print("GMM is Published!")
 
-        regressed_trajectory = PoseArray() ; regressed_trajectory.header.frame_id = req.frame_id #'base_link'
-        regressed_point = Pose()
-        for i, point in enumerate(rnew.Data.T): # Looping over the points (colums of Data) in renew.Data
-            regressed_point.position.x = point[1]
-            regressed_point.position.y = point[2]
-            regressed_point.position.z = point[3]
+            regressed_trajectory = PoseArray() ; regressed_trajectory.header.frame_id = req.frame_id #'base_link'
+            regressed_point = Pose()
+            for i, point in enumerate(rnew.Data.T): # Looping over the points (colums of Data) in renew.Data
+                regressed_point.position.x = point[1]
+                regressed_point.position.y = point[2]
+                regressed_point.position.z = point[3]
 
-            regressed_trajectory.poses.append(deepcopy(regressed_point))
-        print("No. of points in Regressed Trajectory: ", i)
-        self.regress_traj_pub.publish(regressed_trajectory)
-        print("Regressed Trajectory is Published!")
+                regressed_trajectory.poses.append(deepcopy(regressed_point))
+            print("No. of points in Regressed Trajectory: ", i)
+            self.regress_traj_pub.publish(regressed_trajectory)
+            print("Regressed Trajectory is Published!")
 
-        # self.tpGMMPlot()
-        # rospy.signal_shutdown("TP-GMM Node is Shutting Down!")
-        return ReproduceTPGMMResponse()
+            # self.tpGMMPlot()
+            # rospy.signal_shutdown("TP-GMM Node is Shutting Down!")
+        finally:
+            return ReproduceTPGMMResponse()
 
     ## Check if frame1_pose and frame2_pose hasn't been requested from startTPGMM rosservice, fill them with these values
     def getFramePoses(self):

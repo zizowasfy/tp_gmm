@@ -19,14 +19,25 @@
 
 
     <!-- <node name="demons_entry" pkg="data_handle" type="demons_entry_node" output="screen"/> -->
-    <node name="tp_gmm" pkg="tp_gmm" type="tp-gmm.py" output="screen"/>
+    <!-- <node name="tp_gmm" pkg="tp_gmm" type="tp-gmm.py" output="screen"/> -->
 
-    <!-- GMM -->
-    <!-- <node name="gaussian_mixture_model_trajectory_converter" pkg="gaussian_mixture_model" type="gaussian_mixture_model_trajectory_converter" output="screen"/> -->
-    <!-- <node name="gaussian_mixture_model_node" pkg="gaussian_mixture_model" type="gaussian_mixture_model_node" output="screen"/> -->
-    <node name="gmm_rviz_converter_node" pkg="tp_gmm" type="gmm_rviz_converter_node" output="screen"/>
-    <node name="gmm_moveit_node" pkg="tp_gmm" type="gmm_moveit_node" output="screen"/>    
-    <!--/ GMM -->
+    <group ns="ur10_1">
+        <node name="tp_gmm" pkg="tp_gmm" type="tp-gmm.py" output="screen"/>
+        <!-- GMM -->
+        <!-- <node name="gaussian_mixture_model_trajectory_converter" pkg="gaussian_mixture_model" type="gaussian_mixture_model_trajectory_converter" output="screen"/> -->
+        <!-- <node name="gaussian_mixture_model_node" pkg="gaussian_mixture_model" type="gaussian_mixture_model_node" output="screen"/> -->
+        <node name="gmm_rviz_converter_node" pkg="tp_gmm" type="gmm_rviz_converter_node" output="screen"/>
+        <node name="gmm_moveit_node" pkg="tp_gmm" type="gmm_moveit_node" output="screen"/>    
+        <!--/ GMM -->
+    </group>
+
+    <group ns="ur10_2">
+        <node name="tp_gmm" pkg="tp_gmm" type="tp-gmm.py" output="screen"/>
+        <!-- GMM -->
+        <node name="gmm_rviz_converter_node" pkg="tp_gmm" type="gmm_rviz_converter_node" output="screen"/>
+        <node name="gmm_moveit_node" pkg="tp_gmm" type="gmm_moveit_node" output="screen"/>    
+        <!--/ GMM -->
+    </group>
 
     <!-- Execution -->
     <!-- <node name="execute_trajectory" pkg="data_handle" type="execute_trajectory_node" output="screen"/>

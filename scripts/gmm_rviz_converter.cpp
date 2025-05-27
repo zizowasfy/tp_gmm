@@ -303,7 +303,8 @@ int main(int argc,char ** argv)
 {
   ros::init(argc,argv,"gmm_rviz_converter");
 
-  ros::NodeHandle nh("~");
+  // ros::NodeHandle nh("~");
+  ros::NodeHandle nh;
   GMMRvizConverter cnv(nh);
 
   ros::spin();
