@@ -27,9 +27,103 @@ After visualizing the TPGMM in Rviz:
   - visualize the TPGMM in Rviz
   - doRegression 
 
+____________________________________
+experiments_handler.py:
+	sets the Task Parameters (TP) obstacles, start, and goal poses
+	sends them to tp_gmm.py
+	
+tp_gmm.py:
+	receives the TP
+	reproduce TP-GMM and sends the GMM
+	
+move_group_interface.cpp:
+	receives the TP and the GMM
+	visualize them
+	plan for motion
+	
+
+- Include the obstacles' poisitions in the tp_gmm training/reproduction.
+  - in demons_to_samples.ipynb: re-write the frames to be list of frames depending on number of obstacles.
+  - 
+
+- Make the FKsolve() in move_group_interface.cpp a service to be called/used from experiments_handler.py while recording and saving experiments in rosbags.
+
+- I shall then use demons_to_samples.ipynb; the one I used when recording experiments with UR10e) which reads poses from the recorded rosbags (demons)
+
+- 
+
+_______________________________________
+
+- change the topic name of the plan_traj_FK_pub in move_group_interface.cpp
 
 
-ITRA Project ----------------------
 
-- So far, nbStates (nb of Gaussians) = 2, diagRegularizationFactor = 0.000001 is good
-  Also  , nbStates (nb of Gaussians) = 5, diagRegularizationFactor = 0.01 is good
+_______________ Demons notes
+
+demon_3 - good avoidance
+demon_6 - good avoidance
+demon_7 - good avoidance
+
+______________ Adding Obstacles as Task Parameters ______________ 
+
+- Why didn't it work with batch 1,2,3? Try them again now
+   -- I think it comes down to the demons not the orientation of the obstacles!!
+
+- I need to take new demons and the trajectories have to be emphasized on avoiding the obstacle and all of them must have collision avoidance. [DONE and WORKED]
+- Maybe try enlarging the obstacle [DONE and WORKED]
+
+- Maybe it depends on the ref demon, so try to take the shortest instead of the longest. [NOPE]
+- Try different diagReg values [NOPE]
+- Try different gaussian numbers [NOPE]
+
+- record demons from the left side of the robot [DONE]
+- Save start, goal, and obstacle poses in a bag and play it with and without including obstacle as a frame, to test and see whether it is working properly!
+
+ - 5 experiments 10 trials
+  1 obstacles, 2 obstacles, 3 obstacles
+  RRT* 
+  RRT 
+  RRTConnect 
+  PRM 
+  GMM-RRT 
+  GMR-RRT 
+  maybe TP-GMM
+  
+- record exps with nosimplify() but stil try to keep record of the simplification time as this will discussed in the paper.  
+    RRT     GMMRRT
+     simplifytime
+  	0.21		0.159394
+	  0.17		0.13			
+  	0.14		0.22
+  	0.17		0.16
+  	0.08		0.18
+  	0.072616	0.16
+  	0.15		0.09
+  	0.05		0.32	
+  	0.12		0.10
+  	0.13		0.14 
+
+- Try nbFrames = 3 vs nbFrames = 2 in tp_gmm.py
+- Try multiple objects
+- Try with GMR
+
+To add in the paper:
+- Variation in the experiments
+- reproduction time to the planning time of GMM planners
+
+_______________________________________
+REAL-WORLD experiments (with obstacle):
+---------------------------------------
+
+Training:   (10 demons are enough)
+	- Goal poses: teleopertating the robot to move to goal poses before starting recording each demon. Save the pose by clicking a button.
+	- Obstacle poses: similar to Goal poses
+	- Start poses: should be wherever the current pose of the robot at the start of recording the demon.
+
+---
+
+Experimenting:
+	- Goal poses: same way as in training 
+	- Obstacle poses: same way as in training OR can use octomap !!
+	- Start poses: can be set randomly 
+	

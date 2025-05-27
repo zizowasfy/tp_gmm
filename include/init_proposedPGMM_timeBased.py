@@ -2,7 +2,7 @@ import numpy as np
 def init_proposedPGMM_timeBased(s, modelcur):
     from refClass import ref
     from modelClass import model
-    diagRegularizationFactor = 0.01 # 0.01 # The smaller this number, the bigger the Gaussians will be
+    diagRegularizationFactor = 0.02 # 0.01 # Note to myself: The smaller this number, the smaller the Gaussians will be
     nbSamples = len(s)
     DataTotalSize = 0
     for i in range(0, len(s)):
@@ -10,12 +10,26 @@ def init_proposedPGMM_timeBased(s, modelcur):
     DataAll = np.ndarray(shape = (0,DataTotalSize))
     for i in range (0, modelcur.nbFrames):
         DataTmp = np.ndarray(shape=(np.shape(s[0].Data)[0], 0))
+        print("s[0].Data.shape: ", s[0].Data.shape)
+        print("DataTmp.shape: ", DataTmp.shape)
+        print("nbSamples=len(s): ", len(s))
         for j in range (0, nbSamples):
             for k in range (0, s[j].nbData):
+                # print("np.dot(s[j].p[i, k].invA ", s[j].p[i, k].invA.shape)
+                # print("s[j].Data[:, k] ", s[j].Data[:, k].shape)
+                # print("(s[0].Data)[0] ", (s[0].Data)[0].shape)
+                # print("s[j].p[i, k].b ", s[j].p[i, k].b.shape)
+                # print("(s[0].Data)[0] ", (s[0].Data)[0].shape)
+                # print(DataTmp.shape)
                 # print(np.shape(np.dot(s[j].p[i, k].invA, (np.reshape(s[j].Data[:, k], newshape=(np.shape(s[0].Data)[0], 1)) - np.reshape(s[j].p[i, k].b, newshape=(np.shape(s[0].Data)[0], 1))))))
-                DataTmp = np.append(DataTmp, np.dot(s[j].p[i,k].invA,(np.reshape(s[j].Data[:,k], newshape = (np.shape(s[0].Data)[0],1))-np.reshape(s[j].p[i, k].b, newshape=(np.shape(s[0].Data)[0], 1)))), axis = 1)
+                ###
+                # print("s[j].Data[:,k]:", s[j].Data[:,k])
+                # print("np.reshape(s[j].Data[:,k], newshape = (np.shape(s[0].Data)[0],1)): ", np.reshape(s[j].Data[:,k], newshape = (np.shape(s[0].Data)[0],1)))
+                DataTmp = np.append(DataTmp, np.dot(s[j].p[i,k].invA,(np.reshape(s[j].Data[:,k], newshape = (np.shape(s[0].Data)[0],1)) - np.reshape(s[j].p[i, k].b, newshape=(np.shape(s[0].Data)[0], 1)))), axis = 1) # invA @ (Data-b)
         DataAll = np.append(DataAll, DataTmp, axis=0)
+        print("DataAll: ", DataAll.shape)
     TimingSep = np.linspace(np.amin(DataAll[0,:]), np.amax(DataAll[0,:]), num = modelcur.nbStates+1)
+    print("TimingSep: ", TimingSep)
     Priors = []
     Mu = np.ndarray(shape=(np.shape(DataAll)[0], 1))
     Mu = np.delete(Mu, 0, axis = 1)
