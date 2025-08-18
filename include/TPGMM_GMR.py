@@ -11,6 +11,10 @@ import rosbag
 from geometry_msgs.msg import PoseArray, Pose
 from copy import deepcopy
 from tp_gmm.msg import GaussianMixture, Gaussian
+
+from pathlib import Path
+Data_DIR = str(Path(__file__).resolve().parent.parent / 'data') + '/'
+
 class TPGMM_GMR(object):
     def __init__(self, nbStates, nbFrames, nbVar):
         self.model = model(nbStates, nbFrames, nbVar, None, None, None, None, None)
@@ -87,7 +91,7 @@ class TPGMM_GMR(object):
 
         # print("r.Mu[:,1,0] == r.Mu[:,1,-1]: ", r.Mu[:,1,0] == r.Mu[:,1,-1]) # debuging.
         ## Writing to rosbag
-        wbag = rosbag.Bag("/home/zizo/tpgmm_rrt_ws/src/batteryDis-LfD/tp_gmm/data/tpgmm_mix.bag", 'w')
+        wbag = rosbag.Bag(Data_DIR + "tpgmm_mix.bag", 'w')
         wbag.write("/gmm/mix", gmm)
         wbag.close()
 
