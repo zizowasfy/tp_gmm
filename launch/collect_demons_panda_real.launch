@@ -1,0 +1,10 @@
+<!-- <?xml version="1.0"?> -->
+<launch>
+
+    <group ns="panda_teleop">
+        <!-- <node name="move_group_interface" pkg="data_handle" type="move_group_interface" output="screen"/>     -->
+
+        <node name="collect_demons_panda_real" pkg="tp_gmm" type="collect_demons_panda_real.py" output="screen"/>
+    </group>
+
+</launch>
