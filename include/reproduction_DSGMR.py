@@ -2,7 +2,7 @@ import numpy as np
 def reproduction_DSGMR(DataIn, model, rr, currPos):
     # DataIn = np.linspace(np.amin(DataIn), np.amax(DataIn), np.shape(DataIn)[0])
     from sklearn import tree
-    model.dt = 0.01
+    model.dt = 0.05 # 0.01
     model.kP = 150
     model.kV = 20
     DataIn = np.reshape(DataIn, newshape=(1, np.shape(DataIn)[0]))

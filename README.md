@@ -91,3 +91,11 @@ ax = fig.add_subplot(111)
 TPGMMGMR.plotReproduction(reproduction, 1, 2, ax, showGaussians=True)
 ```
 As can be noted, Gaussians can be hided. It is useful when big amount of gaussian states is used for accuracy reason.
+
+---
+
+# Dual UR10 Package Walkthrough
+
+For detailed instructions on how to run this package specifically for the `dual_ur10` setup, including ROS launch commands, service parameters, and training procedures, please refer to the:
+
+## 🚀 [Dual UR10 Walkthrough Guide](WALKTHROUGH.md)

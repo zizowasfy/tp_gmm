@@ -10,8 +10,14 @@ project(tp_gmm)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   geometry_msgs
+  sensor_msgs
   message_generation
-)
+
+  roscpp
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -47,11 +53,13 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  # Message1.msg
+  # Message2.msg
+  Gaussian.msg
+  GaussianMixture.msg
+)
 
 ## Generate services in the 'srv' folder
 add_service_files(
@@ -71,6 +79,8 @@ add_service_files(
 generate_messages(
   DEPENDENCIES
   geometry_msgs
+  sensor_msgs
+  std_msgs
   # std_msgs  # Or other packages containing msgs
 )
 
@@ -114,11 +124,13 @@ catkin_package(
 ## Build ##
 ###########
 
+
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  # ~/itra_ws/src/gmm_gmr/include
 )
 
 ## Declare a C++ library
@@ -135,6 +147,9 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/tp_gmm_node.cpp)
+add_executable(gmm_rviz_converter_node scripts/gmm_rviz_converter.cpp)
+add_executable(gmm_moveit_node scripts/gmm_moveit_node.cpp)
+# add_executable(kr10_moveit_interface scripts/kr10_moveit_interface.cpp ~/itra_ws/src/gmm_gmr/src/gmr.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -145,9 +160,21 @@ include_directories(
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(gmm_rviz_converter_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(gmm_moveit_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(kr10_moveit_interface ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
+#   ${catkin_LIBRARIES}
+# )
+target_link_libraries(gmm_rviz_converter_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(gmm_moveit_node
+  ${catkin_LIBRARIES}
+)
+# target_link_libraries(kr10_moveit_interface
 #   ${catkin_LIBRARIES}
 # )
 

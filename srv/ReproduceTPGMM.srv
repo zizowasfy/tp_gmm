@@ -1,3 +1,5 @@
+string task_name
+string frame_id
 geometry_msgs/PoseStamped start_pose
 geometry_msgs/PoseStamped goal_pose
 ---
