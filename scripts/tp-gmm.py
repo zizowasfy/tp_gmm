@@ -36,7 +36,9 @@ from sClass import s
 from pClass import p
 from rClass import r
 from modelClass import model
-from matplotlib import pyplot as plt
+# import matplotlib
+# matplotlib.use('Agg')  # Use a non-interactive backend
+# from matplotlib import pyplot as plt
 from TPGMM_GMR import TPGMM_GMR
 from copy import deepcopy,copy
 
@@ -67,7 +69,7 @@ class TPGMM:
         self.frame1_pose = Pose()
         self.frame2_pose = Pose()        
         _task_name = req.task_name #'pick'
-        _train = True #req.train
+        _train = req.train
 
         ## Fetching Samples and paramters
 
