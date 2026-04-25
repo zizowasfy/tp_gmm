@@ -28,95 +28,105 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// custom
 #include "gmm_rviz_converter.h"
-#include <tp_gmm/GaussianMixture.h>
-#include <tp_gmm/Gaussian.h>
+#include <tp_gmm/msg/gaussian_mixture.hpp>
+#include <tp_gmm/msg/gaussian.hpp>
 
-// ROS
-#include <ros/ros.h>
-#include <visualization_msgs/Marker.h>
-#include <visualization_msgs/MarkerArray.h>
+#include <rclcpp/rclcpp.hpp>
+#include <visualization_msgs/msg/marker.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
 
-// Eigen
 #include <Eigen/Dense>
 
-// STL
 #include <sstream>
+#include <memory>
+#include <vector>
 
-class GMMRvizConverter
+namespace tp_gmm
 {
-  public:
+
+class GMMRvizConverter : public rclcpp::Node
+{
+public:
   typedef unsigned int uint;
 
-  GMMRvizConverter(ros::NodeHandle & nh): m_nh(nh)
+  GMMRvizConverter(const rclcpp::NodeOptions & options = rclcpp::NodeOptions())
+  : Node("gmm_rviz_converter", options)
   {
     std::string temp_string;
     double temp_double;
     int temp_int;
 
-    m_nh.param<std::string>(PARAM_NAME_FRAME_ID,m_frame_id,PARAM_DEFAULT_FRAME_ID);
+    this->declare_parameter(PARAM_NAME_FRAME_ID, PARAM_DEFAULT_FRAME_ID);
+    this->declare_parameter(PARAM_NAME_COORD_MASK, PARAM_DEFAULT_COORD_MASK);
+    this->declare_parameter(PARAM_NAME_INPUT_TOPIC, PARAM_DEFAULT_INPUT_TOPIC);
+    this->declare_parameter(PARAM_NAME_OUTPUT_TOPIC, PARAM_DEFAULT_OUTPUT_TOPIC);
+    this->declare_parameter(PARAM_NAME_SCALE, PARAM_DEFAULT_SCALE);
+    this->declare_parameter(PARAM_NAME_MAX_MARKERS, PARAM_DEFAULT_MAX_MARKERS);
+    this->declare_parameter(PARAM_NAME_RVIZ_NAMESPACE, PARAM_DEFAULT_RVIZ_NAMESPACE);
+    this->declare_parameter(PARAM_NAME_NORMALIZE, PARAM_DEFAULT_NORMALIZE);
 
-    m_nh.param<std::string>(PARAM_NAME_COORD_MASK,temp_string,PARAM_DEFAULT_COORD_MASK);
+    this->get_parameter(PARAM_NAME_FRAME_ID, m_frame_id);
+    this->get_parameter(PARAM_NAME_COORD_MASK, temp_string);
+
     // scope only
     {
       std::istringstream is(temp_string);
       while (is >> temp_string)
       {
         if (temp_string == PARAM_CMD_CONST)
-          m_conversion_mask.push_back(IParamCMD::Ptr(new TParamCMDConst(is)));
+          m_conversion_mask.push_back(IParamCMD::Ptr(new TParamCMDConst(is, this->get_logger())));
         else if (temp_string == PARAM_CMD_INDEX)
-          m_conversion_mask.push_back(IParamCMD::Ptr(new TParamCMDIndex(is)));
+          m_conversion_mask.push_back(IParamCMD::Ptr(new TParamCMDIndex(is, this->get_logger())));
         else
-          ROS_ERROR("gmm_rviz_converter: invalid parameter command: \"%s\".",temp_string.c_str());
+          RCLCPP_ERROR(this->get_logger(), "gmm_rviz_converter: invalid parameter command: \"%s\".", temp_string.c_str());
       }
 
       if (m_conversion_mask.size() != NUM_OUTPUT_COORDINATES)
       {
-        ROS_FATAL("gmm_rviz_converter: the coordinate_mask must contain 3 coordinates!");
+        RCLCPP_FATAL(this->get_logger(), "gmm_rviz_converter: the coordinate_mask must contain 3 coordinates!");
         exit(21);
       }
     }
 
-    m_nh.param<std::string>(PARAM_NAME_INPUT_TOPIC,temp_string,PARAM_DEFAULT_INPUT_TOPIC);
-    m_sub = m_nh.subscribe(temp_string,1,&GMMRvizConverter::onGMM,this);
+    std::string input_topic, output_topic;
+    this->get_parameter(PARAM_NAME_INPUT_TOPIC, input_topic);
+    this->get_parameter(PARAM_NAME_OUTPUT_TOPIC, output_topic);
 
-    m_nh.param<std::string>(PARAM_NAME_OUTPUT_TOPIC,temp_string,PARAM_DEFAULT_OUTPUT_TOPIC);
-    m_pub = m_nh.advertise<visualization_msgs::MarkerArray>(temp_string,1);
+    m_sub = this->create_subscription<tp_gmm::msg::GaussianMixture>(
+      input_topic, 1, std::bind(&GMMRvizConverter::onGMM, this, std::placeholders::_1));
 
-    m_nh.param<double>(PARAM_NAME_SCALE,temp_double,PARAM_DEFAULT_SCALE);
-    m_scale = temp_double;
+    m_pub = this->create_publisher<visualization_msgs::msg::MarkerArray>(output_topic, 1);
 
-    m_nh.param<int>(PARAM_NAME_MAX_MARKERS,temp_int,PARAM_DEFAULT_MAX_MARKERS);
+    this->get_parameter(PARAM_NAME_SCALE, m_scale);
+    this->get_parameter(PARAM_NAME_MAX_MARKERS, temp_int);
     m_max_markers = temp_int > 0 ? temp_int : PARAM_DEFAULT_MAX_MARKERS;
-
-    m_nh.param<std::string>(PARAM_NAME_RVIZ_NAMESPACE,m_rviz_namespace,PARAM_DEFAULT_RVIZ_NAMESPACE);
-
-    m_nh.param<bool>(PARAM_NAME_NORMALIZE,m_normalize,PARAM_DEFAULT_NORMALIZE);
+    this->get_parameter(PARAM_NAME_RVIZ_NAMESPACE, m_rviz_namespace);
+    this->get_parameter(PARAM_NAME_NORMALIZE, m_normalize);
   }
 
-  void onGMM(const tp_gmm::GaussianMixture & mix)
+  void onGMM(const tp_gmm::msg::GaussianMixture::SharedPtr mix)
   {
-    visualization_msgs::MarkerArray msg;
-    ROS_INFO("gmm_rviz_converter: Received message.");
+    visualization_msgs::msg::MarkerArray msg;
+    RCLCPP_INFO(this->get_logger(), "gmm_rviz_converter: Received message.");
 
     uint i;
 
-    for (i = 0; i < mix.gaussians.size(); i++)
+    for (i = 0; i < mix->gaussians.size(); i++)
     {
-      visualization_msgs::Marker marker;
+      visualization_msgs::msg::Marker marker;
 
-      marker.header.frame_id = mix.header.frame_id; //m_frame_id;
-      marker.header.stamp = ros::Time::now();
+      marker.header.frame_id = mix->header.frame_id; //m_frame_id;
+      marker.header.stamp = this->now();
       marker.ns = m_rviz_namespace;
       marker.id = i;
-      marker.type = visualization_msgs::Marker::SPHERE;
-      marker.action = visualization_msgs::Marker::ADD;
-      marker.lifetime = ros::Duration();
+      marker.type = visualization_msgs::msg::Marker::SPHERE;
+      marker.action = visualization_msgs::msg::Marker::ADD;
+      marker.lifetime = rclcpp::Duration::from_seconds(0);
 
       Eigen::Vector3f coords;
       for (uint ir = 0; ir < NUM_OUTPUT_COORDINATES; ir++)
-        coords[ir] = m_conversion_mask[ir]->GetMean(m_conversion_mask,mix.gaussians[i]);
+        coords[ir] = m_conversion_mask[ir]->GetMean(m_conversion_mask, mix->gaussians[i]);
       marker.pose.position.x = coords.x();
       marker.pose.position.y = coords.y();
       marker.pose.position.z = coords.z();
@@ -124,13 +134,13 @@ class GMMRvizConverter
       Eigen::Matrix3f covmat;
       for (uint ir = 0; ir < NUM_OUTPUT_COORDINATES; ir++)
         for (uint ic = 0; ic < NUM_OUTPUT_COORDINATES; ic++)
-          covmat(ir,ic) = m_conversion_mask[ir]->GetCov(m_conversion_mask,mix.gaussians[i],ic);
+          covmat(ir, ic) = m_conversion_mask[ir]->GetCov(m_conversion_mask, mix->gaussians[i], ic);
 
       Eigen::EigenSolver<Eigen::Matrix3f> evsolver(covmat);
 
       Eigen::Matrix3f eigenvectors = evsolver.eigenvectors().real();
       if (eigenvectors.determinant() < 0.0)
-        eigenvectors.col(0) = - eigenvectors.col(0);
+        eigenvectors.col(0) = -eigenvectors.col(0);
       Eigen::Matrix3f rotation = eigenvectors;
       Eigen::Quaternionf quat = Eigen::Quaternionf(Eigen::AngleAxisf(rotation));
 
@@ -143,62 +153,59 @@ class GMMRvizConverter
       Eigen::Vector3f scale = Eigen::Vector3f(eigenvalues.array().abs().sqrt());
       if (m_normalize)
         scale.normalize();
-      marker.scale.x = mix.weights[i] * scale.x() * m_scale;
-      marker.scale.y = mix.weights[i] * scale.y() * m_scale;
-      marker.scale.z = mix.weights[i] * scale.z() * m_scale;
+      marker.scale.x = mix->weights[i] * scale.x() * m_scale;
+      marker.scale.y = mix->weights[i] * scale.y() * m_scale;
+      marker.scale.z = mix->weights[i] * scale.z() * m_scale;
 
       marker.color.a = 0.3; //1.0;
-      rainbow(float(i) / float(mix.gaussians.size()),marker.color.r,marker.color.g,marker.color.b);
+      rainbow(float(i) / float(mix->gaussians.size()), marker.color.r, marker.color.g, marker.color.b);
 
       msg.markers.push_back(marker);
     }
 
-    // this a waste of resources, but we need to delete old markers in some way
-    // someone should add a "clear all" command to rviz
-    // (using expiration time is not an option, here)
-    for ( ; i < m_max_markers; i++)
+    for ( ; i < (uint)m_max_markers; i++)
     {
-      visualization_msgs::Marker marker;
+      visualization_msgs::msg::Marker marker;
       marker.id = i;
-      marker.action = visualization_msgs::Marker::DELETE;
-      marker.lifetime = ros::Duration();
-      marker.header.frame_id = mix.header.frame_id; //m_frame_id;
-      marker.header.stamp = ros::Time::now();
+      marker.action = visualization_msgs::msg::Marker::DELETE;
+      marker.lifetime = rclcpp::Duration::from_seconds(0);
+      marker.header.frame_id = mix->header.frame_id; //m_frame_id;
+      marker.header.stamp = this->now();
       marker.ns = m_rviz_namespace;
       msg.markers.push_back(marker);
     }
 
-    m_pub.publish(msg);
-    ROS_INFO("gmm_rviz_converter: Sent message.");
+    m_pub->publish(msg);
+    RCLCPP_INFO(this->get_logger(), "gmm_rviz_converter: Sent message.");
   }
 
   class IParamCMD
   {
     public:
-    typedef boost::shared_ptr<IParamCMD> Ptr;
+    typedef std::shared_ptr<IParamCMD> Ptr;
     typedef std::vector<Ptr> PtrVector;
 
     virtual ~IParamCMD() {}
-    virtual double GetMean(const PtrVector & vec,const tp_gmm::Gaussian & g) = 0;
-    virtual double GetCov(const PtrVector & vec,const tp_gmm::Gaussian & g,uint other_index) = 0;
-    virtual bool IsConstant(const PtrVector & vec,const tp_gmm::Gaussian & g) = 0;
-    virtual uint GetIndex(const PtrVector & vec,const tp_gmm::Gaussian & g) = 0;
+    virtual double GetMean(const PtrVector & vec, const tp_gmm::msg::Gaussian & g) = 0;
+    virtual double GetCov(const PtrVector & vec, const tp_gmm::msg::Gaussian & g, uint other_index) = 0;
+    virtual bool IsConstant(const PtrVector & vec, const tp_gmm::msg::Gaussian & g) = 0;
+    virtual uint GetIndex(const PtrVector & vec, const tp_gmm::msg::Gaussian & g) = 0;
   };
 
   class TParamCMDConst: public IParamCMD
   {
     public:
-    TParamCMDConst(std::istream & s)
+    TParamCMDConst(std::istream & s, rclcpp::Logger logger)
     {
       s >> m_const;
       if (!s)
-        ROS_ERROR("gmm_rviz_converter: %s: real constant expected.",PARAM_CMD_CONST);
+        RCLCPP_ERROR(logger, "gmm_rviz_converter: %s: real constant expected.", PARAM_CMD_CONST);
     }
 
-    double GetMean(const PtrVector & /*vec*/,const tp_gmm::Gaussian & /*g*/) {return m_const; }
-    double GetCov(const PtrVector & /*vec*/,const tp_gmm::Gaussian & /*g*/,uint /*other_index*/) {return 0.0; }
-    bool IsConstant(const PtrVector & /*vec*/,const tp_gmm::Gaussian & /*g*/) {return true; }
-    uint GetIndex(const PtrVector & /*vec*/,const tp_gmm::Gaussian & /*g*/) {return 0; }
+    double GetMean(const PtrVector & /*vec*/, const tp_gmm::msg::Gaussian & /*g*/) {return m_const; }
+    double GetCov(const PtrVector & /*vec*/, const tp_gmm::msg::Gaussian & /*g*/, uint /*other_index*/) {return 0.0; }
+    bool IsConstant(const PtrVector & /*vec*/, const tp_gmm::msg::Gaussian & /*g*/) {return true; }
+    uint GetIndex(const PtrVector & /*vec*/, const tp_gmm::msg::Gaussian & /*g*/) {return 0; }
 
     private:
     double m_const;
@@ -207,55 +214,56 @@ class GMMRvizConverter
   class TParamCMDIndex: public IParamCMD
   {
     public:
-    TParamCMDIndex(std::istream & s)
+    TParamCMDIndex(std::istream & s, rclcpp::Logger logger) : logger_(logger)
     {
       m_index = 0;
 
       int temp_index;
       s >> temp_index;
       if (!s || temp_index < 0)
-        ROS_ERROR("gmm_rviz_converter: %s: non-negative integer expected.",PARAM_CMD_INDEX);
+        RCLCPP_ERROR(logger_, "gmm_rviz_converter: %s: non-negative integer expected.", PARAM_CMD_INDEX);
       else
         m_index = temp_index;
     }
 
-    double GetMean(const PtrVector & /*vec*/,const tp_gmm::Gaussian & g)
+    double GetMean(const PtrVector & /*vec*/, const tp_gmm::msg::Gaussian & g)
     {
       if (m_index >= g.means.size())
       {
-        ROS_ERROR("gmm_rviz_converter: %s: index out of range: %u.",PARAM_CMD_INDEX,m_index);
+        RCLCPP_ERROR(logger_, "gmm_rviz_converter: %s: index out of range: %u.", PARAM_CMD_INDEX, m_index);
         return 0.0;
       }
 
       return g.means[m_index];
     }
 
-    double GetCov(const PtrVector & vec,const tp_gmm::Gaussian & g,uint other_index)
+    double GetCov(const PtrVector & vec, const tp_gmm::msg::Gaussian & g, uint other_index)
     {
       uint dim = g.means.size();
 
       if (m_index >= dim)
       {
-        ROS_ERROR("gmm_rviz_converter: %s: index out of range: %u, max is %u.",PARAM_CMD_INDEX,m_index,dim);
+        RCLCPP_ERROR(logger_, "gmm_rviz_converter: %s: index out of range: %u, max is %u.", PARAM_CMD_INDEX, m_index, dim);
         return 0.0;
       }
 
       // if one is constant, cov is always 0
-      if (vec[other_index]->IsConstant(vec,g))
+      if (vec[other_index]->IsConstant(vec, g))
         return 0.0;
 
-      uint other_real_index = vec[other_index]->GetIndex(vec,g);
+      uint other_real_index = vec[other_index]->GetIndex(vec, g);
       return g.covariances[m_index * dim + other_real_index];
     }
 
-    bool IsConstant(const PtrVector & /*vec*/,const tp_gmm::Gaussian & /*g*/) {return false; }
-    uint GetIndex(const PtrVector & /*vec*/,const tp_gmm::Gaussian & /*g*/) {return m_index; }
+    bool IsConstant(const PtrVector & /*vec*/, const tp_gmm::msg::Gaussian & /*g*/) {return false; }
+    uint GetIndex(const PtrVector & /*vec*/, const tp_gmm::msg::Gaussian & /*g*/) {return m_index; }
 
     private:
     uint m_index;
+    rclcpp::Logger logger_;
   };
 
-  static void rainbow(float val,float & r,float & g,float & b)
+  static void rainbow(float val, float & r, float & g, float & b)
   {
     if (val < 0.33)
     {
@@ -282,32 +290,22 @@ class GMMRvizConverter
     if (b > 1.0) b = 1.0; if (b < 0.0) b = 0.0;
   }
 
-  private:
-  ros::NodeHandle & m_nh;
-
+private:
   std::string m_frame_id;
   IParamCMD::PtrVector m_conversion_mask;
 
-  ros::Subscriber m_sub;
-  ros::Publisher m_pub;
+  rclcpp::Subscription<tp_gmm::msg::GaussianMixture>::SharedPtr m_sub;
+  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr m_pub;
 
-  float m_scale;
+  double m_scale;
   bool m_normalize;
 
-  uint m_max_markers;
+  int m_max_markers;
 
   std::string m_rviz_namespace;
 };
 
-int main(int argc,char ** argv)
-{
-  ros::init(argc,argv,"gmm_rviz_converter");
+} // namespace tp_gmm
 
-  // ros::NodeHandle nh("~");
-  ros::NodeHandle nh;
-  GMMRvizConverter cnv(nh);
-
-  ros::spin();
-
-  return 0;
-}
+#include "rclcpp_components/register_node_macro.hpp"
+RCLCPP_COMPONENTS_REGISTER_NODE(tp_gmm::GMMRvizConverter)
