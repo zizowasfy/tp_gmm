@@ -6,7 +6,7 @@ from plotGMM import plotGMM
 import numpy as np
 import copy
 
-import rosbag
+# import rosbag
 # from gaussian_mixture_model.msg import GaussianMixture, Gaussian
 from geometry_msgs.msg import PoseArray, Pose
 from copy import deepcopy
@@ -58,7 +58,7 @@ class TPGMM_GMR(object):
             # print("nbSamples=len(s): ", len(s))
             for j in range (0, nbSamples):
                 for k in range (0, s[j].nbData):
-                    DataTmp = np.append(DataTmp, np.dot(s[j].p[i,k].invA,(np.reshape(s[j].Data[:,k], newshape = (np.shape(s[0].Data)[0],1)) - np.reshape(s[j].p[i, k].b, newshape=(np.shape(s[0].Data)[0], 1)))), axis = 1) # invA @ (Data-b)
+                    DataTmp = np.append(DataTmp, np.dot(s[j].p[i,k].invA,(np.reshape(s[j].Data[:,k], (np.shape(s[0].Data)[0],1)) - np.reshape(s[j].p[i, k].b, (np.shape(s[0].Data)[0], 1)))), axis = 1) # invA @ (Data-b)
                     ## Putting the Data points (after transforming them w.r.t. the local frame not the the world frame) into PoseArray mainly for visualization
                     # print("DataTmp.shape: ", DataTmp.shape)
                     Data_pose.position.x = DataTmp[1,k]
@@ -80,19 +80,29 @@ class TPGMM_GMR(object):
         # allCovariances = np.ravel(r.Sigma[:,:,:,0]) # (4,4,5) -> (80, 1) --every 16 elements represent one-unit Gaussian 
 
         for gaus in range(nbGaussians):
-            g.means = r.Mu[:,gaus,-1]
-            g.covariances = np.ravel(r.Sigma[:,:,gaus,-1])
+            g.means = r.Mu[:,gaus,-1].tolist()
+            g.covariances = np.ravel(r.Sigma[:,:,gaus,-1]).tolist()
             # print("convertToGM g.covariances: ", g.covariances)
             gmm.gaussians.append(copy.deepcopy(g))
-        gmm.weights = self.model.Priors # or r.H
-        gmm.bic = r.Data.shape[1]*down_sample_factor
+        gmm.weights = [float(w) for w in self.model.Priors] # or r.H
+        gmm.bic = float(r.Data.shape[1]*down_sample_factor)
         # gmm.bic = r.Data.shape[1]
         gmm.header.frame_id = frame_id
 
         # print("r.Mu[:,1,0] == r.Mu[:,1,-1]: ", r.Mu[:,1,0] == r.Mu[:,1,-1]) # debuging.
-        ## Writing to rosbag
-        wbag = rosbag.Bag(Data_DIR + "tpgmm_mix.bag", 'w')
-        wbag.write("/gmm/mix", gmm)
-        wbag.close()
+        ## Writing to rosbag (ROS 2 format)
+        import shutil
+        from rosbags.rosbag2 import Writer
+        from rclpy.serialization import serialize_message
+        import time
+
+        bag_path = Path(Data_DIR) / "tpgmm_mix_bag"
+        if bag_path.exists():
+            shutil.rmtree(bag_path)
+            
+        with Writer(bag_path, version=8) as writer:
+            conn = writer.add_connection("/gmm/mix", "tp_gmm/msg/GaussianMixture", msgdef="", rihs01="dummy")
+            ts = int(time.time() * 1e9)
+            writer.write(conn, ts, serialize_message(gmm))
 
         return gmm

@@ -20,11 +20,14 @@ import papermill as pm
 import sys
 from pathlib import Path
 
-TPGMM_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(str(TPGMM_DIR / 'include'))
-data_dir = str(TPGMM_DIR / 'data/') + '/'
-scripts_dir = str(TPGMM_DIR / 'scripts') + '/'
-tasks_dir = str(TPGMM_DIR / 'tasks') + '/'
+from ament_index_python.packages import get_package_share_directory
+import os
+
+pkg_share = get_package_share_directory('tp_gmm')
+sys.path.append(os.path.join(pkg_share, 'include'))
+data_dir = os.path.join(pkg_share, 'data/') + '/'
+scripts_dir = os.path.join(pkg_share, 'scripts/') + '/'
+tasks_dir = os.path.join(pkg_share, 'tasks/') + '/'
 
 # tpgmm-related stuff
 import time

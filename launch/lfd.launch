@@ -1,10 +1,11 @@
-<!-- <?xml version="1.0"?> -->
+<?xml version="1.0" encoding="UTF-8"?>
+
 <launch>
     <arg name="task" default="Rbolts"/>
     <arg name="subtask" default="action"/>
 
-    <param name="task_param" type="string" value="$(arg task)"/>
-    <param name="subtask_param" type="string" value="$(arg subtask)"/>
+    <!-- <param name="task_param" type="string" value="$(arg task)"/>
+    <param name="subtask_param" type="string" value="$(arg subtask)"/> -->
     
 
     <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="gmm_base_frame_ur10_1" args="0.0 0.0 0.0 0.0 0.0 0.7071068 0.70710680 /ur10_1_base_link /ur10_1_base_link_gmm"/>    
@@ -12,17 +13,17 @@
     <node pkg="tf2_ros" type="static_transform_publisher" name="gmm_flange_frame_ur10_1" args="0.0 0.0 0.0 -0.5 0.5 -0.5 0.5 /ur10_1_flange /ur10_1_flange_gmm"/>    
     <node pkg="tf2_ros" type="static_transform_publisher" name="gmm_flange_frame_ur10_2" args="0.0 0.0 0.0 -0.5 0.5 -0.5 0.5 /ur10_2_flange /ur10_2_flange_gmm"/> -->
 
-    <!-- Testing! Making '_flange_gmm' to be as '_ee_link' from ur10 in simulation (when recording of demonstrations) -->
+    <!-- Testing! Making '_flange_gmm' to be as '_ee_link' from ur10 in simulation (when recording of demonstrations)
     <node pkg="tf2_ros" type="static_transform_publisher" name="gmm_base_frame_ur10_1" args="0.0 0.0 0.0 0.0 0.0 0.7071068 0.70710680 /ur10_1_base_link /ur10_1_base_link_gmm"/>    
     <node pkg="tf2_ros" type="static_transform_publisher" name="gmm_base_frame_ur10_2" args="0.0 0.0 0.0 0.0 0.0 1.0 0.0 /ur10_2_base_link /ur10_2_base_link_gmm"/>
     <node pkg="tf2_ros" type="static_transform_publisher" name="gmm_flange_frame_ur10_1" args="0.0 0.0 0.0 0.7071068 0 0 0.7071068  /ur10_1_flange /ur10_1_flange_gmm"/>    
-    <node pkg="tf2_ros" type="static_transform_publisher" name="gmm_flange_frame_ur10_2" args="0.0 0.0 0.0 0.7071068 0 0 0.7071068  /ur10_2_flange /ur10_2_flange_gmm"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="gmm_flange_frame_ur10_2" args="0.0 0.0 0.0 0.7071068 0 0 0.7071068  /ur10_2_flange /ur10_2_flange_gmm"/> -->
 
 
     <!-- <node name="demons_entry" pkg="data_handle" type="demons_entry_node" output="screen"/> -->
     <!-- <node name="tp_gmm" pkg="tp_gmm" type="tp-gmm.py" output="screen"/> -->
 
-    <group ns="ur10_1">
+    <!-- <group ns="ur10_1"> -->
         <node name="tp_gmm" pkg="tp_gmm" type="tp-gmm.py" output="screen"/>
         <!-- GMM -->
         <!-- <node name="gaussian_mixture_model_trajectory_converter" pkg="gaussian_mixture_model" type="gaussian_mixture_model_trajectory_converter" output="screen"/> -->
@@ -30,15 +31,7 @@
         <node name="gmm_rviz_converter_node" pkg="tp_gmm" type="gmm_rviz_converter_node" output="screen"/>
         <node name="gmm_moveit_node" pkg="tp_gmm" type="gmm_moveit_node" output="screen"/>    
         <!--/ GMM -->
-    </group>
-
-    <group ns="ur10_2">
-        <node name="tp_gmm" pkg="tp_gmm" type="tp-gmm.py" output="screen"/>
-        <!-- GMM -->
-        <node name="gmm_rviz_converter_node" pkg="tp_gmm" type="gmm_rviz_converter_node" output="screen"/>
-        <node name="gmm_moveit_node" pkg="tp_gmm" type="gmm_moveit_node" output="screen"/>    
-        <!--/ GMM -->
-    </group>
+    <!-- </group> -->
 
     <!-- Execution -->
     <!-- <node name="execute_trajectory" pkg="data_handle" type="execute_trajectory_node" output="screen"/>

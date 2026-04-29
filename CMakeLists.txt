@@ -55,9 +55,9 @@ ament_target_dependencies(gmm_rviz_converter
 rosidl_target_interfaces(gmm_rviz_converter ${PROJECT_NAME} "rosidl_typesupport_cpp")
 rclcpp_components_register_node(gmm_rviz_converter PLUGIN "tp_gmm::GMMRvizConverter" EXECUTABLE gmm_rviz_converter_node)
 
-add_library(gmm_moveit_node SHARED scripts/gmm_moveit_node.cpp)
-target_compile_features(gmm_moveit_node PUBLIC c_std_99 cxx_std_17)
-ament_target_dependencies(gmm_moveit_node
+add_library(gmm_moveit_lib SHARED scripts/gmm_moveit_node.cpp)
+target_compile_features(gmm_moveit_lib PUBLIC c_std_99 cxx_std_17)
+ament_target_dependencies(gmm_moveit_lib
   rclcpp
   rclcpp_components
   geometry_msgs
@@ -65,26 +65,31 @@ ament_target_dependencies(gmm_moveit_node
   shape_msgs
   moveit_msgs
 )
-rclcpp_components_register_node(gmm_moveit_node PLUGIN "tp_gmm::GMMMoveIt" EXECUTABLE gmm_moveit_node_exe)
+rclcpp_components_register_node(gmm_moveit_lib PLUGIN "tp_gmm::GMMMoveIt" EXECUTABLE gmm_moveit_node)
 
 # Install Python scripts and modules
 install(PROGRAMS
-  scripts/tp_gmm.py
+  scripts/tp_gmm_node.py
+  scripts/collect_trajectories_gen3_ros2.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
 # Install C++ nodes/libraries
 install(TARGETS
   gmm_rviz_converter
+  gmm_rviz_converter_node
+  gmm_moveit_lib
   gmm_moveit_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY data DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY tasks DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY include DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY scripts DESTINATION share/${PROJECT_NAME})
 
 ament_export_dependencies(
   rclcpp

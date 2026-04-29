@@ -1,11 +1,12 @@
 import numpy as np
 def reproduction_DSGMR(DataIn, model, rr, currPos):
     # DataIn = np.linspace(np.amin(DataIn), np.amax(DataIn), np.shape(DataIn)[0])
-    from sklearn import tree
+    # from sklearn import tree
+
     model.dt = 0.05 # 0.01
     model.kP = 150
     model.kV = 20
-    DataIn = np.reshape(DataIn, newshape=(1, np.shape(DataIn)[0]))
+    DataIn = np.reshape(DataIn, (1, np.shape(DataIn)[0]))
     from rClass import r
     from computeResultingGaussians import computeResultingGaussians
     from gaussPDFfast import gaussPDFfast
@@ -13,7 +14,7 @@ def reproduction_DSGMR(DataIn, model, rr, currPos):
     iN = range(0, np.shape(DataIn)[0])
     out = range(iN[-1]+1, model.nbVar)
     nbVarOut = len(out)
-    currPos = np.reshape(currPos, newshape=(nbVarOut,1))
+    currPos = np.reshape(currPos, (nbVarOut,1))
 
     a = r(nbData,model)
     a.Data = np.zeros((nbVarOut+len(iN), np.shape(DataIn)[1]))
@@ -35,18 +36,19 @@ def reproduction_DSGMR(DataIn, model, rr, currPos):
         else:
             nn = 1
         for i in range(0, model.nbStates):
-            a.H[i,n] = model.Priors[i] * gaussPDFfast(np.reshape(DataIn[:,n], newshape=(1,1)), prodRes[nn].Mu[iN, i], prodRes[nn].invSigmaIn[iN,iN,i], prodRes[nn].detSigmaIn[i])
+            val = gaussPDFfast(np.reshape(DataIn[:,n], (1,1)), prodRes[nn].Mu[iN, i], prodRes[nn].invSigmaIn[iN,iN,i], prodRes[nn].detSigmaIn[i])
+            a.H[i,n] = model.Priors[i] * np.squeeze(val)
         a.H[:,n] = a.H[:,n]/np.sum(a.H[:,n])
         # MuTmp = np.zeros((model.nbVar-len(iN), model.nbStates))
         currTar = np.zeros((nbVarOut,1))
         for i in range(0, model.nbStates):
-            MuTmp = np.reshape(np.reshape(prodRes[nn].Mu[out,i], newshape=(nbVarOut, 1)) + np.reshape(prodRes[nn].Sigma[out, iN, i], newshape=(nbVarOut,len(iN))) * 1/prodRes[nn].Sigma[iN,iN,i] * (DataIn[:,n] - prodRes[nn].Mu[iN, i]), newshape=(len(out)))
-            currTar = currTar + a.H[i,n] * np.reshape(MuTmp, newshape=(nbVarOut,1))
+            MuTmp = np.reshape(np.reshape(prodRes[nn].Mu[out,i], (nbVarOut, 1)) + np.reshape(prodRes[nn].Sigma[out, iN, i], (nbVarOut,len(iN))) * 1/prodRes[nn].Sigma[iN,iN,i] * (DataIn[:,n] - prodRes[nn].Mu[iN, i]), (len(out)))
+            currTar = currTar + a.H[i,n] * np.reshape(MuTmp, (nbVarOut,1))
             # y[:,n] = y[:,n] + a.H[i,n]*MuTmp
         currAcc = model.kP * (currTar - currPos) - model.kV * currVel
         currVel = currVel + currAcc * model.dt
         currPos = currPos + currVel * model.dt
-        a.Data[:,n] = np.reshape(np.vstack((DataIn[:,n], currPos)), newshape=(nbVarOut + np.size(iN),))
+        a.Data[:,n] = np.reshape(np.vstack((DataIn[:,n], currPos)), (nbVarOut + np.size(iN),))
         # expData, expSigma, Mu, Sigma = process(a.Data, 5, 100)
         # a.Data = np.vstack((DataIn, y))
     return a

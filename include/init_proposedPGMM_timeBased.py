@@ -21,11 +21,11 @@ def init_proposedPGMM_timeBased(s, modelcur):
                 # print("s[j].p[i, k].b ", s[j].p[i, k].b.shape)
                 # print("(s[0].Data)[0] ", (s[0].Data)[0].shape)
                 # print(DataTmp.shape)
-                # print(np.shape(np.dot(s[j].p[i, k].invA, (np.reshape(s[j].Data[:, k], newshape=(np.shape(s[0].Data)[0], 1)) - np.reshape(s[j].p[i, k].b, newshape=(np.shape(s[0].Data)[0], 1))))))
+                # print(np.shape(np.dot(s[j].p[i, k].invA, (np.reshape(s[j].Data[:, k], (np.shape(s[0].Data)[0], 1)) - np.reshape(s[j].p[i, k].b, (np.shape(s[0].Data)[0], 1))))))
                 ###
                 # print("s[j].Data[:,k]:", s[j].Data[:,k])
-                # print("np.reshape(s[j].Data[:,k], newshape = (np.shape(s[0].Data)[0],1)): ", np.reshape(s[j].Data[:,k], newshape = (np.shape(s[0].Data)[0],1)))
-                DataTmp = np.append(DataTmp, np.dot(s[j].p[i,k].invA,(np.reshape(s[j].Data[:,k], newshape = (np.shape(s[0].Data)[0],1)) - np.reshape(s[j].p[i, k].b, newshape=(np.shape(s[0].Data)[0], 1)))), axis = 1) # invA @ (Data-b)
+                # print("np.reshape(s[j].Data[:,k], (np.shape(s[0].Data)[0],1)): ", np.reshape(s[j].Data[:,k], (np.shape(s[0].Data)[0],1)))
+                DataTmp = np.append(DataTmp, np.dot(s[j].p[i,k].invA,(np.reshape(s[j].Data[:,k], (np.shape(s[0].Data)[0],1)) - np.reshape(s[j].p[i, k].b, (np.shape(s[0].Data)[0], 1)))), axis = 1) # invA @ (Data-b)
         DataAll = np.append(DataAll, DataTmp, axis=0)
         print("DataAll: ", DataAll.shape)
     TimingSep = np.linspace(np.amin(DataAll[0,:]), np.amax(DataAll[0,:]), num = modelcur.nbStates+1)
@@ -39,8 +39,8 @@ def init_proposedPGMM_timeBased(s, modelcur):
         idtmp = np.intersect1d(np.nonzero(DataAll[0,:] >= TimingSep[i]), np.nonzero(DataAll[0,:] < TimingSep[i+1]))
         Priors.append(len(idtmp))
         muData = DataAll[np.ix_(np.arange(0, np.shape(DataAll)[0]), idtmp)].T
-        Mu = np.append(Mu, np.reshape(np.mean(muData, axis = 0), newshape = (np.shape(DataAll)[0], 1)), axis = 1)
-        Sigma = np.append(Sigma, np.reshape(np.cov(muData.T) + np.identity(np.shape(DataAll)[0])*diagRegularizationFactor, newshape = (np.shape(DataAll)[0],np.shape(DataAll)[0],1)), axis = 2)
+        Mu = np.append(Mu, np.reshape(np.mean(muData, axis = 0), (np.shape(DataAll)[0], 1)), axis = 1)
+        Sigma = np.append(Sigma, np.reshape(np.cov(muData.T) + np.identity(np.shape(DataAll)[0])*diagRegularizationFactor, (np.shape(DataAll)[0],np.shape(DataAll)[0],1)), axis = 2)
     Priors = [float(x) / sum(Priors) for x in Priors]
 
     reflist = []
