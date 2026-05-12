@@ -66,6 +66,8 @@ class TrajectoryDataCollector(Node):
         
         self.start_pose_pub = self.create_publisher(PoseStamped, f"{self.namespace}/start_pose", 1)
         self.goal_pose_pub = self.create_publisher(PoseStamped, f"{self.namespace}/goal_pose", 1)
+        self.start_pose_gmm_pub = self.create_publisher(PoseStamped, f"{self.namespace}/start_pose_gmm", 1)
+        self.goal_pose_gmm_pub = self.create_publisher(PoseStamped, f"{self.namespace}/goal_pose_gmm", 1)
         self.posearray_pub = self.create_publisher(PoseArray, f"{self.namespace}/planned_trajectory/posearray", 1)
         
         self.create_subscription(BoundingVolume, f"{self.namespace}/gmm_moveit", self.gmm_constraint_cb, 10)
@@ -245,6 +247,23 @@ class TrajectoryDataCollector(Node):
     def display_path_cb(self, msg):
         pass # Forward kinematics is handled differently if needed, skipping for brevity unless required.
 
+    # This function is to adjust the orienation of the Kinova to that of UR10 to match the demonstrations recorded with the UR10.
+    # No need for this function if demonstrations are recorded with the Kinova.
+    # -90 around Z, -90 around Y, 0 around X - around current frame
+    def adjust_orientation(self, pose):
+
+        kinova_orienation = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
+        adjustment_rotation = R.from_euler('ZYX', [-90, -90, 0], degrees=True)
+        adjusted_rotation = kinova_orienation * adjustment_rotation
+        adjusted_pose = deepcopy(pose)
+        adjusted_pose.pose.orientation.x = adjusted_rotation.as_quat()[0]
+        adjusted_pose.pose.orientation.y = adjusted_rotation.as_quat()[1]
+        adjusted_pose.pose.orientation.z = adjusted_rotation.as_quat()[2]
+        adjusted_pose.pose.orientation.w = adjusted_rotation.as_quat()[3]
+        
+        return adjusted_pose
+        
+
     def call_tpgmm_service(self, task, start_pose, target_pose):
         self.get_logger().info("Calling ReproduceTPGMM service...")
         if not self.reproduce_tpgmm_client.wait_for_service(timeout_sec=2.0):
@@ -253,8 +272,13 @@ class TrajectoryDataCollector(Node):
         req = ReproduceTPGMM.Request()
         req.task_name = task
         req.frame_id = self.frame_id
-        req.start_pose = start_pose
-        req.goal_pose = target_pose
+        req.start_pose = self.adjust_orientation(start_pose) # start_pose
+        req.goal_pose = self.adjust_orientation(target_pose) # target_pose
+
+        ## for debugging
+        self.start_pose_gmm_pub.publish(req.start_pose)
+        self.goal_pose_gmm_pub.publish(req.goal_pose)
+        ##
 
         future = self.reproduce_tpgmm_client.call_async(req)
         rclpy.spin_until_future_complete(self, future)
@@ -282,12 +306,12 @@ class TrajectoryDataCollector(Node):
                 if self.plan_and_execute(start_pose):
                     time.sleep(1.0)
                     ##
-                    # if self.call_tpgmm_service(task_name, start_pose, goal_pose):
-                    #     ans2 = input("Execute the constrained plan? [y/n]: ")
-                    #     if ans2.lower() == 'y':
-                    #         self.plan_and_execute(goal_pose, apply_constraints=True)
-                    
-                    self.plan_and_execute(goal_pose, apply_constraints=True)
+                    if self.call_tpgmm_service(task_name, start_pose, goal_pose):
+                        ans2 = input("Execute the constrained plan? [y/n]: ")
+                        if ans2.lower() == 'y':
+                            self.plan_and_execute(goal_pose, apply_constraints=True)
+
+                    # self.plan_and_execute(goal_pose, apply_constraints=True)
                     ##
                 exp += 1
             

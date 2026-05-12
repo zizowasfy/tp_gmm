@@ -4,7 +4,7 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # Declare launch arguments
+
     task_arg = DeclareLaunchArgument(
         'task',
         default_value='Rbolts',
@@ -17,7 +17,7 @@ def generate_launch_description():
         description='Subtask argument'
     )
 
-    # Nodes
+
     tp_gmm_node = Node(
         package='tp_gmm',
         executable='tp_gmm_node.py',
@@ -39,7 +39,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Return LaunchDescription
+
     return LaunchDescription([
         task_arg,
         subtask_arg,
