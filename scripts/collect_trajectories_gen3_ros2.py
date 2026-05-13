@@ -96,7 +96,7 @@ class TrajectoryDataCollector(Node):
         if task_name == "pick":
             start.position.x = random.uniform(0.35, 0.55)
             start.position.y = random.uniform(-0.47, 0.47)
-            start.position.z = random.uniform(0.5, 0.6)
+            start.position.z = random.uniform(0.4, 0.5)
             # start.orientation = self.euler_to_quat(0.0, math.radians(90), math.radians(random.randint(-70, 70)))
             start.orientation = self.euler_to_quat(math.radians(random.randint(-130, -70)), math.radians(180), math.radians(0.0)) # ZYX around current frame
             # start.orientation = self.euler_to_quat(math.radians(-90.0), math.radians(180), math.radians(0.0)) # zyx (reads from right to left x-y-z) around reference frame

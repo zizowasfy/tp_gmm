@@ -1,6 +1,0 @@
-roslaunch franka_gazebo panda.launch 
-
-roslaunch haptics_controllers learned_trajectory_controller.launch
-
-conda activate lfd
-    rosrun tp_gmm tp-gmm.py OR roslaunch data_handle lfd.launch (tpgmm branch)
