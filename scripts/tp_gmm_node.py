@@ -12,9 +12,6 @@ from tp_gmm.msg import GaussianMixture
 from tp_gmm.srv import StartTPGMM, ReproduceTPGMM
 
 import pickle
-from nbclient import NotebookClient
-import nbformat
-import papermill as pm
 
 ## System and directories stuff
 import sys
@@ -25,9 +22,12 @@ import os
 
 pkg_share = get_package_share_directory('tp_gmm')
 sys.path.append(os.path.join(pkg_share, 'include'))
+sys.path.append(os.path.join(pkg_share, 'scripts'))
 data_dir = os.path.join(pkg_share, 'data/') + '/'
 scripts_dir = os.path.join(pkg_share, 'scripts/') + '/'
 tasks_dir = os.path.join(pkg_share, 'tasks/') + '/'
+
+from demons_to_samples import process_demonstrations
 
 # tpgmm-related stuff
 import time
@@ -46,6 +46,8 @@ class TPGMM(Node):
     def __init__(self):
         super().__init__('tp_gmm_node')
         self.get_logger().info(" --> Node tp_gmm_node is initialized")
+        self.TPGMM_model = None
+        self.demons_info = None
 
         self.srv_start = self.create_service(StartTPGMM, "StartTPGMM_service", self.startTPGMM)
         self.srv_reproduce = self.create_service(ReproduceTPGMM, "ReproduceTPGMM_service", self.tpGMMGMR)
@@ -67,72 +69,65 @@ class TPGMM(Node):
         _train = True #req.train
 
         ## Fetching Samples and paramters
-        if _train:
-            self.demonsToSamples(_task_name)
-            time.sleep(0.5)
-
-        with open(tasks_dir + f'{_task_name}/demons_info.pkl', 'rb') as fp:
-            self.demons_info = pickle.load(fp)
-            self.get_logger().info(f"demons_info: {self.demons_info}")
-
-        ## Initialization of parameters and properties
-        self.nbSamples = self.demons_info['nbDemons']  # nb of demonstrations
         self.nbVar = 4      # Dim !!
         self.nbFrames = 2
         self.nbStates = 5  # nb of Gaussians
+
+        if _train:
+            self.get_logger().info("Processing demonstrations...")
+            self.demons_info, slist = process_demonstrations(_task_name, self.nbFrames, self.nbStates, self.nbVar)
+            self.get_logger().info(f"demons_info: {self.demons_info}")
+        else:
+            with open(tasks_dir + f'{_task_name}/demons_info.pkl', 'rb') as fp:
+                self.demons_info = pickle.load(fp)
+                self.get_logger().info(f"demons_info: {self.demons_info}")
+            # If not training, we assume the model is already trained and available (or will be loaded in reproduction)
+            slist = None
+
+        ## Initialization of parameters and properties
+        self.nbSamples = self.demons_info['nbDemons']  # nb of demonstrations
         self.nbData = self.demons_info['ref_nbpoints']#-1
         self.down_sample_factor = self.demons_info['down_sample_factor']
 
-        self.tpGMM(_task_name)
+        if _train and slist is not None:
+            self.tpGMM(_task_name, slist)
         response.started = True
         return response
 
-    ## Running the demons_to_samples.ipynb
-    def demonsToSamples(self, _task_name):
-        params = {"task_name": _task_name}
-        self.get_logger().info("Running demons_to_samples_.ipynb ...")
-        pm.execute_notebook(input_path=scripts_dir + "demons_to_samples_ur10_demons.ipynb",
-                            output_path=scripts_dir + "demons_to_samples_ur10_demons_output.ipynb",
-                            parameters=params)
-        self.get_logger().info("demons_to_samples finished running!")
-
     ## Preparing the samples and fit
-    def tpGMM(self, _task_name):
-        demons_nums = self.demons_info['demons_nums']
-        self.slist = []
-        for i in range(self.nbSamples):
-            pmat = np.empty(shape=(self.nbFrames, self.nbData), dtype=object)
-            tempData = np.loadtxt(data_dir + f'{_task_name}/' + demons_nums[i] + '_sample' + '_Data.txt', delimiter=',')
-            self.get_logger().info(f"{tempData.shape}")
-            for j in range(self.nbFrames):
-                tempA = np.loadtxt(data_dir + f'{_task_name}/' + demons_nums[i] + '_sample' + '_frame' + str(j + 1) + '_A.txt', delimiter=',')
-                tempB = np.loadtxt(data_dir + f'{_task_name}/' + demons_nums[i] + '_sample' + '_frame' + str(j + 1) + '_b.txt', delimiter=',')
-
-                for k in range(self.nbData):
-                    pmat[j, k] = p(tempA[:, self.nbVar*k : self.nbVar*k + self.nbVar], tempB[:, k].reshape(len(tempB[:, k]), 1),
-                                np.linalg.inv(tempA[:, self.nbVar*k : self.nbVar*k + self.nbVar]), self.nbStates)
-            self.slist.append(s(pmat, tempData, tempData.shape[1], self.nbStates))
+    def tpGMM(self, _task_name, slist):
+        self.slist = slist
 
         # Creating instance of TPGMM_GMR
         TPGMMGMR = TPGMM_GMR(self.nbStates, self.nbFrames, self.nbVar)
 
         # Learning the model
+        self.get_logger().info("Learning the TPGMM model...")
         TPGMMGMR.fit(self.slist)
 
-        # Saving the model in .pkl
-        model_file = TPGMMGMR
+        # Saving the model in .pkl as backup and in memory
+        self.TPGMM_model = TPGMMGMR
         with open(tasks_dir + f'{_task_name}/TPGMM_model.pkl', 'wb') as fp:
-            pickle.dump(model_file, fp)
+            pickle.dump(self.TPGMM_model, fp)
+        self.get_logger().info("TPGMM model trained and saved successfully.")
 
     def tpGMMGMR(self, request, response):
 
         _task_name = request.task_name #'pick'
 
-        with open(tasks_dir + f'{_task_name}/TPGMM_model.pkl', 'rb') as fp:
-            TPGMM_model = pickle.load(fp)
+        if self.TPGMM_model is not None:
+            TPGMM_model = self.TPGMM_model
+            self.get_logger().info("Using in-memory TPGMM model.")
+        else:
+            with open(tasks_dir + f'{_task_name}/TPGMM_model.pkl', 'rb') as fp:
+                TPGMM_model = pickle.load(fp)
+            self.get_logger().info("Loaded TPGMM model from disk.")
 
-        with open(tasks_dir + f'{_task_name}/demons_info.pkl', 'rb') as fp:
-            task_demons_info = pickle.load(fp)
+        if self.demons_info is not None:
+            task_demons_info = self.demons_info
+        else:
+            with open(tasks_dir + f'{_task_name}/demons_info.pkl', 'rb') as fp:
+                task_demons_info = pickle.load(fp)
 
         # Sorting the Task Parameters into Frames format
         frames_array = [request.start_pose.pose, request.goal_pose.pose]
