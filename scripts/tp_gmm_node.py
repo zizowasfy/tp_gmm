@@ -23,10 +23,14 @@ import os
 pkg_share = get_package_share_directory('tp_gmm')
 sys.path.append(os.path.join(pkg_share, 'include'))
 sys.path.append(os.path.join(pkg_share, 'scripts'))
-data_dir = os.path.join(pkg_share, 'data/') + '/'
-scripts_dir = os.path.join(pkg_share, 'scripts/') + '/'
-tasks_dir = os.path.join(pkg_share, 'tasks/') + '/'
 
+from dir_paths import get_paths
+paths = get_paths()
+ws_dir = paths['external_root']
+data_dir = paths['data_dir']
+scripts_dir = paths['scripts_dir']
+tasks_dir = paths['tasks_dir']
+# print(f"scripts_dir: {scripts_dir}")
 from demons_to_samples import process_demonstrations
 
 # tpgmm-related stuff

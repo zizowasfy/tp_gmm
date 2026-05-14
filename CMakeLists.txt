@@ -86,7 +86,6 @@ install(TARGETS
 )
 
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
-install(DIRECTORY data DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY tasks DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY include DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY scripts DESTINATION share/${PROJECT_NAME})

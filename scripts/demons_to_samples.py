@@ -14,6 +14,14 @@ import sys
 from ament_index_python.packages import get_package_share_directory
 pkg_share = get_package_share_directory('tp_gmm')
 sys.path.append(os.path.join(pkg_share, 'include'))
+sys.path.append(os.path.join(pkg_share, 'scripts'))
+
+from dir_paths import get_paths
+paths = get_paths()
+demons_path = paths['demons_dir']
+tasks_dir = paths['tasks_dir']
+# print(f"scripts_dir: {scripts_dir}")
+
 from pClass import p
 from sClass import s
 
@@ -39,12 +47,10 @@ def process_demonstrations(task_name, nbFrames=2, nbStates=5, nbVar=4):
     """
     # Assuming WS_DIR/Trajectory_Data_Collection
     # Alternatively we can use pkg_share/data or an absolute path
-    WS_DIR = Path("/home/zizo/the_folder")
-    demons_dir = str(WS_DIR / f'Trajectory_Data_Collection/Demons/{task_name}') + '/'
     
-    # Path for saving demons_info.pkl
-    tasks_dir = WS_DIR / "ws_moveit/src/tp_gmm/tasks"
-    os.makedirs(tasks_dir / f'{task_name}', exist_ok=True)
+    demons_dir = demons_path + f'{task_name}/'
+    
+    os.makedirs(tasks_dir + f'{task_name}/', exist_ok=True)
 
     demons_names = []
     demons_nums = []
@@ -155,7 +161,7 @@ def process_demonstrations(task_name, nbFrames=2, nbStates=5, nbVar=4):
     ref_demon["demons_nums"] = demons_nums_dtw
     ref_demon["nbDemons"] = len(demons_nums_dtw)
     
-    with open(tasks_dir / f'{task_name}/demons_info.pkl', 'wb') as fp:
+    with open(tasks_dir + f'{task_name}/demons_info.pkl', 'wb') as fp:
         pickle.dump(ref_demon, fp)
         
     return ref_demon, slist
