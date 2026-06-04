@@ -7,10 +7,10 @@ import numpy as np
 import copy
 
 # import rosbag
-# from gaussian_mixture_model.msg import GaussianMixture, Gaussian
+
 from geometry_msgs.msg import PoseArray, Pose
 from copy import deepcopy
-from tp_gmm.msg import GaussianMixture, Gaussian
+# from tp_gmm.msg import GaussianMixture, Gaussian
 
 from pathlib import Path
 Data_DIR = str(Path(__file__).resolve().parent.parent / 'data') + '/'
@@ -68,41 +68,3 @@ class TPGMM_GMR(object):
             DataAll = np.append(DataAll, DataTmp, axis=0)
         return Data_posearray, DataAll
     
-    # Converts the learnded GMM into a format that gmm_rviz_converter node can visualize it in Rviz
-    def convertToGM(self, r, down_sample_factor, frame_id):
-
-        ## converting to GaussianMixture() msg 
-        nbGaussians = r.Mu.shape[1]
-        gmm = GaussianMixture()
-        g = Gaussian()
-
-        # allMeans = np.hsplit(r.Mu[:,:,0], r.Mu.shape[1]) # (4,5) == (4,1)x5  -- each column represents one-unit Gaussian (if nbGaussian = 5)
-        # allCovariances = np.ravel(r.Sigma[:,:,:,0]) # (4,4,5) -> (80, 1) --every 16 elements represent one-unit Gaussian 
-
-        for gaus in range(nbGaussians):
-            g.means = r.Mu[:,gaus,-1].tolist()
-            g.covariances = np.ravel(r.Sigma[:,:,gaus,-1]).tolist()
-            # print("convertToGM g.covariances: ", g.covariances)
-            gmm.gaussians.append(copy.deepcopy(g))
-        gmm.weights = [float(w) for w in self.model.Priors] # or r.H
-        gmm.bic = float(r.Data.shape[1]*down_sample_factor)
-        # gmm.bic = r.Data.shape[1]
-        gmm.header.frame_id = frame_id
-
-        # print("r.Mu[:,1,0] == r.Mu[:,1,-1]: ", r.Mu[:,1,0] == r.Mu[:,1,-1]) # debuging.
-        ## Writing to rosbag (ROS 2 format)
-        import shutil
-        from rosbags.rosbag2 import Writer
-        from rclpy.serialization import serialize_message
-        import time
-
-        bag_path = Path(Data_DIR) / "tpgmm_mix_bag"
-        if bag_path.exists():
-            shutil.rmtree(bag_path)
-            
-        with Writer(bag_path, version=8) as writer:
-            conn = writer.add_connection("/gmm/mix", "tp_gmm/msg/GaussianMixture", msgdef="", rihs01="dummy")
-            ts = int(time.time() * 1e9)
-            writer.write(conn, ts, serialize_message(gmm))
-
-        return gmm
