@@ -31,6 +31,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/GaussianMixture.msg"
   "srv/StartTPGMM.srv"
   "srv/ReproduceTPGMM.srv"
+  "srv/DeformTPGMM.srv"
   DEPENDENCIES geometry_msgs std_msgs
 )
 
@@ -71,6 +72,7 @@ rclcpp_components_register_node(gmm_moveit_lib PLUGIN "tp_gmm::GMMMoveIt" EXECUT
 install(PROGRAMS
   scripts/tp_gmm_node.py
   scripts/collect_trajectories_gen3_ros2.py
+  scripts/validate_policy.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

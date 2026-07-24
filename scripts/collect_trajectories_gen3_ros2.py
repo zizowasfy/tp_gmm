@@ -31,7 +31,7 @@ from moveit_msgs.action import MoveGroup
 from moveit_msgs.srv import GetPositionFK
 from shape_msgs.msg import SolidPrimitive
 from std_msgs.msg import Header
-from tp_gmm.srv import ReproduceTPGMM
+from tp_gmm.srv import ReproduceTPGMM, DeformTPGMM
 
 try:
     from rosbags.rosbag2 import Writer
@@ -61,22 +61,25 @@ class TrajectoryDataCollector(Node):
             
         self.fk_client = self.create_client(GetPositionFK, f'{self.namespace}/compute_fk')
         
-        from tp_gmm.srv import ReproduceTPGMM
         self.reproduce_tpgmm_client = self.create_client(ReproduceTPGMM, f"{self.namespace}/ReproduceTPGMM_service")
+        self.deform_tpgmm_client = self.create_client(DeformTPGMM, f"{self.namespace}/DeformTPGMM_service")
         
         self.start_pose_pub = self.create_publisher(PoseStamped, f"{self.namespace}/start_pose", 1)
         self.goal_pose_pub = self.create_publisher(PoseStamped, f"{self.namespace}/goal_pose", 1)
         self.start_pose_gmm_pub = self.create_publisher(PoseStamped, f"{self.namespace}/start_pose_gmm", 1)
         self.goal_pose_gmm_pub = self.create_publisher(PoseStamped, f"{self.namespace}/goal_pose_gmm", 1)
         self.posearray_pub = self.create_publisher(PoseArray, f"{self.namespace}/planned_trajectory/posearray", 1)
+        self.obstacle_pose_pub = self.create_publisher(PoseStamped, f"{self.namespace}/obstacle_pose", 1)
         
         self.create_subscription(BoundingVolume, f"{self.namespace}/gmm_moveit", self.gmm_constraint_cb, 10)
+        self.create_subscription(BoundingVolume, f"{self.namespace}/deformed_gmm_moveit", self.deformed_gmm_constraint_cb, 10)
         self.create_subscription(DisplayTrajectory, f"{self.namespace}/move_group/display_planned_path", self.display_path_cb, 10)
         
         self.start_pose = None
         self.goal_pose = None
         self.plan_result = None
         self.gmm_bounding_volume = None
+        self.deformed_gmm_bounding_volume = None
         
         self.demon_num = 1
         self.get_logger().info("Trajectory Data Collector Node Initialized Successfully!")
@@ -94,15 +97,15 @@ class TrajectoryDataCollector(Node):
         goal = Pose()
         
         if task_name == "pick":
-            start.position.x = random.uniform(0.35, 0.55)
-            start.position.y = random.uniform(-0.47, 0.47)
+            start.position.x = random.uniform(0.25, 0.4) #(0.35, 0.55)
+            start.position.y = random.uniform(-0.3, 0.3) #(-0.47, 0.47)
             start.position.z = random.uniform(0.4, 0.5)
             # start.orientation = self.euler_to_quat(0.0, math.radians(90), math.radians(random.randint(-70, 70)))
             start.orientation = self.euler_to_quat(math.radians(random.randint(-130, -70)), math.radians(180), math.radians(0.0)) # ZYX around current frame
             # start.orientation = self.euler_to_quat(math.radians(-90.0), math.radians(180), math.radians(0.0)) # zyx (reads from right to left x-y-z) around reference frame
 
-            goal.position.x = random.uniform(0.35, 0.65)
-            goal.position.y = random.uniform(-0.47, 0.47)
+            goal.position.x = random.uniform(0.35, 0.75) #(0.35, 0.65)
+            goal.position.y = random.uniform(-0.4, 0.4) #(-0.47, 0.47)
             goal.position.z = random.uniform(0.05, 0.1)
             # goal.orientation = self.euler_to_quat(0.0, math.radians(90), math.radians(random.randint(-70, 70)))
             goal.orientation = self.euler_to_quat(math.radians(random.randint(-130, -70)), math.radians(180), math.radians(0.0)) # ZYX around current frame
@@ -169,7 +172,7 @@ class TrajectoryDataCollector(Node):
         goal_constraint.orientation_constraints.append(ori_constraint)
         return goal_constraint
 
-    def plan_and_execute(self, target_pose, apply_constraints=False):
+    def plan_and_execute(self, target_pose, apply_constraints=False, use_deformed=False):
         self.get_logger().info("Sending goal to MoveGroup Action Server...")
         
         req = MoveGroup.Goal()
@@ -182,14 +185,15 @@ class TrajectoryDataCollector(Node):
         goal_constraint = self.construct_goal_constraints(target_pose)
         req.request.goal_constraints.append(goal_constraint)
         
-        if apply_constraints and self.gmm_bounding_volume:
+        bv_to_use = self.deformed_gmm_bounding_volume if use_deformed else self.gmm_bounding_volume
+        if apply_constraints and bv_to_use:
             self.get_logger().info("Applying GMM Path Constraints...")
             path_constraint = Constraints()
             path_constraint.name = "position_constraint"
             p_const = PositionConstraint()
             p_const.header.frame_id = self.frame_id
             p_const.link_name = self.ee_link
-            p_const.constraint_region = self.gmm_bounding_volume
+            p_const.constraint_region = bv_to_use
             p_const.weight = 1.0
             path_constraint.position_constraints.append(p_const)
             req.request.path_constraints = path_constraint
@@ -244,16 +248,24 @@ class TrajectoryDataCollector(Node):
     def gmm_constraint_cb(self, msg):
         self.gmm_bounding_volume = msg
 
+    def deformed_gmm_constraint_cb(self, msg):
+        self.deformed_gmm_bounding_volume = msg
+
     def display_path_cb(self, msg):
         pass # Forward kinematics is handled differently if needed, skipping for brevity unless required.
 
     # This function is to adjust the orienation of the Kinova to that of UR10 to match the demonstrations recorded with the UR10.
     # No need for this function if demonstrations are recorded with the Kinova.
+    # OR This function is to adjust the orienation of the Kinova to that of Panda in IsaacLab which is used to train the RL policy.
     # -90 around Z, -90 around Y, 0 around X - around current frame
-    def adjust_orientation(self, pose):
+    def adjust_orientation(self, pose, ref_robot):
 
         kinova_orienation = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
-        adjustment_rotation = R.from_euler('ZYX', [-90, -90, 0], degrees=True)
+        if ref_robot == "ur10":
+            adjustment_rotation = R.from_euler('ZYX', [-90, -90, 0], degrees=True)
+        elif ref_robot == "franka_panda":
+            adjustment_rotation = R.from_euler('ZYX', [90, 0, 0], degrees=True)
+
         adjusted_rotation = kinova_orienation * adjustment_rotation
         adjusted_pose = deepcopy(pose)
         adjusted_pose.pose.orientation.x = adjusted_rotation.as_quat()[0]
@@ -272,12 +284,12 @@ class TrajectoryDataCollector(Node):
         req = ReproduceTPGMM.Request()
         req.task_name = task
         req.frame_id = self.frame_id
-        req.start_pose = self.adjust_orientation(start_pose) # start_pose
-        req.goal_pose = self.adjust_orientation(target_pose) # target_pose
+        req.start_pose = self.adjust_orientation(start_pose, ref_robot='ur10') # start_pose
+        req.goal_pose = self.adjust_orientation(target_pose, ref_robot='ur10') # target_pose
 
         ## for debugging
-        self.start_pose_gmm_pub.publish(req.start_pose)
-        self.goal_pose_gmm_pub.publish(req.goal_pose)
+        # self.start_pose_gmm_pub.publish(req.start_pose)
+        # self.goal_pose_gmm_pub.publish(req.goal_pose)
         ##
 
         future = self.reproduce_tpgmm_client.call_async(req)
@@ -287,6 +299,72 @@ class TrajectoryDataCollector(Node):
             for _ in range(20):
                 rclpy.spin_once(self, timeout_sec=0.1)
                 if self.gmm_bounding_volume is not None:
+                    break
+            return True
+        return False
+
+    def call_deform_tpgmm_service(self, task, start_pose, target_pose):
+        self.get_logger().info("Calling DeformTPGMM service...")
+        if not self.deform_tpgmm_client.wait_for_service(timeout_sec=2.0):
+            return False
+
+        req = DeformTPGMM.Request()
+        req.task_name = task
+        req.frame_id = self.frame_id
+        req.tpgmm_start_pose = self.adjust_orientation(start_pose, ref_robot='ur10')
+        req.tpgmm_goal_pose = self.adjust_orientation(target_pose, ref_robot='ur10')
+        req.deformed_tpgmm_start_pose = self.adjust_orientation(start_pose, ref_robot='ur10')
+        req.deformed_tpgmm_goal_pose = self.adjust_orientation(target_pose, ref_robot='ur10')
+        
+        # ## Debugging
+        # deformed_start_pose = PoseStamped()
+        # deformed_start_pose.header.frame_id = self.frame_id
+        # deformed_start_pose.pose.position.x = 0.3327
+        # deformed_start_pose.pose.position.y = -0.1919
+        # deformed_start_pose.pose.position.z = 0.6862
+        # deformed_start_pose.pose.orientation.w = -0.7928
+        # deformed_start_pose.pose.orientation.x = -0.1344
+        # deformed_start_pose.pose.orientation.y = -0.5592
+        # deformed_start_pose.pose.orientation.z = 0.2015
+
+        # deformed_goal_pose = PoseStamped()
+        # deformed_goal_pose.header.frame_id = self.frame_id
+        # deformed_goal_pose.pose.position.x =  0.7209
+        # deformed_goal_pose.pose.position.y = -0.0365
+        # deformed_goal_pose.pose.position.z = 0.2249
+        # deformed_goal_pose.pose.orientation.w = -0.6765
+        # deformed_goal_pose.pose.orientation.x = 0.2059
+        # deformed_goal_pose.pose.orientation.y = -0.6765
+        # deformed_goal_pose.pose.orientation.z = -0.2059
+
+        # req.tpgmm_start_pose = deformed_start_pose
+        # req.tpgmm_goal_pose = deformed_goal_pose
+        # req.deformed_tpgmm_start_pose = deformed_start_pose
+        # req.deformed_tpgmm_goal_pose = deformed_goal_pose
+        # ##\ Debugging
+
+        # Generate a dummy obstacle halfway between start and goal
+        obstacle_pose = PoseStamped()
+        obstacle_pose.header.frame_id = self.frame_id
+        obstacle_pose.pose.position.x = req.deformed_tpgmm_start_pose.pose.position.x + 0.5 * (req.deformed_tpgmm_goal_pose.pose.position.x - req.deformed_tpgmm_start_pose.pose.position.x)
+        obstacle_pose.pose.position.y = req.deformed_tpgmm_start_pose.pose.position.y + 0.5 * (req.deformed_tpgmm_goal_pose.pose.position.y - req.deformed_tpgmm_start_pose.pose.position.y)
+        obstacle_pose.pose.position.z = req.deformed_tpgmm_start_pose.pose.position.z + 0.5 * (req.deformed_tpgmm_goal_pose.pose.position.z - req.deformed_tpgmm_start_pose.pose.position.z)
+        obstacle_radius = 0.05
+        ##debugging
+        self.obstacle_pose_pub.publish(obstacle_pose)
+        self.start_pose_gmm_pub.publish(req.deformed_tpgmm_start_pose)
+        self.goal_pose_gmm_pub.publish(req.deformed_tpgmm_goal_pose)
+        ##
+        req.obstacle_pose = obstacle_pose
+        req.obstacle_radius = obstacle_radius
+
+        future = self.deform_tpgmm_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future)
+        if future.result() is not None:
+            self.get_logger().info("Successfully deformed TPGMM.")
+            for _ in range(20):
+                rclpy.spin_once(self, timeout_sec=0.1)
+                if self.deformed_gmm_bounding_volume is not None:
                     break
             return True
         return False
@@ -307,9 +385,14 @@ class TrajectoryDataCollector(Node):
                     time.sleep(1.0)
                     ##
                     if self.call_tpgmm_service(task_name, start_pose, goal_pose):
-                        ans2 = input("Execute the constrained plan? [y/n]: ")
+                        ans2 = input("Execute the original constrained plan? [y/n]: ")
                         if ans2.lower() == 'y':
-                            self.plan_and_execute(goal_pose, apply_constraints=True)
+                            self.plan_and_execute(goal_pose, apply_constraints=True, use_deformed=False)
+                    
+                    if self.call_deform_tpgmm_service(task_name, start_pose, goal_pose): #, obstacle_pose, obstacle_radius):
+                        ans3 = input("Execute the DEFORMED constrained plan? [y/n]: ")
+                        if ans3.lower() == 'y':
+                            self.plan_and_execute(goal_pose, apply_constraints=True, use_deformed=True)
 
                     # self.plan_and_execute(goal_pose, apply_constraints=True)
                     ##

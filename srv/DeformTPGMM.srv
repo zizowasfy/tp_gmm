@@ -1,0 +1,12 @@
+string task_name
+string frame_id
+# w.r.t. the robot used in demonstrations
+geometry_msgs/PoseStamped tpgmm_start_pose 
+geometry_msgs/PoseStamped tpgmm_goal_pose 
+# w.r.t. the robot used in RL training
+geometry_msgs/PoseStamped deformed_tpgmm_start_pose
+geometry_msgs/PoseStamped deformed_tpgmm_goal_pose
+geometry_msgs/PoseStamped obstacle_pose
+float32 obstacle_radius
+---
+tp_gmm/GaussianMixture gmm
