@@ -61,8 +61,8 @@ class TPGMM(Node):
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.policy = None
-        #self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-04_16-49-13_ppo_torch_envs=32/checkpoints/best_agent.pt') #agent_4800.pt')
-        self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-15_17-18-11_ppo_torch/checkpoints/best_agent.pt') #agent_4800.pt')
+        self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-04_16-49-13_ppo_torch_envs=32/checkpoints/best_agent.pt') #agent_4800.pt')
+        # self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-15_17-18-11_ppo_torch/checkpoints/best_agent.pt') #agent_4800.pt')
 
         ckpt_path = self.get_parameter('policy_ckpt_path').get_parameter_value().string_value
         if os.path.exists(ckpt_path):
@@ -294,7 +294,10 @@ class TPGMM(Node):
                 rnew.Mu[2, k, -1] = deformed_mu[0, k, 1].item()
                 rnew.Mu[3, k, -1] = deformed_mu[0, k, 2].item()
             
-            self.get_logger().info("GMM has been deformed successfully.")
+            # Recompute trajectory via GMR using deformed rnew.Mu
+            rnew = TPGMM_model.recompute_trajectory(rnew, start_point[1:, :])
+
+            self.get_logger().info("GMM has been deformed and trajectory recomputed successfully.")
         else:
             self.get_logger().warn("Policy is not loaded, returning original GMM")
 

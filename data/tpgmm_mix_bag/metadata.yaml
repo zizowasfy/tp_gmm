@@ -1,0 +1,29 @@
+rosbag2_bagfile_information:
+  compression_format: ''
+  compression_mode: ''
+  custom_data: null
+  duration:
+    nanoseconds: 0
+  files:
+  - duration:
+      nanoseconds: 0
+    message_count: 1
+    path: tpgmm_mix_bag.db3
+    starting_time:
+      nanoseconds_since_epoch: 1785786636341227264
+  message_count: 1
+  relative_file_paths:
+  - tpgmm_mix_bag.db3
+  ros_distro: rosbags
+  starting_time:
+    nanoseconds_since_epoch: 1785786636341227264
+  storage_identifier: sqlite3
+  topics_with_message_count:
+  - message_count: 1
+    topic_metadata:
+      name: /gmm/mix
+      offered_qos_profiles: ''
+      serialization_format: cdr
+      type: tp_gmm/msg/GaussianMixture
+      type_description_hash: dummy
+  version: 8

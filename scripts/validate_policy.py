@@ -93,6 +93,7 @@ class PolicyValidator(Node):
         self.get_logger().info("Policy Validator Node Initialized Successfully!")
 
     def adjust_orientation(self, pose, ref_robot):
+        # This orientation adjustment aligns the frames of the operated robot's ee with the ur10e's ee frames (which the demonstrations are recorded in)
         kinova_orientation = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
         if ref_robot == "ur10":
             adjustment_rotation = R.from_euler('ZYX', [-90, -90, 0], degrees=True)
@@ -289,23 +290,23 @@ class PolicyValidator(Node):
             # Construct ROS PoseStamped messages (quaternion expected in xyzw in ROS, but we map w to index 3 and xyz to 4,5,6)
             start_pose_ur10 = PoseStamped()
             start_pose_ur10.header.frame_id = self.frame_id
-            start_pose_ur10.pose.position.x = rec_start[0]
-            start_pose_ur10.pose.position.y = rec_start[1]
-            start_pose_ur10.pose.position.z = rec_start[2]
-            start_pose_ur10.pose.orientation.x = rec_start[4]
-            start_pose_ur10.pose.orientation.y = rec_start[5]
-            start_pose_ur10.pose.orientation.z = rec_start[6]
-            start_pose_ur10.pose.orientation.w = rec_start[3]
+            start_pose_ur10.pose.position.x = float(rec_start[0])
+            start_pose_ur10.pose.position.y = float(rec_start[1])
+            start_pose_ur10.pose.position.z = float(rec_start[2])
+            start_pose_ur10.pose.orientation.x = float(rec_start[4])
+            start_pose_ur10.pose.orientation.y = float(rec_start[5])
+            start_pose_ur10.pose.orientation.z = float(rec_start[6])
+            start_pose_ur10.pose.orientation.w = float(rec_start[3])
 
             goal_pose_ur10 = PoseStamped()
             goal_pose_ur10.header.frame_id = self.frame_id
-            goal_pose_ur10.pose.position.x = rec_goal[0]
-            goal_pose_ur10.pose.position.y = rec_goal[1]
-            goal_pose_ur10.pose.position.z = rec_goal[2]
-            goal_pose_ur10.pose.orientation.x = rec_goal[4]
-            goal_pose_ur10.pose.orientation.y = rec_goal[5]
-            goal_pose_ur10.pose.orientation.z = rec_goal[6]
-            goal_pose_ur10.pose.orientation.w = rec_goal[3]
+            goal_pose_ur10.pose.position.x = float(rec_goal[0])
+            goal_pose_ur10.pose.position.y = float(rec_goal[1])
+            goal_pose_ur10.pose.position.z = float(rec_goal[2])
+            goal_pose_ur10.pose.orientation.x = float(rec_goal[4])
+            goal_pose_ur10.pose.orientation.y = float(rec_goal[5])
+            goal_pose_ur10.pose.orientation.z = float(rec_goal[6])
+            goal_pose_ur10.pose.orientation.w = float(rec_goal[3])
 
             # Convert to Kinova frame for MoveIt planning/execution
             start_pose_kinova = self.reverse_adjust_orientation(start_pose_ur10, ref_robot='ur10')
@@ -314,13 +315,13 @@ class PolicyValidator(Node):
             # Obstacle PoseStamped
             obstacle_pose = PoseStamped()
             obstacle_pose.header.frame_id = self.frame_id
-            obstacle_pose.pose.position.x = rec_obs_pos[0]
-            obstacle_pose.pose.position.y = rec_obs_pos[1]
-            obstacle_pose.pose.position.z = rec_obs_pos[2]
-            obstacle_pose.pose.orientation.x = rec_obs_quat[1]
-            obstacle_pose.pose.orientation.y = rec_obs_quat[2]
-            obstacle_pose.pose.orientation.z = rec_obs_quat[3]
-            obstacle_pose.pose.orientation.w = rec_obs_quat[0]
+            obstacle_pose.pose.position.x = float(rec_obs_pos[0])
+            obstacle_pose.pose.position.y = float(rec_obs_pos[1])
+            obstacle_pose.pose.position.z = float(rec_obs_pos[2])
+            obstacle_pose.pose.orientation.x = float(rec_obs_quat[1])
+            obstacle_pose.pose.orientation.y = float(rec_obs_quat[2])
+            obstacle_pose.pose.orientation.z = float(rec_obs_quat[3])
+            obstacle_pose.pose.orientation.w = float(rec_obs_quat[0])
 
             self.start_pose = start_pose_kinova
             self.goal_pose = goal_pose_kinova
@@ -368,13 +369,15 @@ class PolicyValidator(Node):
                 
                 # Call TPGMM reproduction service
                 if self.call_tpgmm_service(task_name, self.start_pose, self.goal_pose):
-                    ans2 = input("Execute the original constrained plan? [y/n]: ")
+                    # ans2 = input("Execute the original constrained plan? [y/n]: ")
+                    ans2 = 'n'
                     if ans2.lower() == 'y':
                         self.plan_and_execute(self.goal_pose, apply_constraints=True, use_deformed=False)
 
                 # Call DeformTPGMM service using recorded obstacle position and radius
                 if self.call_deform_tpgmm_service(task_name, self.start_pose, self.goal_pose, obstacle_pose, 0.05):
-                    ans3 = input("Execute the DEFORMED constrained plan? [y/n]: ")
+                    # ans3 = input("Execute the DEFORMED constrained plan? [y/n]: ")
+                    ans3 = 'n'
                     if ans3.lower() == 'y':
                         self.plan_and_execute(self.goal_pose, apply_constraints=True, use_deformed=True)
 

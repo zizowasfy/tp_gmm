@@ -29,8 +29,18 @@ class TPGMMDeformationPolicy(nn.Module):
             obs = obs.unsqueeze(0)
             
         # Apply standardization
-        std = torch.sqrt(self.running_variance + 1e-8)
+        # Match SKRL's RunningStandardScaler denominator: sqrt(variance) + epsilon
+        std = torch.sqrt(self.running_variance) + 1e-8
         obs_scaled = (obs - self.running_mean) / std
+        
+        # SKRL RunningStandardScaler defaults to a clip_threshold of 5.0
+        # By default, the RunningStandardScaler in skrl clips normalized observations
+        # to the range [-5.0, 5.0] using its clip_threshold default parameter.
+        # The standalone_policy.py was not applying this clamp, meaning extreme
+        # observation values might have been passed into the MLP differently than
+        # they were in Isaac Lab. Updated standalone_policy.py to include
+        # torch.clamp(obs_scaled, -5.0, 5.0) to match SKRL's default preprocessor behavior.
+        obs_scaled = torch.clamp(obs_scaled, -5.0, 5.0)
         
         # Pass through MLP
         features = self.net(obs_scaled)
@@ -65,20 +75,27 @@ class TPGMMDeformationPolicy(nn.Module):
         policy_dict = checkpoint['policy']
         
         # Map skrl keys to our standalone network
-        # net_container.0 -> net[0] (Linear 48->32)
-        # net_container.2 -> net[2] (Linear 32->32)
-        # policy_layer -> mean_layer (Linear 32->15)
+        # Find the keys dynamically to avoid KeyErrors
+        net_prefix = 'net_container' if 'net_container.0.weight' in policy_dict else 'net'
+        mean_prefix = 'policy_layer' if 'policy_layer.weight' in policy_dict else 'mean_layer'
         
         state_dict = {
-            'net.0.weight': policy_dict['net_container.0.weight'],
-            'net.0.bias': policy_dict['net_container.0.bias'],
-            'net.2.weight': policy_dict['net_container.2.weight'],
-            'net.2.bias': policy_dict['net_container.2.bias'],
-            'mean_layer.weight': policy_dict['policy_layer.weight'],
-            'mean_layer.bias': policy_dict['policy_layer.bias']
+            'net.0.weight': policy_dict[f'{net_prefix}.0.weight'],
+            'net.0.bias': policy_dict[f'{net_prefix}.0.bias'],
+            'net.2.weight': policy_dict[f'{net_prefix}.2.weight'],
+            'net.2.bias': policy_dict[f'{net_prefix}.2.bias'],
+            'mean_layer.weight': policy_dict[f'{mean_prefix}.weight'],
+            'mean_layer.bias': policy_dict[f'{mean_prefix}.bias']
         }
         
-        model.load_state_dict(state_dict, strict=False)
+        if 'state_preprocessor' in checkpoint and checkpoint['state_preprocessor']:
+            state_dict['running_mean'] = checkpoint['state_preprocessor']['running_mean']
+            state_dict['running_variance'] = checkpoint['state_preprocessor']['running_variance']
+        else:
+            state_dict['running_mean'] = model.running_mean
+            state_dict['running_variance'] = model.running_variance
+        
+        model.load_state_dict(state_dict, strict=True)
         model.eval()
         return model
 

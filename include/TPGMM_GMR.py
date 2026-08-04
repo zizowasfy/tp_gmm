@@ -1,7 +1,7 @@
 from modelClass import model
 from init_proposedPGMM_timeBased import init_proposedPGMM_timeBased
 from EM_tensorGMM import EM_tensorGMM
-from reproduction_DSGMR import reproduction_DSGMR
+from reproduction_DSGMR import reproduction_DSGMR, recompute_DSGMR
 from plotGMM import plotGMM
 import numpy as np
 import copy
@@ -26,6 +26,9 @@ class TPGMM_GMR(object):
 
     def reproduce(self, p, currentPosition):
         return reproduction_DSGMR(self.s[0].Data[0,:], self.model, p, currentPosition)
+
+    def recompute_trajectory(self, rnew, currentPosition):
+        return recompute_DSGMR(rnew, self.model, currentPosition)
 
     def plotReproduction(self, r, xaxis, yaxis, ax, showGaussians = True, lw = 7):
         for m in range(r.p.shape[0]):

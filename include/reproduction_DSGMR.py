@@ -52,3 +52,49 @@ def reproduction_DSGMR(DataIn, model, rr, currPos):
         # expData, expSigma, Mu, Sigma = process(a.Data, 5, 100)
         # a.Data = np.vstack((DataIn, y))
     return a
+
+def recompute_DSGMR(a, model, currPos):
+    from gaussPDFfast import gaussPDFfast
+    model.dt = 0.05
+    model.kP = 150
+    model.kV = 20
+
+    DataIn = a.Data[0:1, :]
+    nbData = np.shape(DataIn)[1]
+    iN = range(0, 1)
+    out = range(1, model.nbVar)
+    nbVarOut = len(out)
+    currPos = np.reshape(currPos, (nbVarOut, 1)).astype(np.float64)
+    currVel = np.zeros((nbVarOut, 1))
+
+    num_t = a.Mu.shape[2]
+
+    for n in range(0, nbData):
+        t_idx = n if num_t > 1 else -1
+        for i in range(0, model.nbStates):
+            invSigmaIn = np.array([[1.0 / (a.Sigma[0, 0, i, t_idx] + 1e-8)]])
+            detSigmaIn = a.Sigma[0, 0, i, t_idx]
+            muIn = np.reshape(a.Mu[0:1, i, t_idx], (1, 1))
+            val = gaussPDFfast(np.reshape(DataIn[:, n], (1, 1)), muIn, invSigmaIn, detSigmaIn)
+            a.H[i, n] = model.Priors[i] * np.squeeze(val)
+
+        sum_H = np.sum(a.H[:, n])
+        if sum_H > 0:
+            a.H[:, n] = a.H[:, n] / sum_H
+
+        currTar = np.zeros((nbVarOut, 1))
+        for i in range(0, model.nbStates):
+            mu_in = a.Mu[0:1, i, t_idx]
+            mu_out = np.reshape(a.Mu[out, i, t_idx], (nbVarOut, 1))
+            sigma_out_in = np.reshape(a.Sigma[out, 0, i, t_idx], (nbVarOut, 1))
+            sigma_in_in = a.Sigma[0, 0, i, t_idx]
+
+            MuTmp = mu_out + sigma_out_in * (1.0 / (sigma_in_in + 1e-8)) * (DataIn[:, n] - mu_in)
+            currTar = currTar + a.H[i, n] * np.reshape(MuTmp, (nbVarOut, 1))
+
+        currAcc = model.kP * (currTar - currPos) - model.kV * currVel
+        currVel = currVel + currAcc * model.dt
+        currPos = currPos + currVel * model.dt
+        a.Data[:, n] = np.squeeze(np.vstack((DataIn[:, n], currPos)))
+
+    return a
