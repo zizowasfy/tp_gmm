@@ -55,7 +55,7 @@ class TPGMMDeformationPolicy(nn.Module):
         return actions
 
     @classmethod
-    def load_from_skrl_checkpoint(cls, ckpt_path, obs_dim=49, action_dim=15):
+    def load_from_skrl_checkpoint(cls, ckpt_path, obs_dim=None, action_dim=15):
         """
         Loads the trained weights from an skrl checkpoint.
         """
@@ -64,10 +64,21 @@ class TPGMMDeformationPolicy(nn.Module):
             
         checkpoint = torch.load(ckpt_path, map_location="cpu")
         
+        # Automatically detect observation dimension if not specified
+        if obs_dim is None:
+            if 'state_preprocessor' in checkpoint and checkpoint['state_preprocessor'] and 'running_mean' in checkpoint['state_preprocessor']:
+                obs_dim = checkpoint['state_preprocessor']['running_mean'].shape[0]
+            elif 'policy' in checkpoint:
+                policy_dict = checkpoint['policy']
+                net_key = 'net_container.0.weight' if 'net_container.0.weight' in policy_dict else 'net.0.weight'
+                obs_dim = policy_dict[net_key].shape[1]
+            else:
+                obs_dim = 49
+        
         model = cls(obs_dim, action_dim)
         
         # 1. Load Preprocessor
-        if 'state_preprocessor' in checkpoint:
+        if 'state_preprocessor' in checkpoint and checkpoint['state_preprocessor']:
             model.running_mean.copy_(checkpoint['state_preprocessor']['running_mean'])
             model.running_variance.copy_(checkpoint['state_preprocessor']['running_variance'])
             

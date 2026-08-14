@@ -61,10 +61,12 @@ class TPGMM(Node):
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.policy = None
-        self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-04_16-49-13_ppo_torch_envs=32/checkpoints/best_agent.pt') #agent_4800.pt')
-        # self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-15_17-18-11_ppo_torch/checkpoints/best_agent.pt') #agent_4800.pt')
+        self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-05_21-41-30_ppo_torch/checkpoints/best_agent.pt')
+        self.declare_parameter('action_scale', 0.15)
 
         ckpt_path = self.get_parameter('policy_ckpt_path').get_parameter_value().string_value
+        self.action_scale = self.get_parameter('action_scale').get_parameter_value().double_value
+
         if os.path.exists(ckpt_path):
             try:
                 self.policy = TPGMMDeformationPolicy.load_from_skrl_checkpoint(ckpt_path)
@@ -286,15 +288,15 @@ class TPGMM(Node):
             with torch.no_grad():
                 action = self.policy(obs)
             
-            action_scale = 0.15 # Has to be the same as set during training of the RL policy
+            action_scale = self.action_scale # Has to be the same as set during training of the RL policy
             action_deltas = action.view(1, TPGMM_model.model.nbStates, 3) * action_scale
             deformed_mu = original_mu + action_deltas
 
-            # Apply deformation to rnew
+            # Apply deformation to rnew across all time steps
             for k in range(TPGMM_model.model.nbStates):
-                rnew.Mu[1, k, -1] = deformed_mu[0, k, 0].item()
-                rnew.Mu[2, k, -1] = deformed_mu[0, k, 1].item()
-                rnew.Mu[3, k, -1] = deformed_mu[0, k, 2].item()
+                rnew.Mu[1, k, :] = deformed_mu[0, k, 0].item()
+                rnew.Mu[2, k, :] = deformed_mu[0, k, 1].item()
+                rnew.Mu[3, k, :] = deformed_mu[0, k, 2].item()
             
             # Recompute trajectory via GMR using deformed rnew.Mu
             rnew = TPGMM_model.recompute_trajectory(rnew, start_point[1:, :])

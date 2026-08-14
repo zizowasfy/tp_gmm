@@ -69,6 +69,12 @@ def recompute_DSGMR(a, model, currPos):
 
     num_t = a.Mu.shape[2]
 
+    # If the time-dimension exists but only the last slice was updated, propagate it across all time steps
+    if num_t > 1 and not np.allclose(a.Mu[1:4, :, -1], a.Mu[1:4, :, 0]):
+        if np.allclose(a.Mu[1:4, :, 0], a.Mu[1:4, :, 1]):
+            for t in range(num_t - 1):
+                a.Mu[1:4, :, t] = a.Mu[1:4, :, -1]
+
     for n in range(0, nbData):
         t_idx = n if num_t > 1 else -1
         for i in range(0, model.nbStates):
