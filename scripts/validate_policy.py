@@ -54,7 +54,8 @@ class PolicyValidator(Node):
         self.get_logger().info(f"Loaded {len(self.recorded_episodes)} episodes for validation.")
 
         # Load local policy
-        self.policy_ckpt_path = '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-04_16-49-13_ppo_torch_envs=32/checkpoints/best_agent.pt'
+        # self.policy_ckpt_path = '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-04_16-49-13_ppo_torch_envs=32/checkpoints/best_agent.pt'
+        self.policy_ckpt_path = '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-05_21-41-30_ppo_torch/checkpoints/best_agent.pt'
         if os.path.exists(self.policy_ckpt_path):
             self.policy = TPGMMDeformationPolicy.load_from_skrl_checkpoint(self.policy_ckpt_path)
             self.policy.eval()
@@ -243,7 +244,7 @@ class PolicyValidator(Node):
             return True
         return False
 
-    def call_deform_tpgmm_service(self, task, start_pose, target_pose, obstacle_pose, obstacle_radius):
+    def call_deform_tpgmm_service(self, task, start_pose, target_pose, obstacle_pose, obstacle_radius, desired_clearance):
         self.get_logger().info("Calling DeformTPGMM service...")
         if not self.deform_tpgmm_client.wait_for_service(timeout_sec=2.0):
             return False
@@ -257,6 +258,7 @@ class PolicyValidator(Node):
         req.deformed_tpgmm_goal_pose = self.adjust_orientation(target_pose, ref_robot='ur10')
         req.obstacle_pose = obstacle_pose
         req.obstacle_radius = obstacle_radius
+        req.desired_clearance = desired_clearance
 
         self.obstacle_pose_pub.publish(obstacle_pose)
 
@@ -374,13 +376,17 @@ class PolicyValidator(Node):
                     if ans2.lower() == 'y':
                         self.plan_and_execute(self.goal_pose, apply_constraints=True, use_deformed=False)
 
-                # Call DeformTPGMM service using recorded obstacle position and radius
-                if self.call_deform_tpgmm_service(task_name, self.start_pose, self.goal_pose, obstacle_pose, 0.05):
-                    # ans3 = input("Execute the DEFORMED constrained plan? [y/n]: ")
-                    ans3 = 'n'
-                    if ans3.lower() == 'y':
-                        self.plan_and_execute(self.goal_pose, apply_constraints=True, use_deformed=True)
-
+                ## debugging
+                obstacle_clearance = 0.0
+                while obstacle_clearance < 1.0:
+                    # Call DeformTPGMM service using recorded obstacle position and radius
+                    obstacle_clearance = float(input("Enter desired clearance scale factor [0, 1]: "))
+                    if self.call_deform_tpgmm_service(task_name, self.start_pose, self.goal_pose, obstacle_pose, obstacle_radius=0.05, desired_clearance=obstacle_clearance):
+                        # ans3 = input("Execute the DEFORMED constrained plan? [y/n]: ")
+                        ans3 = 'n'
+                        if ans3.lower() == 'y':
+                            self.plan_and_execute(self.goal_pose, apply_constraints=True, use_deformed=True)
+                ##\ debugging
             time.sleep(0.5)
 
 def main(args=None):

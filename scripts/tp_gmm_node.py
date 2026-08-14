@@ -279,12 +279,14 @@ class TPGMM(Node):
             
             orad = torch.tensor([[request.obstacle_radius]], device=self.device, dtype=torch.float32)
             
-            obs = torch.cat((gmm_features, sp_tensor, gp_tensor, op_tensor, orad), dim=-1)
+            des_clearance = torch.tensor([[request.desired_clearance]], device=self.device, dtype=torch.float32)
+            
+            obs = torch.cat((gmm_features, sp_tensor, gp_tensor, op_tensor, orad, des_clearance), dim=-1)
 
             with torch.no_grad():
                 action = self.policy(obs)
             
-            action_scale = 0.1
+            action_scale = 0.15 # Has to be the same as set during training of the RL policy
             action_deltas = action.view(1, TPGMM_model.model.nbStates, 3) * action_scale
             deformed_mu = original_mu + action_deltas
 

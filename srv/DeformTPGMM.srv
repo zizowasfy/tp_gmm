@@ -8,5 +8,6 @@ geometry_msgs/PoseStamped deformed_tpgmm_start_pose
 geometry_msgs/PoseStamped deformed_tpgmm_goal_pose
 geometry_msgs/PoseStamped obstacle_pose
 float32 obstacle_radius
+float32 desired_clearance
 ---
 tp_gmm/GaussianMixture gmm

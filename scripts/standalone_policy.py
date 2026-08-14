@@ -3,7 +3,7 @@ import torch.nn as nn
 import os
 
 class TPGMMDeformationPolicy(nn.Module):
-    def __init__(self, obs_dim=48, action_dim=15):
+    def __init__(self, obs_dim=49, action_dim=15):
         super().__init__()
         # State preprocessor parameters (RunningStandardScaler from skrl)
         self.register_buffer("running_mean", torch.zeros(obs_dim))
@@ -23,7 +23,7 @@ class TPGMMDeformationPolicy(nn.Module):
         """
         Forward pass for inference. 
         Takes unnormalized observations and outputs the deterministic actions.
-        obs: [batch_size, 48] or [48]
+        obs: [batch_size, 49] or [49]
         """
         if obs.dim() == 1:
             obs = obs.unsqueeze(0)
@@ -55,7 +55,7 @@ class TPGMMDeformationPolicy(nn.Module):
         return actions
 
     @classmethod
-    def load_from_skrl_checkpoint(cls, ckpt_path, obs_dim=48, action_dim=15):
+    def load_from_skrl_checkpoint(cls, ckpt_path, obs_dim=49, action_dim=15):
         """
         Loads the trained weights from an skrl checkpoint.
         """
