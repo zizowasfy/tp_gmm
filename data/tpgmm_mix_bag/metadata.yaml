@@ -10,13 +10,13 @@ rosbag2_bagfile_information:
     message_count: 1
     path: tpgmm_mix_bag.db3
     starting_time:
-      nanoseconds_since_epoch: 1786734410770838784
+      nanoseconds_since_epoch: 1786826610715620352
   message_count: 1
   relative_file_paths:
   - tpgmm_mix_bag.db3
   ros_distro: rosbags
   starting_time:
-    nanoseconds_since_epoch: 1786734410770838784
+    nanoseconds_since_epoch: 1786826610715620352
   storage_identifier: sqlite3
   topics_with_message_count:
   - message_count: 1

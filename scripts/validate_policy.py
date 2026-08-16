@@ -35,14 +35,90 @@ sys.path.append(os.path.join(pkg_share, 'include'))
 from standalone_policy import TPGMMDeformationPolicy
 import torch
 
+# Supported robot configurations
+ROBOT_CONFIGS = {
+    "franka_panda": {
+        "frame_id": "panda_link0",
+        "group_name": "panda_arm",
+        "ee_link": "panda_hand",
+        "adjustment_rotation": R.from_euler('ZYX', [180, -90, 0], degrees=True),
+    },
+    "kinova_gen3": {
+        "frame_id": "base_link",
+        "group_name": "manipulator",
+        "ee_link": "end_effector_link",
+        "adjustment_rotation": R.from_euler('ZYX', [-90, -90, 0], degrees=True),
+    },
+    "ur10": {
+        "frame_id": "base_link",
+        "group_name": "ur_manipulator",
+        "ee_link": "tool0",
+        "adjustment_rotation": R.identity(),
+    },
+}
+
+ROBOT_ALIASES = {
+    "panda": "franka_panda",
+    "franka": "franka_panda",
+    "franka_panda": "franka_panda",
+    "kinova": "kinova_gen3",
+    "gen3": "kinova_gen3",
+    "kinova_gen3": "kinova_gen3",
+    "ur": "ur10",
+    "ur10": "ur10",
+    "ur10e": "ur10",
+}
+
 class PolicyValidator(Node):
-    def __init__(self, namespace="", frame_id="base_link", group_name="manipulator"):
+    def __init__(self, robot_type=None, namespace="", frame_id=None, group_name=None, ee_link=None):
         super().__init__('validate_policy_node')
         
-        self.namespace = namespace
-        self.frame_id = frame_id
-        self.group_name = group_name
-        self.ee_link = f"{self.namespace[1:]}_end_effector_link" if namespace.startswith("/") else "end_effector_link"
+        # Declare parameters for configuration
+        self.declare_parameter('robot_type', ROBOT_ALIASES[robot_type] or 'franka_panda')
+        self.declare_parameter('namespace', namespace or '')
+        self.declare_parameter('frame_id', frame_id or '')
+        self.declare_parameter('group_name', group_name or '')
+        self.declare_parameter('ee_link', ee_link or '')
+        self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-05_21-41-30_ppo_torch/checkpoints/best_agent.pt')
+        self.declare_parameter('task_name', 'pick')
+
+        # Resolve robot type
+        param_robot = self.get_parameter('robot_type').get_parameter_value().string_value
+        chosen_robot = robot_type or (param_robot if param_robot else 'franka_panda')
+        canonical_robot = ROBOT_ALIASES.get(chosen_robot.lower(), chosen_robot.lower())
+        if canonical_robot not in ROBOT_CONFIGS:
+            self.get_logger().warn(f"Unknown robot_type '{chosen_robot}', defaulting to 'franka_panda'. Available: {list(ROBOT_CONFIGS.keys())}")
+            canonical_robot = 'franka_panda'
+
+        cfg = ROBOT_CONFIGS[canonical_robot]
+        self.robot_type = canonical_robot
+        
+        # Namespace
+        param_ns = self.get_parameter('namespace').get_parameter_value().string_value
+        self.namespace = namespace if namespace != "" else param_ns
+
+        # Frame ID, group_name, and ee_link (use override if provided, else use robot config default)
+        param_frame = self.get_parameter('frame_id').get_parameter_value().string_value
+        self.frame_id = frame_id or (param_frame if param_frame else cfg['frame_id'])
+
+        param_group = self.get_parameter('group_name').get_parameter_value().string_value
+        self.group_name = group_name or (param_group if param_group else cfg['group_name'])
+
+        param_ee = self.get_parameter('ee_link').get_parameter_value().string_value
+        if ee_link:
+            self.ee_link = ee_link
+        elif param_ee:
+            self.ee_link = param_ee
+        else:
+            base_ee = cfg['ee_link']
+            self.ee_link = f"{self.namespace[1:]}_{base_ee}" if self.namespace.startswith("/") else (f"{self.namespace}_{base_ee}" if self.namespace else base_ee)
+
+        self.adjustment_rotation = cfg['adjustment_rotation']
+
+        self.get_logger().info(f"Policy Validator configured for robot: '{self.robot_type}'")
+        self.get_logger().info(f"  - Planning Frame: {self.frame_id}")
+        self.get_logger().info(f"  - Planning Group: {self.group_name}")
+        self.get_logger().info(f"  - End-Effector Link: {self.ee_link}")
         
         # Load recorded experiments
         self.recorded_data_path = "/home/zizo/the_folder/Reach_direct/recorded_experiments.pkl"
@@ -54,8 +130,8 @@ class PolicyValidator(Node):
         self.get_logger().info(f"Loaded {len(self.recorded_episodes)} episodes for validation.")
 
         # Load local policy
-        # self.policy_ckpt_path = '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-04_16-49-13_ppo_torch_envs=32/checkpoints/best_agent.pt'
-        self.policy_ckpt_path = '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-05_21-41-30_ppo_torch/checkpoints/best_agent.pt'
+        ckpt_from_param = self.get_parameter('policy_ckpt_path').get_parameter_value().string_value
+        self.policy_ckpt_path = ckpt_from_param if os.path.exists(ckpt_from_param) else '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-05_21-41-30_ppo_torch/checkpoints/best_agent.pt'
         if os.path.exists(self.policy_ckpt_path):
             self.policy = TPGMMDeformationPolicy.load_from_skrl_checkpoint(self.policy_ckpt_path)
             self.policy.eval()
@@ -93,39 +169,27 @@ class PolicyValidator(Node):
         
         self.get_logger().info("Policy Validator Node Initialized Successfully!")
 
-    def adjust_orientation(self, pose, ref_robot):
-        # This orientation adjustment aligns the frames of the operated robot's ee with the ur10e's ee frames (which the demonstrations are recorded in)
-        kinova_orientation = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
-        if ref_robot == "ur10":
-            adjustment_rotation = R.from_euler('ZYX', [-90, -90, 0], degrees=True)
-        elif ref_robot == "franka_panda":
-            adjustment_rotation = R.from_euler('ZYX', [90, 0, 0], degrees=True)
-
-        adjusted_rotation = kinova_orientation * adjustment_rotation
+    def adjust_orientation(self, pose):
+        """Converts operated robot's EE pose orientation to the demonstration (UR10) frame."""
+        robot_rot = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
+        adjusted_rot = robot_rot * self.adjustment_rotation
         adjusted_pose = deepcopy(pose)
-        adjusted_pose.pose.orientation.x = adjusted_rotation.as_quat()[0]
-        adjusted_pose.pose.orientation.y = adjusted_rotation.as_quat()[1]
-        adjusted_pose.pose.orientation.z = adjusted_rotation.as_quat()[2]
-        adjusted_pose.pose.orientation.w = adjusted_rotation.as_quat()[3]
-        
+        adjusted_pose.pose.orientation.x = adjusted_rot.as_quat()[0]
+        adjusted_pose.pose.orientation.y = adjusted_rot.as_quat()[1]
+        adjusted_pose.pose.orientation.z = adjusted_rot.as_quat()[2]
+        adjusted_pose.pose.orientation.w = adjusted_rot.as_quat()[3]
         return adjusted_pose
 
-    def reverse_adjust_orientation(self, pose, ref_robot):
-        adjusted_orientation = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
-        if ref_robot == "ur10":
-            adjustment_rotation = R.from_euler('ZYX', [-90, -90, 0], degrees=True)
-        elif ref_robot == "franka_panda":
-            adjustment_rotation = R.from_euler('ZYX', [90, 0, 0], degrees=True)
-
-        inverse_adjustment = adjustment_rotation.inv()
-        original_rotation = adjusted_orientation * inverse_adjustment
-        original_pose = deepcopy(pose)
-        original_pose.pose.orientation.x = original_rotation.as_quat()[0]
-        original_pose.pose.orientation.y = original_rotation.as_quat()[1]
-        original_pose.pose.orientation.z = original_rotation.as_quat()[2]
-        original_pose.pose.orientation.w = original_rotation.as_quat()[3]
-        
-        return original_pose
+    def reverse_adjust_orientation(self, pose):
+        """Converts demonstration (UR10) frame orientation to the operated robot's EE frame."""
+        demo_rot = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
+        robot_rot = demo_rot * self.adjustment_rotation.inv()
+        robot_pose = deepcopy(pose)
+        robot_pose.pose.orientation.x = robot_rot.as_quat()[0]
+        robot_pose.pose.orientation.y = robot_rot.as_quat()[1]
+        robot_pose.pose.orientation.z = robot_rot.as_quat()[2]
+        robot_pose.pose.orientation.w = robot_rot.as_quat()[3]
+        return robot_pose
 
     def construct_goal_constraints(self, target_pose):
         goal_constraint = Constraints()
@@ -136,7 +200,7 @@ class PolicyValidator(Node):
         
         primitive = SolidPrimitive()
         primitive.type = SolidPrimitive.SPHERE
-        primitive.dimensions = [0.01]
+        primitive.dimensions = [0.03]
         
         region_pose = Pose()
         region_pose.position = target_pose.pose.position
@@ -153,9 +217,9 @@ class PolicyValidator(Node):
         ori_constraint.header = target_pose.header
         ori_constraint.link_name = self.ee_link
         ori_constraint.orientation = target_pose.pose.orientation
-        ori_constraint.absolute_x_axis_tolerance = 0.05
-        ori_constraint.absolute_y_axis_tolerance = 0.05
-        ori_constraint.absolute_z_axis_tolerance = 0.05
+        ori_constraint.absolute_x_axis_tolerance = 0.1
+        ori_constraint.absolute_y_axis_tolerance = 0.1
+        ori_constraint.absolute_z_axis_tolerance = 0.1
         ori_constraint.weight = 1.0
         
         goal_constraint.position_constraints.append(pos_constraint)
@@ -167,8 +231,8 @@ class PolicyValidator(Node):
         
         req = MoveGroup.Goal()
         req.request.group_name = self.group_name
-        req.request.num_planning_attempts = 3
-        req.request.allowed_planning_time = 5.0
+        req.request.num_planning_attempts = 10
+        req.request.allowed_planning_time = 10.0
         req.request.max_velocity_scaling_factor = 1.0
         req.request.max_acceleration_scaling_factor = 1.0
         
@@ -227,8 +291,8 @@ class PolicyValidator(Node):
         req = ReproduceTPGMM.Request()
         req.task_name = task
         req.frame_id = self.frame_id
-        req.start_pose = self.adjust_orientation(start_pose, ref_robot='ur10')
-        req.goal_pose = self.adjust_orientation(target_pose, ref_robot='ur10')
+        req.start_pose = self.adjust_orientation(start_pose)
+        req.goal_pose = self.adjust_orientation(target_pose)
 
         self.start_pose_gmm_pub.publish(req.start_pose)
         self.goal_pose_gmm_pub.publish(req.goal_pose)
@@ -252,10 +316,10 @@ class PolicyValidator(Node):
         req = DeformTPGMM.Request()
         req.task_name = task
         req.frame_id = self.frame_id
-        req.tpgmm_start_pose = self.adjust_orientation(start_pose, ref_robot='ur10')
-        req.tpgmm_goal_pose = self.adjust_orientation(target_pose, ref_robot='ur10')
-        req.deformed_tpgmm_start_pose = self.adjust_orientation(start_pose, ref_robot='ur10')
-        req.deformed_tpgmm_goal_pose = self.adjust_orientation(target_pose, ref_robot='ur10')
+        req.tpgmm_start_pose = self.adjust_orientation(start_pose)
+        req.tpgmm_goal_pose = self.adjust_orientation(target_pose)
+        req.deformed_tpgmm_start_pose = self.adjust_orientation(start_pose)
+        req.deformed_tpgmm_goal_pose = self.adjust_orientation(target_pose)
         req.obstacle_pose = obstacle_pose
         req.obstacle_radius = obstacle_radius
         req.desired_clearance = desired_clearance
@@ -274,7 +338,7 @@ class PolicyValidator(Node):
         return False
 
     def validate(self, task_name):
-        self.get_logger().info("Starting Policy Validation against Recorded Episodes...")
+        self.get_logger().info(f"Starting Policy Validation against Recorded Episodes for {self.robot_type}...")
         for ep_idx, ep_data in enumerate(self.recorded_episodes):
             self.get_logger().info(f"\n==========================================")
             self.get_logger().info(f"--- Episode {ep_idx} ---")
@@ -283,36 +347,36 @@ class PolicyValidator(Node):
             self.gmm_bounding_volume = None
             self.deformed_gmm_bounding_volume = None
 
-            # Get poses from recorded experiment (stored in UR10/Panda convention)
+            # Get poses from recorded experiment (stored in UR10/Panda demonstration convention)
             rec_start = ep_data["start_pose"]
             rec_goal = ep_data["goal_pose"]
             rec_obs_pos = ep_data["obstacle_pos_local"]
             rec_obs_quat = ep_data["obstacle_quat_local"]
 
-            # Construct ROS PoseStamped messages (quaternion expected in xyzw in ROS, but we map w to index 3 and xyz to 4,5,6)
-            start_pose_ur10 = PoseStamped()
-            start_pose_ur10.header.frame_id = self.frame_id
-            start_pose_ur10.pose.position.x = float(rec_start[0])
-            start_pose_ur10.pose.position.y = float(rec_start[1])
-            start_pose_ur10.pose.position.z = float(rec_start[2])
-            start_pose_ur10.pose.orientation.x = float(rec_start[4])
-            start_pose_ur10.pose.orientation.y = float(rec_start[5])
-            start_pose_ur10.pose.orientation.z = float(rec_start[6])
-            start_pose_ur10.pose.orientation.w = float(rec_start[3])
+            # Construct ROS PoseStamped messages in demonstration frame convention
+            start_pose_demo = PoseStamped()
+            start_pose_demo.header.frame_id = self.frame_id
+            start_pose_demo.pose.position.x = float(rec_start[0])
+            start_pose_demo.pose.position.y = float(rec_start[1])
+            start_pose_demo.pose.position.z = float(rec_start[2])
+            start_pose_demo.pose.orientation.x = float(rec_start[4])
+            start_pose_demo.pose.orientation.y = float(rec_start[5])
+            start_pose_demo.pose.orientation.z = float(rec_start[6])
+            start_pose_demo.pose.orientation.w = float(rec_start[3])
 
-            goal_pose_ur10 = PoseStamped()
-            goal_pose_ur10.header.frame_id = self.frame_id
-            goal_pose_ur10.pose.position.x = float(rec_goal[0])
-            goal_pose_ur10.pose.position.y = float(rec_goal[1])
-            goal_pose_ur10.pose.position.z = float(rec_goal[2])
-            goal_pose_ur10.pose.orientation.x = float(rec_goal[4])
-            goal_pose_ur10.pose.orientation.y = float(rec_goal[5])
-            goal_pose_ur10.pose.orientation.z = float(rec_goal[6])
-            goal_pose_ur10.pose.orientation.w = float(rec_goal[3])
+            goal_pose_demo = PoseStamped()
+            goal_pose_demo.header.frame_id = self.frame_id
+            goal_pose_demo.pose.position.x = float(rec_goal[0])
+            goal_pose_demo.pose.position.y = float(rec_goal[1])
+            goal_pose_demo.pose.position.z = float(rec_goal[2])
+            goal_pose_demo.pose.orientation.x = float(rec_goal[4])
+            goal_pose_demo.pose.orientation.y = float(rec_goal[5])
+            goal_pose_demo.pose.orientation.z = float(rec_goal[6])
+            goal_pose_demo.pose.orientation.w = float(rec_goal[3])
 
-            # Convert to Kinova frame for MoveIt planning/execution
-            start_pose_kinova = self.reverse_adjust_orientation(start_pose_ur10, ref_robot='ur10')
-            goal_pose_kinova = self.reverse_adjust_orientation(goal_pose_ur10, ref_robot='ur10')
+            # Convert to operated robot's EE frame for MoveIt planning/execution
+            start_pose_robot = self.reverse_adjust_orientation(start_pose_demo)
+            goal_pose_robot = self.reverse_adjust_orientation(goal_pose_demo)
 
             # Obstacle PoseStamped
             obstacle_pose = PoseStamped()
@@ -325,8 +389,8 @@ class PolicyValidator(Node):
             obstacle_pose.pose.orientation.z = float(rec_obs_quat[3])
             obstacle_pose.pose.orientation.w = float(rec_obs_quat[0])
 
-            self.start_pose = start_pose_kinova
-            self.goal_pose = goal_pose_kinova
+            self.start_pose = start_pose_robot
+            self.goal_pose = goal_pose_robot
 
             # Publish start, goal and obstacle
             self.start_pose_pub.publish(self.start_pose)
@@ -382,23 +446,36 @@ class PolicyValidator(Node):
                     # Call DeformTPGMM service using recorded obstacle position and radius
                     obstacle_clearance = float(input("Enter desired clearance scale factor [0, 1]: "))
                     if self.call_deform_tpgmm_service(task_name, self.start_pose, self.goal_pose, obstacle_pose, obstacle_radius=0.05, desired_clearance=obstacle_clearance):
-                        # ans3 = input("Execute the DEFORMED constrained plan? [y/n]: ")
-                        ans3 = 'n'
+                        ans3 = input("Execute the DEFORMED constrained plan? [y/n]: ")
+                        # ans3 = 'n'
                         if ans3.lower() == 'y':
                             self.plan_and_execute(self.goal_pose, apply_constraints=True, use_deformed=True)
                 ##\ debugging
             time.sleep(0.5)
 
 def main(args=None):
-    rclpy.init(args=args)
-    namespace = ""
-    frame_id = "base_link"
-    group_name = "manipulator" 
-    task_name = "pick"
+    import argparse
+    parser = argparse.ArgumentParser(description="Validate TPGMM policy on specified robot")
+    parser.add_argument('--robot', '-r', type=str, default='franka_panda', choices=['franka_panda', 'panda', 'franka', 'kinova_gen3', 'kinova', 'gen3', 'ur10', 'ur'], help='Robot type (default: franka_panda)')
+    parser.add_argument('--task', '-t', type=str, default='pick', help='Task name (default: pick)')
+    parser.add_argument('--namespace', '-ns', type=str, default='', help='Robot ROS namespace')
+    parser.add_argument('--frame_id', type=str, default=None, help='Planning frame override')
+    parser.add_argument('--group_name', type=str, default=None, help='Planning group override')
+    parser.add_argument('--ee_link', type=str, default=None, help='End effector link override')
+
+    parsed_args, ros_args = parser.parse_known_args()
+
+    rclpy.init(args=ros_args if ros_args else args)
     
-    node = PolicyValidator(namespace, frame_id, group_name)
+    node = PolicyValidator(
+        robot_type=parsed_args.robot,
+        namespace=parsed_args.namespace,
+        frame_id=parsed_args.frame_id,
+        group_name=parsed_args.group_name,
+        ee_link=parsed_args.ee_link,
+    )
     try:
-        node.validate(task_name)
+        node.validate(parsed_args.task)
         node.get_logger().info("Execution complete.")
     except KeyboardInterrupt:
         pass
