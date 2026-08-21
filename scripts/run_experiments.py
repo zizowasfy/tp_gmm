@@ -30,7 +30,7 @@ from moveit_msgs.msg import BoundingVolume, Constraints, PositionConstraint, Ori
 from moveit_msgs.srv import ApplyPlanningScene, GetCartesianPath
 from moveit_msgs.action import MoveGroup, ExecuteTrajectory
 from shape_msgs.msg import SolidPrimitive
-from control_msgs.action import GripperCommand
+from control_msgs.action import GripperCommand, ParallelGripperCommand
 from tp_gmm.srv import ReproduceTPGMM, DeformTPGMM
 
 from ament_index_python.packages import get_package_share_directory
@@ -71,7 +71,7 @@ class GazeboExperimentRunner(Node):
         # Action clients
         self.move_action_client = ActionClient(self, MoveGroup, f'{self.namespace}/move_action')
         self.execute_traj_client = ActionClient(self, ExecuteTrajectory, f'{self.namespace}/execute_trajectory')
-        self.gripper_action_client = ActionClient(self, GripperCommand, self.gripper_action_name)
+        self.gripper_action_client = ActionClient(self, ParallelGripperCommand, self.gripper_action_name)
 
         # Services
         self.reproduce_tpgmm_client = self.create_client(ReproduceTPGMM, f"{self.namespace}/ReproduceTPGMM_service")
@@ -202,15 +202,16 @@ class GazeboExperimentRunner(Node):
         self.get_logger().info(f"Setting gripper: {'OPEN' if open_gripper else 'CLOSE'} (pos={target_pos})")
 
         if self.gripper_action_client.wait_for_server(timeout_sec=2.0):
-            goal = GripperCommand.Goal()
-            goal.command.position = target_pos
-            goal.command.max_effort = effort
+            goal = ParallelGripperCommand.Goal()
+            goal.command.name = ["panda_finger_joint1"]
+            goal.command.position = [target_pos]
+            goal.command.effort = [effort]
             future = self.gripper_action_client.send_goal_async(goal)
-            rclpy.spin_until_future_complete(self, future)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=5.0)
             goal_handle = future.result()
             if goal_handle and goal_handle.accepted:
                 res_future = goal_handle.get_result_async()
-                rclpy.spin_until_future_complete(self, res_future)
+                rclpy.spin_until_future_complete(self, res_future, timeout_sec=5.0)
                 return True
 
         # Fallback to MoveGroup hand joint
@@ -229,7 +230,7 @@ class GazeboExperimentRunner(Node):
         c.joint_constraints.append(jc)
         req.request.goal_constraints.append(c)
         future = self.move_action_client.send_goal_async(req)
-        rclpy.spin_until_future_complete(self, future)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=5.0)
         return True
 
     def construct_goal_constraints(self, target_pose, pos_tol=0.02, ori_tol=0.15):
