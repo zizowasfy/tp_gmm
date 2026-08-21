@@ -73,6 +73,7 @@ install(PROGRAMS
   scripts/tp_gmm_node.py
   scripts/collect_trajectories_gen3_ros2.py
   scripts/validate_policy.py
+  scripts/run_experiments.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
