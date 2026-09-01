@@ -45,12 +45,11 @@ ROBOT_CONFIGS = {
         "ee_link": "panda_hand",
         "gripper_group": "hand",
         "gripper_action": "/panda_hand_controller/gripper_cmd",
-        "adjustment_rotation": R.from_euler('ZYX', [180, -90, 0], degrees=True),
     },
 }
 
 class GazeboExperimentRunner(Node):
-    def __init__(self, robot_type="franka_panda", namespace="", task_name="pick", desired_clearance=0.8, obstacle_radius=0.04):
+    def __init__(self, robot_type="franka_panda", namespace="", task_name="franka_pick_cube", desired_clearance=0.8, obstacle_radius=0.04, ref_robot="auto"):
         super().__init__('gazebo_experiment_runner')
 
         self.robot_type = robot_type
@@ -63,8 +62,19 @@ class GazeboExperimentRunner(Node):
         self.frame_id = cfg["frame_id"]
         self.group_name = cfg["group_name"]
         self.ee_link = cfg["ee_link"]
-        self.adjustment_rotation = cfg["adjustment_rotation"]
         self.gripper_action_name = cfg["gripper_action"]
+
+        # Determine reference demonstration frame adjustment:
+        # If task demonstrations were recorded on UR10 (e.g. legacy 'pick' task), adjust UR10 <-> Panda.
+        # If task demonstrations were recorded natively with Panda (e.g. 'franka_pick_cube'), no adjustment is needed.
+        if ref_robot == "ur10" or (ref_robot == "auto" and self.task_name == "pick"):
+            self.ref_robot = "ur10"
+            self.adjustment_rotation = R.from_euler('ZYX', [180, -90, 0], degrees=True)
+            self.get_logger().info("Using cross-robot orientation adjustment (UR10 demo frame <-> Panda).")
+        else:
+            self.ref_robot = "native"
+            self.adjustment_rotation = R.identity()
+            self.get_logger().info(f"Using native orientation frame for task '{self.task_name}'.")
 
         self.get_logger().info(f"Initializing Gazebo Experiment Runner for {self.robot_type}...")
 
@@ -133,12 +143,12 @@ class GazeboExperimentRunner(Node):
 
         table_box = SolidPrimitive()
         table_box.type = SolidPrimitive.BOX
-        table_box.dimensions = [0.75, 1.0, 0.5]  # [size_x, size_y, size_z]
+        table_box.dimensions = [0.75, 1.0, 0.25]  # [size_x, size_y, size_z]
 
         table_pose = Pose()
         table_pose.position.x = 0.6
         table_pose.position.y = 0.0
-        table_pose.position.z = 0.0
+        table_pose.position.z = 0.125
         table_pose.orientation.w = 1.0
 
         table_co.primitives.append(table_box)
@@ -272,6 +282,7 @@ class GazeboExperimentRunner(Node):
         """Plans and executes motion to target_pose with optional GMM corridor constraints."""
         req = MoveGroup.Goal()
         req.request.group_name = self.group_name
+        req.request.planner_id = "RRTConnectkConfigDefault"
         req.request.num_planning_attempts = 10
         req.request.allowed_planning_time = planning_time
         req.request.max_velocity_scaling_factor = 0.8
@@ -427,24 +438,38 @@ class GazeboExperimentRunner(Node):
         # -------------------------------------------------------------
         # STEP 1: Move Robot to Random Start Pose & Open Gripper
         # -------------------------------------------------------------
-        # Sample randomized start pose in robot workspace
-        start_x = float(np.random.uniform(0.22, 0.30)) #(0.32, 0.40)
-        start_y = float(np.random.uniform(-0.15, 0.15))
-        start_z = float(np.random.uniform(0.50, 0.58))
+        # Sample randomized start pose in robot workspace above table
+        start_x = float(np.random.uniform(0.22, 0.35))
+        start_y = float(np.random.uniform(-0.18, 0.18))
+        start_z = float(np.random.uniform(0.58, 0.68))
 
-        demo_down_quat = [-0.7071, 0.0, -0.7071, 0.0]  # [w, x, y, z]
-
-        start_pose_demo = PoseStamped()
-        start_pose_demo.header.frame_id = self.frame_id
-        start_pose_demo.pose.position.x = start_x
-        start_pose_demo.pose.position.y = start_y
-        start_pose_demo.pose.position.z = start_z
-        start_pose_demo.pose.orientation.w = demo_down_quat[0]
-        start_pose_demo.pose.orientation.x = demo_down_quat[1]
-        start_pose_demo.pose.orientation.y = demo_down_quat[2]
-        start_pose_demo.pose.orientation.z = demo_down_quat[3]
-
-        start_pose_robot = self.reverse_adjust_orientation(start_pose_demo)
+        if self.ref_robot == "ur10":
+            # UR10 demo frame downward orientation
+            demo_down_quat = [-0.7071, 0.0, -0.7071, 0.0]  # [w, x, y, z]
+            start_pose_demo = PoseStamped()
+            start_pose_demo.header.frame_id = self.frame_id
+            start_pose_demo.pose.position.x = start_x
+            start_pose_demo.pose.position.y = start_y
+            start_pose_demo.pose.position.z = start_z
+            start_pose_demo.pose.orientation.w = demo_down_quat[0]
+            start_pose_demo.pose.orientation.x = demo_down_quat[1]
+            start_pose_demo.pose.orientation.y = demo_down_quat[2]
+            start_pose_demo.pose.orientation.z = demo_down_quat[3]
+            start_pose_robot = self.reverse_adjust_orientation(start_pose_demo)
+        else:
+            # Native Panda downward orientation [x=1.0, y=0.0, z=0.0, w=0.0]
+            start_pose_demo = PoseStamped()
+            start_pose_demo.header.frame_id = self.frame_id
+            start_pose_demo.pose.position.x = start_x
+            start_pose_demo.pose.position.y = start_y
+            start_pose_demo.pose.position.z = start_z
+            start_yaw_var = math.radians(np.random.uniform(-30.0, 30.0))
+            start_rot = R.from_euler('ZYX', [start_yaw_var, 0.0, math.pi], degrees=False).as_quat()
+            start_pose_demo.pose.orientation.x = float(start_rot[0])
+            start_pose_demo.pose.orientation.y = float(start_rot[1])
+            start_pose_demo.pose.orientation.z = float(start_rot[2])
+            start_pose_demo.pose.orientation.w = float(start_rot[3])
+            start_pose_robot = deepcopy(start_pose_demo)
 
         # Open gripper before moving to start
         self.set_gripper(open_gripper=True)
@@ -461,9 +486,15 @@ class GazeboExperimentRunner(Node):
         # STEP 2: Reset & Randomize Environment Objects (Gazebo & MoveIt)
         # -------------------------------------------------------------
         # Target cube (blue)
-        cube1_x = float(np.random.uniform(0.52, 0.62))
-        cube1_y = float(np.random.uniform(-0.18, 0.18))
+        cube1_x = float(np.random.uniform(0.35, 0.65))
+        cube1_y = float(np.random.uniform(-0.4, 0.4))
         cube1_z = 0.275
+        cube1_yaw_var = math.radians(np.random.uniform(-45.0, 45.0))
+        cube1_rot = R.from_euler('ZYX', [cube1_yaw_var, 0.0, math.pi], degrees=False).as_quat()
+        cube1_ori_x = float(cube1_rot[0])
+        cube1_ori_y = float(cube1_rot[1])
+        cube1_ori_z = float(cube1_rot[2])
+        cube1_ori_w = float(cube1_rot[3])
 
         # Distractor cube (red) - keep separation from cube1
         while True:
@@ -485,7 +516,7 @@ class GazeboExperimentRunner(Node):
         self.get_logger().info(f"  - Obstacle Pose:    ({obs_x:.3f}, {obs_y:.3f}, {obs_z:.3f})")
 
         # Apply Gazebo entity poses
-        self.set_gazebo_pose("cube1", cube1_x, cube1_y, cube1_z)
+        self.set_gazebo_pose("cube1", cube1_x, cube1_y, cube1_z, cube1_ori_x, cube1_ori_y, cube1_ori_z, cube1_ori_w)
         self.set_gazebo_pose("cube2", cube2_x, cube2_y, cube2_z)
         self.set_gazebo_pose("obstacle", obs_x, obs_y, obs_z)
 
@@ -503,8 +534,15 @@ class GazeboExperimentRunner(Node):
         goal_pose_demo.pose.position.x = cube1_x
         goal_pose_demo.pose.position.y = cube1_y
         goal_pose_demo.pose.position.z = pre_grasp_z
+        goal_pose_demo.pose.orientation.x = cube1_ori_x
+        goal_pose_demo.pose.orientation.y = cube1_ori_y
+        goal_pose_demo.pose.orientation.z = cube1_ori_z
+        goal_pose_demo.pose.orientation.w = cube1_ori_w
 
-        goal_pose_robot = self.reverse_adjust_orientation(goal_pose_demo)
+        if self.ref_robot == "ur10":
+            goal_pose_robot = self.reverse_adjust_orientation(goal_pose_demo)
+        else:
+            goal_pose_robot = deepcopy(goal_pose_demo)
 
         obstacle_pose = PoseStamped()
         obstacle_pose.header.frame_id = self.frame_id
@@ -523,48 +561,55 @@ class GazeboExperimentRunner(Node):
         self.get_logger().info(f"Planning through Deformed GMM corridor to pre-grasp pose (0.05m above cube, z={pre_grasp_z:.3f}m)...")
         success = self.plan_and_execute(goal_pose_robot, apply_constraints=True, use_deformed=True)
         if not success:
-            self.get_logger().warn("Constrained planning failed, attempting relaxed execution...")
-            success = self.plan_and_execute(goal_pose_robot, apply_constraints=False)
-            if not success:
-                self.get_logger().error("Failed to navigate to target cube!")
-                return False
+
+            ## commented this to count the failed plan with Deformed GMM as failed trials.
+            # self.get_logger().warn("Constrained planning failed, attempting relaxed execution...")
+            # success = self.plan_and_execute(goal_pose_robot, apply_constraints=False)
+            # if not success:
+            #     self.get_logger().error("Failed to navigate to target cube!")
+            #     return False
+            ##\ commented this to count the failed plan with Deformed GMM as failed trials.
+
+            self.get_logger().warn("Constrained planning failed, counting this trial as failed.")
+            return False 
+        
 
         time.sleep(0.5)
 
-        # -------------------------------------------------------------
-        # STEP 5: Reach Down, Grasp Cube, and Lift Up (Cartesian Path)
-        # -------------------------------------------------------------
-        self.get_logger().info("Reaching down vertically via Cartesian path to grasp the cube...")
-        grasp_pose_demo = deepcopy(goal_pose_demo)
-        grasp_pose_demo.pose.position.z = cube1_z + 0.015 + 0.1  # ~0.390m (grasp height with flange offset)
-        grasp_pose_robot = self.reverse_adjust_orientation(grasp_pose_demo)
+        # # -------------------------------------------------------------
+        # # STEP 5: Reach Down, Grasp Cube, and Lift Up (Cartesian Path)
+        # # -------------------------------------------------------------
+        # self.get_logger().info("Reaching down vertically via Cartesian path to grasp the cube...")
+        # grasp_pose_demo = deepcopy(goal_pose_demo)
+        # grasp_pose_demo.pose.position.z = cube1_z + 0.015 + 0.1  # ~0.390m (grasp height with flange offset)
+        # grasp_pose_robot = self.reverse_adjust_orientation(grasp_pose_demo)
 
-        cartesian_ok = self.plan_and_execute_cartesian([grasp_pose_robot], step_size=0.005, max_velocity_scaling=0.2)
-        if not cartesian_ok:
-            self.get_logger().warn("Cartesian descent failed, using standard planner fallback...")
-            self.plan_and_execute(grasp_pose_robot, apply_constraints=False, planning_time=3.0)
+        # cartesian_ok = self.plan_and_execute_cartesian([grasp_pose_robot], step_size=0.005, max_velocity_scaling=0.2)
+        # if not cartesian_ok:
+        #     self.get_logger().warn("Cartesian descent failed, using standard planner fallback...")
+        #     self.plan_and_execute(grasp_pose_robot, apply_constraints=False, planning_time=3.0)
 
-        time.sleep(0.3)
+        # time.sleep(0.3)
 
-        self.get_logger().info("Grasping cube...")
-        self.set_gripper(open_gripper=False, effort=30.0)
-        time.sleep(0.5)
+        # self.get_logger().info("Grasping cube...")
+        # self.set_gripper(open_gripper=False, effort=30.0)
+        # time.sleep(0.5)
 
-        self.get_logger().info("Lifting cube up vertically via Cartesian path...")
-        lift_pose_demo = deepcopy(goal_pose_demo)
-        lift_pose_demo.pose.position.z = cube1_z + 0.18 + 0.1  # ~0.555m (lifted)
-        lift_pose_robot = self.reverse_adjust_orientation(lift_pose_demo)
+        # self.get_logger().info("Lifting cube up vertically via Cartesian path...")
+        # lift_pose_demo = deepcopy(goal_pose_demo)
+        # lift_pose_demo.pose.position.z = cube1_z + 0.18 + 0.1  # ~0.555m (lifted)
+        # lift_pose_robot = self.reverse_adjust_orientation(lift_pose_demo)
 
-        lift_cartesian_ok = self.plan_and_execute_cartesian([lift_pose_robot], step_size=0.005, max_velocity_scaling=0.2)
-        if not lift_cartesian_ok:
-            self.get_logger().warn("Cartesian lift failed, using standard planner fallback...")
-            self.plan_and_execute(lift_pose_robot, apply_constraints=False, planning_time=3.0)
+        # lift_cartesian_ok = self.plan_and_execute_cartesian([lift_pose_robot], step_size=0.005, max_velocity_scaling=0.2)
+        # if not lift_cartesian_ok:
+        #     self.get_logger().warn("Cartesian lift failed, using standard planner fallback...")
+        #     self.plan_and_execute(lift_pose_robot, apply_constraints=False, planning_time=3.0)
 
-        time.sleep(1.0)
+        # time.sleep(1.0)
 
-        # Release cube
-        self.set_gripper(open_gripper=True)
-        time.sleep(0.5)
+        # # Release cube
+        # self.set_gripper(open_gripper=True)
+        # time.sleep(0.5)
 
         self.get_logger().info(f"\n[SUCCESS] Completed Experiment Trial {trial_idx} successfully!\n")
         return True
@@ -592,8 +637,9 @@ class GazeboExperimentRunner(Node):
 def main():
     parser = argparse.ArgumentParser(description="Automated Gazebo Experiment Runner for TP-GMM + RL Policy")
     parser.add_argument('--trials', '-n', type=int, default=10, help='Number of experiment trials (default: 10)')
-    parser.add_argument('--task', '-t', type=str, default='pick', help='Task name (default: pick)')
+    parser.add_argument('--task', '-t', type=str, default='franka_pick_cube', help='Task name (default: franka_pick_cube)')
     parser.add_argument('--robot', '-r', type=str, default='franka_panda', help='Robot type (default: franka_panda)')
+    parser.add_argument('--ref-robot', type=str, default='auto', help="Reference robot for demonstration frame ('auto', 'franka_panda', 'ur10', 'native')")
     parser.add_argument('--clearance', '-c', type=float, default=0.5, help='Desired clearance factor [0.0 - 1.0] (default: 0.5)')
     parser.add_argument('--auto', action='store_true', default=True, help='Run trials automatically without pausing')
     parser.add_argument('--manual', dest='auto', action='store_false', help='Prompt before each trial')
@@ -605,7 +651,8 @@ def main():
     runner = GazeboExperimentRunner(
         robot_type=args.robot,
         task_name=args.task,
-        desired_clearance=args.clearance
+        desired_clearance=args.clearance,
+        ref_robot=args.ref_robot
     )
 
     try:

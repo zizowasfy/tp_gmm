@@ -24,7 +24,7 @@ pkg_share = get_package_share_directory('tp_gmm')
 sys.path.append(os.path.join(pkg_share, 'include'))
 sys.path.append(os.path.join(pkg_share, 'scripts'))
 
-from dir_paths import get_paths
+from dir_paths import get_paths, get_task_dir, ensure_task_dir, get_demonstrations_dir
 paths = get_paths()
 ws_dir = paths['external_root']
 data_dir = paths['data_dir']
@@ -94,6 +94,7 @@ class TPGMM(Node):
         self.frame2_pose = Pose()
         _task_name = request.task_name #'pick'
         _train = True #req.train
+        task_dir = ensure_task_dir(_task_name)
 
         ## Fetching Samples and paramters
         self.nbVar = 4      # Dim !!
@@ -101,14 +102,13 @@ class TPGMM(Node):
         self.nbStates = 5  # nb of Gaussians
 
         if _train:
-            self.get_logger().info("Processing demonstrations...")
+            self.get_logger().info(f"Processing demonstrations for task '{_task_name}'...")
             self.demons_info, slist = process_demonstrations(_task_name, self.nbFrames, self.nbStates, self.nbVar)
             self.get_logger().info(f"demons_info: {self.demons_info}")
         else:
-            with open(tasks_dir + f'{_task_name}/demons_info.pkl', 'rb') as fp:
+            with open(task_dir / 'demons_info.pkl', 'rb') as fp:
                 self.demons_info = pickle.load(fp)
                 self.get_logger().info(f"demons_info: {self.demons_info}")
-            # If not training, we assume the model is already trained and available (or will be loaded in reproduction)
             slist = None
 
         ## Initialization of parameters and properties
@@ -124,36 +124,38 @@ class TPGMM(Node):
     ## Preparing the samples and fit
     def tpGMM(self, _task_name, slist):
         self.slist = slist
+        task_dir = ensure_task_dir(_task_name)
 
         # Creating instance of TPGMM_GMR
         TPGMMGMR = TPGMM_GMR(self.nbStates, self.nbFrames, self.nbVar)
 
         # Learning the model
-        self.get_logger().info("Learning the TPGMM model...")
+        self.get_logger().info(f"Learning the TPGMM model for '{_task_name}'...")
         TPGMMGMR.fit(self.slist)
 
         # Saving the model in .pkl as backup and in memory
         self.TPGMM_model = TPGMMGMR
-        with open(tasks_dir + f'{_task_name}/TPGMM_model.pkl', 'wb') as fp:
+        with open(task_dir / 'TPGMM_model.pkl', 'wb') as fp:
             pickle.dump(self.TPGMM_model, fp)
-        self.get_logger().info("TPGMM model trained and saved successfully.")
+        self.get_logger().info(f"TPGMM model for '{_task_name}' trained and saved successfully.")
 
     def tpGMMGMR(self, request, response):
 
         _task_name = request.task_name #'pick'
+        task_dir = ensure_task_dir(_task_name)
 
         if self.TPGMM_model is not None:
             TPGMM_model = self.TPGMM_model
-            self.get_logger().info("Using in-memory TPGMM model.")
+            self.get_logger().info(f"Using in-memory TPGMM model for '{_task_name}'.")
         else:
-            with open(tasks_dir + f'{_task_name}/TPGMM_model.pkl', 'rb') as fp:
+            with open(task_dir / 'TPGMM_model.pkl', 'rb') as fp:
                 TPGMM_model = pickle.load(fp)
-            self.get_logger().info("Loaded TPGMM model from disk.")
+            self.get_logger().info(f"Loaded TPGMM model for '{_task_name}' from disk.")
 
         if self.demons_info is not None:
             task_demons_info = self.demons_info
         else:
-            with open(tasks_dir + f'{_task_name}/demons_info.pkl', 'rb') as fp:
+            with open(task_dir / 'demons_info.pkl', 'rb') as fp:
                 task_demons_info = pickle.load(fp)
 
         # Sorting the Task Parameters into Frames format
@@ -207,19 +209,20 @@ class TPGMM(Node):
     def deform_tpgmm_callback(self, request, response):
         
         _task_name = request.task_name #'pick'
+        task_dir = ensure_task_dir(_task_name)
 
         if self.TPGMM_model is not None:
             TPGMM_model = self.TPGMM_model
-            self.get_logger().info("Using in-memory TPGMM model.")
+            self.get_logger().info(f"Using in-memory TPGMM model for '{_task_name}'.")
         else:
-            with open(tasks_dir + f'{_task_name}/TPGMM_model.pkl', 'rb') as fp:
+            with open(task_dir / 'TPGMM_model.pkl', 'rb') as fp:
                 TPGMM_model = pickle.load(fp)
-            self.get_logger().info("Loaded TPGMM model from disk.")
+            self.get_logger().info(f"Loaded TPGMM model for '{_task_name}' from disk.")
 
         if self.demons_info is not None:
             task_demons_info = self.demons_info
         else:
-            with open(tasks_dir + f'{_task_name}/demons_info.pkl', 'rb') as fp:
+            with open(task_dir / 'demons_info.pkl', 'rb') as fp:
                 task_demons_info = pickle.load(fp)
 
         # Sorting the Task Parameters into Frames format
@@ -253,6 +256,12 @@ class TPGMM(Node):
         rnew = TPGMM_model.reproduce(newPP, start_point[1:,:])
         self.get_logger().info(f"... reproduce_time: {time.time() - reproduce_time}")
 
+        ## Saving and Publishing the Original GMM in Cartesian Space
+        original_gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id)
+        self.tpgmm_viz_pub.publish(original_gmm)
+        self.get_logger().info("Original GMM is Published!")
+        response.original_gmm = original_gmm
+
         # Extract origianl means and covariances
         original_mu = torch.zeros((1, TPGMM_model.model.nbStates, 3), device=self.device, dtype=torch.float32)
         original_sigma = torch.zeros((1, TPGMM_model.model.nbStates, 3, 3), device=self.device, dtype=torch.float32)
@@ -268,8 +277,9 @@ class TPGMM(Node):
 
         if self.policy is not None:
             cov_diags = torch.diagonal(original_sigma, dim1=-2, dim2=-1)
-            gmm_features = torch.cat([original_mu.reshape(1, -1), cov_diags.reshape(1, -1)], dim=-1)
-
+            # gmm_features = torch.cat([original_mu.reshape(1, -1), cov_diags.reshape(1, -1)], dim=-1)
+            gmm_features = original_mu.reshape(1, -1)
+            
             sp = request.deformed_tpgmm_start_pose.pose
             sp_tensor = torch.tensor([[sp.position.x, sp.position.y, sp.position.z, sp.orientation.w, sp.orientation.x, sp.orientation.y, sp.orientation.z]], device=self.device, dtype=torch.float32)
             
@@ -321,7 +331,7 @@ class TPGMM(Node):
         self.deformed_regress_traj_pub.publish(regressed_trajectory)
         self.get_logger().info("Deformed Regressed Trajectory is Published!")
 
-        response.gmm = gmm
+        response.deformed_gmm = gmm
         return response
 
 def main(args=None):

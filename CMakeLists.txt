@@ -71,7 +71,9 @@ rclcpp_components_register_node(gmm_moveit_lib PLUGIN "tp_gmm::GMMMoveIt" EXECUT
 # Install Python scripts and modules
 install(PROGRAMS
   scripts/tp_gmm_node.py
+  scripts/collect_trajectories.py
   scripts/collect_trajectories_gen3_ros2.py
+  scripts/demons_to_samples.py
   scripts/validate_policy.py
   scripts/run_experiments.py
   DESTINATION lib/${PROJECT_NAME}
