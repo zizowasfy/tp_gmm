@@ -76,6 +76,8 @@ install(PROGRAMS
   scripts/demons_to_samples.py
   scripts/validate_policy.py
   scripts/run_experiments.py
+  scripts/standalone_policy.py
+  scripts/dir_paths.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
