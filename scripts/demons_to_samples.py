@@ -191,22 +191,20 @@ def process_demonstrations(task_name: str, nbFrames: int = 2, nbStates: int = 5,
                 arr_frame2_A = np.eye(4)
                 arr_frame2_A[1:, 1:] = orient.as_matrix()
 
-        # 2. Read Trajectory Poses
-        dim = 1 + 3  # [index, x, y, z]
-        conc_arr_Data = np.zeros((dim, 1))
-
-        for topic, msg, t in demon_bag.read_messages(topics=[posearray_topic]):
-            for pose_count, pose in enumerate(msg.poses):
-                arr_Data = np.array([[pose_count], [pose.position.x], [pose.position.y], [pose.position.z]])
-                conc_arr_Data = np.concatenate((conc_arr_Data, arr_Data), axis=1)
-
+        # 2. Read Trajectory Poses (take latest non-empty message to avoid concatenating duplicates)
+        posearray_msgs = [msg for _, msg, _ in demon_bag.read_messages(topics=[posearray_topic])]
         demon_bag.close()
 
-        data_points = conc_arr_Data[:, 1:]  # Drop initial zero column
-
-        if data_points.shape[1] == 0:
+        if not posearray_msgs or len(posearray_msgs[-1].poses) == 0:
             print(f"WARNING: Demonstration '{d_path.name}' has 0 trajectory points on topic '{posearray_topic}'.")
             continue
+
+        target_msg = posearray_msgs[-1]
+        dim = 1 + 3  # [index, x, y, z]
+        num_poses = len(target_msg.poses)
+        data_points = np.zeros((dim, num_poses))
+        for pose_count, pose in enumerate(target_msg.poses):
+            data_points[:, pose_count] = [pose_count, pose.position.x, pose.position.y, pose.position.z]
 
         # Keep track of longest demonstration to use as DTW reference
         if data_points.shape[1] > ref_demon['ref_nbpoints']:
