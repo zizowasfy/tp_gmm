@@ -24,31 +24,40 @@ def reproduction_DSGMR(DataIn, model, rr, currPos):
     for t in range(0, len(prodRes)):
         a.Mu[:,:,t] = prodRes[t].Mu
         a.Sigma[:,:,:,t] = prodRes[t].Sigma
-        for i in range(0,model.nbStates):
-            prodRes[t].invSigmaIn = np.dstack((prodRes[t].invSigmaIn, 1/prodRes[t].Sigma[iN, iN,i][0]))
-            prodRes[t].detSigmaIn = np.hstack((prodRes[t].detSigmaIn, prodRes[t].Sigma[iN, iN, i][0]))
+        for i in range(0, model.nbStates):
+            sigma_in = prodRes[t].Sigma[iN, iN, i][0]
+            prodRes[t].invSigmaIn = np.dstack((prodRes[t].invSigmaIn, 1.0 / (sigma_in + 1e-8)))
+            prodRes[t].detSigmaIn = np.hstack((prodRes[t].detSigmaIn, max(sigma_in, 1e-12)))
 
-    currVel = np.zeros(shape=(nbVarOut,1))
+    currVel = np.zeros(shape=(nbVarOut, 1))
     y = np.zeros((len(out), nbData))
     for n in range(0, nbData):
         if len(prodRes) > 1:
             nn = n
         else:
-            nn = 1
+            nn = 0
         for i in range(0, model.nbStates):
-            val = gaussPDFfast(np.reshape(DataIn[:,n], (1,1)), prodRes[nn].Mu[iN, i], prodRes[nn].invSigmaIn[iN,iN,i], prodRes[nn].detSigmaIn[i])
-            a.H[i,n] = model.Priors[i] * np.squeeze(val)
-        a.H[:,n] = a.H[:,n]/np.sum(a.H[:,n])
-        # MuTmp = np.zeros((model.nbVar-len(iN), model.nbStates))
-        currTar = np.zeros((nbVarOut,1))
+            val = gaussPDFfast(np.reshape(DataIn[:, n], (1, 1)), prodRes[nn].Mu[iN, i], prodRes[nn].invSigmaIn[iN, iN, i], prodRes[nn].detSigmaIn[i])
+            a.H[i, n] = model.Priors[i] * np.squeeze(val)
+
+        sum_H = np.sum(a.H[:, n])
+        if sum_H > 0:
+            a.H[:, n] = a.H[:, n] / sum_H
+
+        currTar = np.zeros((nbVarOut, 1))
         for i in range(0, model.nbStates):
-            MuTmp = np.reshape(np.reshape(prodRes[nn].Mu[out,i], (nbVarOut, 1)) + np.reshape(prodRes[nn].Sigma[out, iN, i], (nbVarOut,len(iN))) * 1/prodRes[nn].Sigma[iN,iN,i] * (DataIn[:,n] - prodRes[nn].Mu[iN, i]), (len(out)))
-            currTar = currTar + a.H[i,n] * np.reshape(MuTmp, (nbVarOut,1))
-            # y[:,n] = y[:,n] + a.H[i,n]*MuTmp
+            sigma_in_val = prodRes[nn].Sigma[iN, iN, i]
+            MuTmp = np.reshape(
+                np.reshape(prodRes[nn].Mu[out, i], (nbVarOut, 1)) +
+                np.reshape(prodRes[nn].Sigma[out, iN, i], (nbVarOut, len(iN))) * (1.0 / (sigma_in_val + 1e-8)) * (DataIn[:, n] - prodRes[nn].Mu[iN, i]),
+                (len(out),)
+            )
+            currTar = currTar + a.H[i, n] * np.reshape(MuTmp, (nbVarOut, 1))
+
         currAcc = model.kP * (currTar - currPos) - model.kV * currVel
         currVel = currVel + currAcc * model.dt
         currPos = currPos + currVel * model.dt
-        a.Data[:,n] = np.reshape(np.vstack((DataIn[:,n], currPos)), (nbVarOut + np.size(iN),))
+        a.Data[:, n] = np.reshape(np.vstack((DataIn[:, n], currPos)), (nbVarOut + np.size(iN),))
         # expData, expSigma, Mu, Sigma = process(a.Data, 5, 100)
         # a.Data = np.vstack((DataIn, y))
     return a
