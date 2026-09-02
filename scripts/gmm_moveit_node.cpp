@@ -30,56 +30,46 @@ public:
     void onGMM(const visualization_msgs::msg::MarkerArray::SharedPtr msg)
     {
       moveit_msgs::msg::BoundingVolume bv;
-      shape_msgs::msg::SolidPrimitive sp;
-      visualization_msgs::msg::Marker viz_marker;
       visualization_msgs::msg::MarkerArray viz_markerarray;
 
-      // counting the number of gaussians in MarkerArray
-      int nbGMM = 0;
-      for (size_t id = 0; id < msg->markers.size(); id++)
+      for (const auto & marker : msg->markers)
       {
-        if ( std::sqrt(std::pow(msg->markers[id].pose.position.x, 2) +
-                       std::pow(msg->markers[id].pose.position.y, 2) +
-                       std::pow(msg->markers[id].pose.position.z, 2)) == 0.0 )
-        { break; }
-        nbGMM++;
-      }
-      RCLCPP_INFO(this->get_logger(), "nbGMM = %d", nbGMM);
+        // Only process markers with ADD action; skip DELETE markers
+        if (marker.action != visualization_msgs::msg::Marker::ADD)
+        {
+          continue;
+        }
 
-      for (int g = 0; g < nbGMM; g++)
-      {
+        // Skip degenerate markers with non-positive dimensions
+        if (marker.scale.x <= 0.0 || marker.scale.y <= 0.0 || marker.scale.z <= 0.0)
+        {
+          continue;
+        }
+
+        shape_msgs::msg::SolidPrimitive sp;
         sp.type = shape_msgs::msg::SolidPrimitive::BOX;
-        sp.dimensions = {msg->markers[g].scale.x, msg->markers[g].scale.y, msg->markers[g].scale.z};
+        sp.dimensions = {marker.scale.x, marker.scale.y, marker.scale.z};
         bv.primitives.push_back(sp);
 
-        geometry_msgs::msg::Pose sp_pose;
-        sp_pose.position.x = msg->markers[g].pose.position.x;
-        sp_pose.position.y = msg->markers[g].pose.position.y;
-        sp_pose.position.z = msg->markers[g].pose.position.z;
-        sp_pose.orientation.x = msg->markers[g].pose.orientation.x;
-        sp_pose.orientation.y = msg->markers[g].pose.orientation.y;
-        sp_pose.orientation.z = msg->markers[g].pose.orientation.z;
-        sp_pose.orientation.w = msg->markers[g].pose.orientation.w;
+        geometry_msgs::msg::Pose sp_pose = marker.pose;
         bv.primitive_poses.push_back(sp_pose);
 
         // Visualizing the SolidPrimitive
-        viz_marker.header.frame_id = msg->markers[g].header.frame_id;
-        viz_marker.id = msg->markers[g].id;
+        visualization_msgs::msg::Marker viz_marker;
+        viz_marker.header.frame_id = marker.header.frame_id;
+        viz_marker.header.stamp = this->now();
+        viz_marker.id = marker.id;
         viz_marker.type = visualization_msgs::msg::Marker::CUBE;
         viz_marker.action = visualization_msgs::msg::Marker::ADD;
         viz_marker.pose = sp_pose;
-
-        geometry_msgs::msg::Vector3 v3;
-        v3.x = msg->markers[g].scale.x;
-        v3.y = msg->markers[g].scale.y;
-        v3.z = msg->markers[g].scale.z;
-        viz_marker.scale = v3;
-        viz_marker.color = msg->markers[g].color;
+        viz_marker.scale = marker.scale;
+        viz_marker.color = marker.color;
         viz_marker.color.a = 0.4;
 
         viz_markerarray.markers.push_back(viz_marker);
       }
-      
+
+      RCLCPP_INFO(this->get_logger(), "Published bounding volume with %zu primitives", bv.primitives.size());
       gmm_constraint_pub->publish(bv);
       gmmViz_pub->publish(viz_markerarray);
     }
