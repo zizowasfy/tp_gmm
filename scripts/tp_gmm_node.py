@@ -61,7 +61,7 @@ class TPGMM(Node):
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.policy = None
-        self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-05_21-41-30_ppo_torch/checkpoints/best_agent.pt')
+        self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-01_01-05-26_ppo_torch/checkpoints/best_agent.pt')
         self.declare_parameter('action_scale', 0.15)
 
         ckpt_path = self.get_parameter('policy_ckpt_path').get_parameter_value().string_value

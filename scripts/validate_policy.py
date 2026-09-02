@@ -79,8 +79,11 @@ class PolicyValidator(Node):
         self.declare_parameter('frame_id', frame_id or '')
         self.declare_parameter('group_name', group_name or '')
         self.declare_parameter('ee_link', ee_link or '')
-        self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-05_21-41-30_ppo_torch/checkpoints/best_agent.pt')
+        self.declare_parameter('policy_ckpt_path', '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-26_21-56-10_ppo_torch_nocovariance/checkpoints/best_agent.pt')
+        self.declare_parameter('action_scale', 0.15)
         self.declare_parameter('task_name', 'pick')
+
+        self.action_scale = self.get_parameter('action_scale').get_parameter_value().double_value
 
         # Resolve robot type
         param_robot = self.get_parameter('robot_type').get_parameter_value().string_value
@@ -413,7 +416,7 @@ class PolicyValidator(Node):
                 action_diff_norm = np.linalg.norm(pred_action - rec_action)
                 action_diff_max = np.max(np.abs(pred_action - rec_action))
 
-                action_scale = 0.1
+                action_scale = self.action_scale
                 pred_action_deltas = pred_action.reshape(-1, 3) * action_scale
                 pred_def_mu = rec_orig_mu + pred_action_deltas
 

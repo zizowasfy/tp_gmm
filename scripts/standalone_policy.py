@@ -3,7 +3,7 @@ import torch.nn as nn
 import os
 
 class TPGMMDeformationPolicy(nn.Module):
-    def __init__(self, obs_dim=49, action_dim=15):
+    def __init__(self, obs_dim=34, action_dim=15):
         super().__init__()
         # State preprocessor parameters (RunningStandardScaler from skrl)
         self.register_buffer("running_mean", torch.zeros(obs_dim))
@@ -23,7 +23,7 @@ class TPGMMDeformationPolicy(nn.Module):
         """
         Forward pass for inference. 
         Takes unnormalized observations and outputs the deterministic actions.
-        obs: [batch_size, 49] or [49]
+        obs: [batch_size, obs_dim] or [obs_dim]
         """
         if obs.dim() == 1:
             obs = obs.unsqueeze(0)
@@ -50,7 +50,7 @@ class TPGMMDeformationPolicy(nn.Module):
         
         # The environment uses an action scale to compute offsets:
         # action_deltas = actions * action_scale
-        # In tpgmm_deformation_env_cfg.py, action_scale is 0.1
+        # In tpgmm_deformation_env_cfg.py, action_scale is 0.15
         # It's up to the caller to apply the scale or we can apply it here:
         return actions
 
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         print("Successfully loaded standalone policy!")
         
         # Dummy test
-        dummy_obs = torch.randn(1, 48)
+        dummy_obs = torch.randn(1, policy.running_mean.shape[0])
         with torch.no_grad():
             action = policy(dummy_obs)
         print("Dummy observation output shape:", action.shape)
