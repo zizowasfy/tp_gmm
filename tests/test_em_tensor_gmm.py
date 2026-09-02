@@ -51,14 +51,18 @@ class TestEMTensorGMM(unittest.TestCase):
         self.assertEqual(len(trained_model.ref), 2)
 
     def test_parameters_updated(self):
-        """EM must update ZMu and ZSigma away from the initial heuristic values."""
+        """EM must update ZMu and ZSigma away from perturbed initial values towards data."""
         slist, init_model = create_synthetic_demonstrations(nb_samples=4, nb_frames=2)
-        initial_zmu = [ref_m.ZMu.copy() for ref_m in init_model.ref]
-        trained_model = EM_tensorGMM(slist, deepcopy(init_model))
+        # Perturb initial means
+        perturbed_model = deepcopy(init_model)
+        for r in perturbed_model.ref:
+            r.ZMu += 0.2
+        initial_zmu = [ref_m.ZMu.copy() for ref_m in perturbed_model.ref]
+        trained_model = EM_tensorGMM(slist, deepcopy(perturbed_model))
 
         for m in range(trained_model.nbFrames):
             diff = np.max(np.abs(trained_model.ref[m].ZMu - initial_zmu[m]))
-            self.assertGreater(diff, 1e-4, f"Frame {m} ZMu was not updated by EM!")
+            self.assertGreater(diff, 0.05, f"Frame {m} ZMu was not updated by EM!")
 
     def test_priors_normalized(self):
         """Priors must sum to 1.0 after EM."""

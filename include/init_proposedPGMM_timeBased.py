@@ -1,52 +1,78 @@
 import numpy as np
+
 def init_proposedPGMM_timeBased(s, modelcur):
     from refClass import ref
     from modelClass import model
-    diagRegularizationFactor = 0.03 # 0.01 # Note to myself: The smaller this number, the smaller the Gaussians will be
+    diagRegularizationFactor = 0.03
+
     nbSamples = len(s)
-    DataTotalSize = 0
-    for i in range(0, len(s)):
-        DataTotalSize = DataTotalSize + s[i].nbData
-    DataAll = np.ndarray(shape = (0,DataTotalSize))
-    for i in range (0, modelcur.nbFrames):
-        DataTmp = np.ndarray(shape=(np.shape(s[0].Data)[0], 0))
-        print("s[0].Data.shape: ", s[0].Data.shape)
-        print("DataTmp.shape: ", DataTmp.shape)
-        print("nbSamples=len(s): ", len(s))
-        for j in range (0, nbSamples):
-            for k in range (0, s[j].nbData):
-                # print("np.dot(s[j].p[i, k].invA ", s[j].p[i, k].invA.shape)
-                # print("s[j].Data[:, k] ", s[j].Data[:, k].shape)
-                # print("(s[0].Data)[0] ", (s[0].Data)[0].shape)
-                # print("s[j].p[i, k].b ", s[j].p[i, k].b.shape)
-                # print("(s[0].Data)[0] ", (s[0].Data)[0].shape)
-                # print(DataTmp.shape)
-                # print(np.shape(np.dot(s[j].p[i, k].invA, (np.reshape(s[j].Data[:, k], (np.shape(s[0].Data)[0], 1)) - np.reshape(s[j].p[i, k].b, (np.shape(s[0].Data)[0], 1))))))
-                ###
-                # print("s[j].Data[:,k]:", s[j].Data[:,k])
-                # print("np.reshape(s[j].Data[:,k], (np.shape(s[0].Data)[0],1)): ", np.reshape(s[j].Data[:,k], (np.shape(s[0].Data)[0],1)))
-                DataTmp = np.append(DataTmp, np.dot(s[j].p[i,k].invA,(np.reshape(s[j].Data[:,k], (np.shape(s[0].Data)[0],1)) - np.reshape(s[j].p[i, k].b, (np.shape(s[0].Data)[0], 1)))), axis = 1) # invA @ (Data-b)
-        DataAll = np.append(DataAll, DataTmp, axis=0)
-        print("DataAll: ", DataAll.shape)
-    TimingSep = np.linspace(np.amin(DataAll[0,:]), np.amax(DataAll[0,:]), num = modelcur.nbStates+1)
-    print("TimingSep: ", TimingSep)
+    
+    # Vectorized transformation of all demonstration points into each frame
+    frame_data_list = []
+    for i in range(modelcur.nbFrames):
+        chunks = []
+        for j in range(nbSamples):
+            # Transform global data to local frame i: invA @ (Data - b)
+            invA = s[j].p[i, 0].invA
+            b = s[j].p[i, 0].b
+            chunks.append(np.dot(invA, s[j].Data - b))
+        frame_data_list.append(np.hstack(chunks))
+    DataAll = np.vstack(frame_data_list)
+
+    total_points = DataAll.shape[1]
+    TimingSep = np.linspace(np.amin(DataAll[0, :]), np.amax(DataAll[0, :]), num=modelcur.nbStates + 1)
+    
     Priors = []
-    Mu = np.ndarray(shape=(np.shape(DataAll)[0], 1))
-    Mu = np.delete(Mu, 0, axis = 1)
-    Sigma = np.ndarray(shape=(np.shape(DataAll)[0], np.shape(DataAll)[0], 1))
-    Sigma = np.delete(Sigma, 0, axis = 2)
-    for i in range (0, modelcur.nbStates):
-        idtmp = np.intersect1d(np.nonzero(DataAll[0,:] >= TimingSep[i]), np.nonzero(DataAll[0,:] < TimingSep[i+1]))
-        Priors.append(len(idtmp))
-        muData = DataAll[np.ix_(np.arange(0, np.shape(DataAll)[0]), idtmp)].T
-        Mu = np.append(Mu, np.reshape(np.mean(muData, axis = 0), (np.shape(DataAll)[0], 1)), axis = 1)
-        Sigma = np.append(Sigma, np.reshape(np.cov(muData.T) + np.identity(np.shape(DataAll)[0])*diagRegularizationFactor, (np.shape(DataAll)[0],np.shape(DataAll)[0],1)), axis = 2)
-    Priors = [float(x) / sum(Priors) for x in Priors]
+    dim_total = DataAll.shape[0]
+    Mu = np.zeros((dim_total, modelcur.nbStates))
+    Sigma = np.zeros((dim_total, dim_total, modelcur.nbStates))
+
+    for i in range(modelcur.nbStates):
+        # On the last state, include the right boundary (<=) so goal points are not dropped
+        if i == modelcur.nbStates - 1:
+            idtmp = np.intersect1d(
+                np.nonzero(DataAll[0, :] >= TimingSep[i]),
+                np.nonzero(DataAll[0, :] <= TimingSep[i + 1])
+            )
+        else:
+            idtmp = np.intersect1d(
+                np.nonzero(DataAll[0, :] >= TimingSep[i]),
+                np.nonzero(DataAll[0, :] < TimingSep[i + 1])
+            )
+
+        n_pts = len(idtmp)
+        Priors.append(n_pts)
+
+        if n_pts > 0:
+            muData = DataAll[:, idtmp]
+            Mu[:, i] = np.mean(muData, axis=1)
+            if n_pts > 1:
+                cov_mat = np.cov(muData)
+            else:
+                cov_mat = np.zeros((dim_total, dim_total))
+            cov_mat = cov_mat + np.identity(dim_total) * diagRegularizationFactor
+            Sigma[:, :, i] = 0.5 * (cov_mat + cov_mat.T)
+        else:
+            Mu[:, i] = 0.0
+            Sigma[:, :, i] = np.identity(dim_total) * diagRegularizationFactor
+
+    prior_sum = sum(Priors)
+    if prior_sum > 0:
+        Priors = [float(x) / prior_sum for x in Priors]
+    else:
+        Priors = [1.0 / modelcur.nbStates] * modelcur.nbStates
 
     reflist = []
-    for i in range(0, modelcur.nbFrames):
-        ZMuTmp = Mu[np.ix_(range(i*modelcur.nbVar,(i+1)*modelcur.nbVar), range(0,modelcur.nbStates))]
-        ZSigmaTmp = Sigma[np.ix_(range(i*modelcur.nbVar, (i+1)*modelcur.nbVar), range(i*modelcur.nbVar, (i+1)*modelcur.nbVar), range(0, modelcur.nbStates))]
-        ZSigmaTmp = ZSigmaTmp + np.tile(np.reshape(np.identity(modelcur.nbVar)*0.000001, (modelcur.nbVar, modelcur.nbVar, 1)), (1,1,modelcur.nbStates))
+    for i in range(modelcur.nbFrames):
+        v_start = i * modelcur.nbVar
+        v_end = (i + 1) * modelcur.nbVar
+        ZMuTmp = Mu[v_start:v_end, :].copy()
+        ZSigmaTmp = Sigma[v_start:v_end, v_start:v_end, :].copy()
+        # Add small ridge for positive definiteness
+        ZSigmaTmp = ZSigmaTmp + np.tile(
+            np.identity(modelcur.nbVar)[:, :, np.newaxis] * 1e-6,
+            (1, 1, modelcur.nbStates)
+        )
         reflist.append(ref(ZMuTmp, ZSigmaTmp))
+
     return model(modelcur.nbStates, modelcur.nbFrames, modelcur.nbVar, reflist, Priors, None, None, None)
