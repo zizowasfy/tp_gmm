@@ -78,6 +78,7 @@ install(PROGRAMS
   scripts/run_experiments.py
   scripts/standalone_policy.py
   scripts/dir_paths.py
+  scripts/visualize_demonstrations.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

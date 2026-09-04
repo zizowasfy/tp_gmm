@@ -7,7 +7,7 @@ def EM_tensorGMM(s, model):
     nbMaxSteps = 100
     maxDiffLL = 1e-4
     realmin = sys.float_info[3]
-    diagRegularizationFactor = 1e-5
+    diagRegularizationFactor = 3e-2
 
     nbSamples = len(s)
     nbDataTotal = sum(currSample.nbData for currSample in s)
