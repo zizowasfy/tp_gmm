@@ -1,0 +1,9 @@
+<class_libraries>
+  <library path="gmm_constraint_sampler_lib">
+    <class name="tp_gmm/GMMConstraintSamplerAllocator"
+           type="tp_gmm::GMMConstraintSamplerAllocator"
+           base_class_type="constraint_samplers::ConstraintSamplerAllocator">
+      <description>GMM-based Gaussian density constraint sampler for MoveIt 2 (Approach 1: Cartesian + IK and Approach 2: Joint Space Projection)</description>
+    </class>
+  </library>
+</class_libraries>

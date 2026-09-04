@@ -18,6 +18,7 @@ find_package(std_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(shape_msgs REQUIRED)
 
+find_package(pluginlib REQUIRED)
 find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
@@ -68,6 +69,25 @@ ament_target_dependencies(gmm_moveit_lib
 )
 rclcpp_components_register_node(gmm_moveit_lib PLUGIN "tp_gmm::GMMMoveIt" EXECUTABLE gmm_moveit_node)
 
+add_library(gmm_constraint_sampler_lib SHARED src/gmm_constraint_sampler.cpp)
+target_compile_features(gmm_constraint_sampler_lib PUBLIC c_std_99 cxx_std_17)
+target_include_directories(gmm_constraint_sampler_lib PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+ament_target_dependencies(gmm_constraint_sampler_lib
+  rclcpp
+  pluginlib
+  geometry_msgs
+  visualization_msgs
+  std_msgs
+  moveit_core
+  moveit_ros_planning
+  moveit_msgs
+)
+rosidl_target_interfaces(gmm_constraint_sampler_lib ${PROJECT_NAME} "rosidl_typesupport_cpp")
+pluginlib_export_plugin_description_file(moveit_core gmm_constraint_sampler_plugin_description.xml)
+
 # Install Python scripts and modules
 install(PROGRAMS
   scripts/tp_gmm_node.py
@@ -76,6 +96,7 @@ install(PROGRAMS
   scripts/demons_to_samples.py
   scripts/validate_policy.py
   scripts/run_experiments.py
+  scripts/compare_sampling_approaches.py
   scripts/standalone_policy.py
   scripts/dir_paths.py
   scripts/visualize_demonstrations.py
@@ -88,6 +109,7 @@ install(TARGETS
   gmm_rviz_converter_node
   gmm_moveit_lib
   gmm_moveit_node
+  gmm_constraint_sampler_lib
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}

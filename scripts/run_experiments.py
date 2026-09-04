@@ -49,7 +49,7 @@ ROBOT_CONFIGS = {
 }
 
 class GazeboExperimentRunner(Node):
-    def __init__(self, robot_type="franka_panda", namespace="", task_name="franka_pick_cube", desired_clearance=0.8, obstacle_radius=0.04, ref_robot="auto"):
+    def __init__(self, robot_type="franka_panda", namespace="", task_name="franka_pick_cube", desired_clearance=0.8, obstacle_radius=0.04, ref_robot="auto", sampling_mode="cartesian_ik"):
         super().__init__('gazebo_experiment_runner')
 
         self.robot_type = robot_type
@@ -57,6 +57,7 @@ class GazeboExperimentRunner(Node):
         self.task_name = task_name
         self.desired_clearance = desired_clearance
         self.obstacle_radius = obstacle_radius
+        self.sampling_mode = sampling_mode
 
         cfg = ROBOT_CONFIGS.get(robot_type, ROBOT_CONFIGS["franka_panda"])
         self.frame_id = cfg["frame_id"]
@@ -107,7 +108,16 @@ class GazeboExperimentRunner(Node):
             self.get_logger().error("MoveGroup action server not available!")
             sys.exit(1)
 
-        self.get_logger().info("Experiment Runner Node Ready!")
+        self.get_logger().info(f"Experiment Runner Node Ready! Active Sampling Mode: {self.sampling_mode}")
+
+    def set_sampling_mode(self, mode):
+        """Easily swap the sampling mode at runtime: 'cartesian_ik', 'joint_projected', or 'uniform_box'."""
+        valid_modes = ["cartesian_ik", "joint_projected", "uniform_box"]
+        if mode in valid_modes:
+            self.sampling_mode = mode
+            self.get_logger().info(f"Switched active sampling mode to: '{self.sampling_mode}'")
+        else:
+            self.get_logger().warn(f"Invalid sampling mode '{mode}'. Choose from {valid_modes}")
 
     def gmm_constraint_cb(self, msg):
         self.gmm_bounding_volume = msg
@@ -292,15 +302,29 @@ class GazeboExperimentRunner(Node):
         req.request.goal_constraints.append(goal_constraint)
         
         bv_to_use = self.deformed_gmm_bounding_volume if use_deformed else self.gmm_bounding_volume
-        if apply_constraints and bv_to_use is not None:
-            self.get_logger().info("Enforcing GMM Corridor Path Constraints in MoveGroup...")
+        if apply_constraints:
             path_constraint = Constraints()
-            path_constraint.name = "position_constraint"
             p_const = PositionConstraint()
             p_const.header.frame_id = self.frame_id
             p_const.link_name = self.ee_link
-            p_const.constraint_region = bv_to_use
             p_const.weight = 1.0
+
+            if self.sampling_mode == "joint_projected":
+                self.get_logger().info("Enforcing Approach 2: Direct Joint-Space GMM Projection sampling in MoveGroup...")
+                path_constraint.name = "gmm_joint_projected"
+                if bv_to_use is not None:
+                    p_const.constraint_region = bv_to_use
+            elif self.sampling_mode == "cartesian_ik":
+                self.get_logger().info("Enforcing Approach 1: Cartesian GMM + Warm-Started IK sampling in MoveGroup...")
+                path_constraint.name = "gmm_cartesian_ik"
+                if bv_to_use is not None:
+                    p_const.constraint_region = bv_to_use
+            else: # uniform_box (Approach 3 baseline)
+                self.get_logger().info("Enforcing Approach 3: Uniform Bounding Box corridor sampling in MoveGroup...")
+                path_constraint.name = "position_constraint"
+                if bv_to_use is not None:
+                    p_const.constraint_region = bv_to_use
+
             path_constraint.position_constraints.append(p_const)
             req.request.path_constraints = path_constraint
 
@@ -641,6 +665,9 @@ def main():
     parser.add_argument('--robot', '-r', type=str, default='franka_panda', help='Robot type (default: franka_panda)')
     parser.add_argument('--ref-robot', type=str, default='auto', help="Reference robot for demonstration frame ('auto', 'franka_panda', 'ur10', 'native')")
     parser.add_argument('--clearance', '-c', type=float, default=0.5, help='Desired clearance factor [0.0 - 1.0] (default: 0.5)')
+    parser.add_argument('--sampling-mode', '-s', type=str, default='cartesian_ik',
+                        choices=['cartesian_ik', 'joint_projected', 'uniform_box'],
+                        help="Sampling strategy: 'cartesian_ik' (Approach 1), 'joint_projected' (Approach 2), 'uniform_box' (Approach 3 baseline)")
     parser.add_argument('--auto', action='store_true', default=True, help='Run trials automatically without pausing')
     parser.add_argument('--manual', dest='auto', action='store_false', help='Prompt before each trial')
 
@@ -652,7 +679,8 @@ def main():
         robot_type=args.robot,
         task_name=args.task,
         desired_clearance=args.clearance,
-        ref_robot=args.ref_robot
+        ref_robot=args.ref_robot,
+        sampling_mode=args.sampling_mode
     )
 
     try:

@@ -26,6 +26,7 @@
   <depend>shape_msgs</depend>
 
   <!-- MoveIt Dependencies -->
+  <depend>pluginlib</depend>
   <depend>moveit_core</depend>
   <depend>moveit_ros_planning</depend>
   <depend>moveit_ros_planning_interface</depend>
@@ -42,5 +43,6 @@
 
   <export>
     <build_type>ament_cmake</build_type>
+    <moveit_core plugin="${prefix}/gmm_constraint_sampler_plugin_description.xml"/>
   </export>
 </package>
