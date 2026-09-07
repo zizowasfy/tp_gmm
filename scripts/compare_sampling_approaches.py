@@ -26,9 +26,11 @@ import numpy as np
 
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped, Pose
-from std_msgs.msg import String
+from geometry_msgs.msg import PoseStamped, Pose, Point
+from std_msgs.msg import String, ColorRGBA
+from visualization_msgs.msg import Marker, MarkerArray
 from moveit_msgs.msg import DisplayTrajectory, RobotTrajectory
+from moveit_msgs.srv import GetPositionFK
 
 from ament_index_python.packages import get_package_share_directory
 pkg_share = get_package_share_directory('tp_gmm')
@@ -59,6 +61,29 @@ class SamplingBenchmarkRunner(GazeboExperimentRunner):
             10
         )
 
+        # FK service client for extracting 3D Cartesian paths
+        self.fk_client = self.create_client(
+            GetPositionFK,
+            f"{self.namespace}/compute_fk" if self.namespace else "/compute_fk"
+        )
+
+        # Publishers for displaying planned trajectories and simultaneous 3D comparison path ribbons
+        self.display_path_pub = self.create_publisher(
+            DisplayTrajectory,
+            f"{self.namespace}/display_planned_path",
+            10
+        )
+        self.paths_marker_pub = self.create_publisher(
+            MarkerArray,
+            "/comparison_planned_paths",
+            10
+        )
+        self.sample_marker_pub = self.create_publisher(
+            Marker,
+            "/gmm_sampling_visualization",
+            10
+        )
+
     def display_trajectory_cb(self, msg: DisplayTrajectory):
         if msg.trajectory:
             self.last_planned_trajectory = msg.trajectory[-1]
@@ -69,7 +94,109 @@ class SamplingBenchmarkRunner(GazeboExperimentRunner):
         except Exception:
             pass
 
-    def plan_only(self, target_pose, apply_constraints=True, use_deformed=True, planning_time=10.0):
+    def clear_visualizations(self):
+        """Clears previously displayed 3D paths and sample markers in RViz."""
+        # Clear 3D paths
+        del_paths = MarkerArray()
+        m = Marker()
+        m.action = Marker.DELETEALL
+        del_paths.markers.append(m)
+        self.paths_marker_pub.publish(del_paths)
+
+        # Clear sample markers
+        del_samples = Marker()
+        del_samples.action = Marker.DELETEALL
+        self.sample_marker_pub.publish(del_samples)
+
+    def visualize_trajectory(self, traj: RobotTrajectory):
+        """Publishes trajectory to /display_planned_path so MoveIt animates the robot in RViz."""
+        if not traj or not traj.joint_trajectory.points:
+            return
+        disp = DisplayTrajectory()
+        disp.model_id = self.group_name
+        disp.trajectory = [traj]
+        self.display_path_pub.publish(disp)
+
+    def get_trajectory_ee_points(self, traj: RobotTrajectory):
+        """Extracts 3D Cartesian coordinates of ee_link along the trajectory using /compute_fk."""
+        if not traj or not traj.joint_trajectory.points:
+            return []
+
+        if not self.fk_client.service_is_ready():
+            if not self.fk_client.wait_for_service(timeout_sec=1.0):
+                return []
+
+        joint_names = traj.joint_trajectory.joint_names
+        points = traj.joint_trajectory.points
+        ee_points = []
+
+        # Sample waypoints along trajectory (up to 40 waypoints for responsive rendering)
+        step = max(1, len(points) // 40)
+        sampled_pts = points[::step]
+        if points[-1] not in sampled_pts:
+            sampled_pts.append(points[-1])
+
+        for pt in sampled_pts:
+            fk_req = GetPositionFK.Request()
+            fk_req.header.frame_id = self.frame_id
+            fk_req.fk_link_names = [self.ee_link]
+            fk_req.robot_state.joint_state.name = joint_names
+            fk_req.robot_state.joint_state.position = list(pt.positions)
+
+            future = self.fk_client.call_async(fk_req)
+            rclpy.spin_until_future_complete(self, future, timeout_sec=0.2)
+            res = future.result()
+            if res and res.error_code.val == 1 and res.pose_stamped:
+                ee_points.append(res.pose_stamped[0].pose.position)
+
+        return ee_points
+
+    def publish_comparison_paths(self, all_trajectories: dict):
+        """Publishes simultaneous 3D line strips for all planned modes on /comparison_planned_paths."""
+        marker_array = MarkerArray()
+
+        color_map = {
+            "default_unconstrained": (0.9, 0.2, 0.2, 0.95),  # Crimson Red
+            "uniform_box":           (1.0, 0.75, 0.0, 0.95), # Amber / Gold
+            "cartesian_ik":          (0.05, 0.95, 0.3, 0.95),# Emerald Green
+            "joint_projected":       (0.0, 0.85, 1.0, 0.95), # Electric Cyan
+        }
+
+        for idx, (mode, traj) in enumerate(all_trajectories.items()):
+            if not traj:
+                continue
+            ee_points = self.get_trajectory_ee_points(traj)
+            if len(ee_points) < 2:
+                continue
+
+            marker = Marker()
+            marker.header.frame_id = self.frame_id
+            marker.header.stamp = self.get_clock().now().to_msg()
+            marker.ns = f"path_{mode}"
+            marker.id = idx + 100
+            marker.type = Marker.LINE_STRIP
+            marker.action = Marker.ADD
+            marker.scale.x = 0.008  # 8mm line thickness
+
+            r, g, b, a = color_map.get(mode, (0.7, 0.7, 0.7, 0.9))
+            marker.color.r = float(r)
+            marker.color.g = float(g)
+            marker.color.b = float(b)
+            marker.color.a = float(a)
+
+            for p in ee_points:
+                pt = Point()
+                pt.x = p.x
+                pt.y = p.y
+                pt.z = p.z
+                marker.points.append(pt)
+
+            marker_array.markers.append(marker)
+
+        if marker_array.markers:
+            self.paths_marker_pub.publish(marker_array)
+
+    def plan_only(self, target_pose, apply_constraints=True, use_deformed=True, planning_time=3.0):
         """Sends planning request to MoveGroup with plan_only=True to evaluate without moving the robot."""
         from moveit_msgs.action import MoveGroup
         from moveit_msgs.msg import Constraints, PositionConstraint
@@ -166,7 +293,7 @@ def compute_trajectory_metrics(traj: RobotTrajectory, obs_center: np.ndarray, ob
     }
 
 
-def run_benchmark(trials=5, modes=None, clearance=0.5):
+def run_benchmark(trials=5, modes=None, clearance=0.5, delay=2.0, step=False, replay=False):
     if modes is None:
         modes = ["default_unconstrained", "uniform_box", "cartesian_ik", "joint_projected"]
     else:
@@ -202,6 +329,11 @@ def run_benchmark(trials=5, modes=None, clearance=0.5):
 
     for trial_idx in range(1, trials + 1):
         print(f"\n--- [Trial {trial_idx}/{trials}] Setting up Randomized Scenario ---")
+
+        # Clear previous markers so this trial starts with a clean visual scene
+        runner.clear_visualizations()
+        time.sleep(0.1)
+        planned_trajectories = {}
 
         # 1. Sample randomized scene
         start_x = float(np.random.uniform(0.22, 0.35))
@@ -265,10 +397,21 @@ def run_benchmark(trials=5, modes=None, clearance=0.5):
             apply_constraints = (mode != "default_unconstrained")
             success, plan_time_ms, traj, stats = runner.plan_only(goal_pose, apply_constraints=apply_constraints)
 
+            if success and traj:
+                planned_trajectories[mode] = traj
+                runner.visualize_trajectory(traj)
+
             metrics = compute_trajectory_metrics(traj, np.array([obs_x, obs_y, obs_z]))
-            samples_drawn = int(stats.get("samples_drawn", 0)) if stats else None
-            samples_accepted = int(stats.get("samples_accepted", 0)) if stats else None
-            sampling_rate_pct = ((samples_accepted / max(1, samples_drawn)) * 100.0) if (stats and samples_drawn and samples_drawn > 0) else None
+            if stats:
+                samples_drawn = int(stats.get("samples_drawn", 0))
+                samples_accepted = int(stats.get("samples_accepted", 0))
+                sampling_rate_pct = (samples_accepted / max(1, samples_drawn)) * 100.0 if samples_drawn > 0 else 0.0
+                samples_info = f"Samples: {samples_drawn:4d} (Valid: {samples_accepted:3d}, {sampling_rate_pct:4.1f}%)"
+            else:
+                samples_drawn = None
+                samples_accepted = None
+                sampling_rate_pct = None
+                samples_info = "Samples:    N/A (Workspace Sampling)"
 
             trial_record = {
                 "trial": trial_idx,
@@ -285,14 +428,34 @@ def run_benchmark(trials=5, modes=None, clearance=0.5):
             results[mode].append(trial_record)
 
             status_str = "SUCCESS" if success else "FAILED"
-            if stats and samples_drawn is not None:
-                samples_info = f"Samples: {samples_drawn:4d} (Valid: {samples_accepted:3d}, {sampling_rate_pct:4.1f}%)"
-            else:
-                samples_info = "Samples:    N/A (Workspace Sampling)"
-
             print(f"  [{mode:21s}] {status_str:7s} | Plan Time: {plan_time_ms:6.1f} ms | "
                   f"{samples_info} | "
                   f"Waypoints: {metrics['num_waypoints']:3d} | Joint Len: {metrics['joint_path_length']:.2f} rad")
+
+            # Allow user to inspect this mode's plan and samples in RViz
+            if success and traj:
+                if step:
+                    try:
+                        input(f"    --> [{mode}] displayed in RViz. Press [Enter] for next mode...")
+                    except Exception:
+                        pass
+                elif delay > 0:
+                    time.sleep(delay)
+
+        # 4. Render simultaneous 3D comparison path ribbons in RViz
+        if planned_trajectories:
+            runner.publish_comparison_paths(planned_trajectories)
+            print(f"  --> 3D Path ribbons for all modes published to /comparison_planned_paths.")
+
+        # 5. Optional Replay of all modes at end of trial
+        if replay and planned_trajectories:
+            print(f"\n  [RViz Replay] Cycling through all planned modes for Trial {trial_idx}:")
+            for m in modes:
+                t = planned_trajectories.get(m)
+                if t:
+                    print(f"    -> Animating [{m}] in RViz...")
+                    runner.visualize_trajectory(t)
+                    time.sleep(delay if delay > 0 else 2.0)
 
     # 4. Print Summary Comparison Table
     print_comparison_summary(results, mode_names)
@@ -334,9 +497,12 @@ def print_comparison_summary(results, mode_names):
                 samples_str = f"{avg_samples:5.1f} ± {std_samples:4.1f}"
 
                 rates = [r["sampling_rate_pct"] for r in successes if r["sampling_rate_pct"] is not None]
-                avg_rate = np.mean(rates)
-                std_rate = np.std(rates)
-                rate_str = f"{avg_rate:4.1f} ± {std_rate:3.1f} %"
+                if rates:
+                    avg_rate = np.mean(rates)
+                    std_rate = np.std(rates)
+                    rate_str = f"{avg_rate:4.1f} ± {std_rate:3.1f} %"
+                else:
+                    rate_str = "N/A"
             else:
                 samples_str = "N/A (Workspace)"
                 rate_str = "N/A"
@@ -364,11 +530,18 @@ def main():
     parser.add_argument('--clearance', '-c', type=float, default=0.5, help='Clearance factor [0.0 - 1.0] (default: 0.5)')
     parser.add_argument('--modes', nargs='+', default=['default_unconstrained', 'uniform_box', 'cartesian_ik', 'joint_projected'],
                         help="Modes to test ('default_unconstrained', 'uniform_box', 'cartesian_ik', 'joint_projected')")
+    parser.add_argument('--delay', '-d', type=float, default=2.0,
+                        help="Seconds to pause and view each mode's plan in RViz (default: 2.0s, set 0 to disable)")
+    parser.add_argument('--step', action='store_true', default=False,
+                        help="Interactive step mode: pauses after each mode plan until [Enter] is pressed")
+    parser.add_argument('--replay', action='store_true', default=False,
+                        help="Replay all planned mode trajectories sequentially at the end of each trial")
 
     args, ros_args = parser.parse_known_args()
     rclpy.init(args=ros_args if ros_args else None)
 
-    run_benchmark(trials=args.trials, modes=args.modes, clearance=args.clearance)
+    run_benchmark(trials=args.trials, modes=args.modes, clearance=args.clearance,
+                  delay=args.delay, step=args.step, replay=args.replay)
 
 
 if __name__ == "__main__":

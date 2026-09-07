@@ -100,18 +100,24 @@ bool GMMConstraintSampler::configure(const moveit_msgs::msg::Constraints& constr
   {
     mode_ = SamplingMode::JOINT_PROJECTED;
     sampler_name_ = "GMMConstraintSampler_JointProjected";
+    sample_marker_.ns = "samples_joint_projected";
+    sample_marker_.id = 2;
     RCLCPP_INFO(getLogger(), "Configured in Approach 2: Direct Joint-Space GMM Projection mode.");
   }
   else if (constr.name == "gmm_uniform_box")
   {
     mode_ = SamplingMode::UNIFORM_BOX;
     sampler_name_ = "GMMConstraintSampler_UniformBox";
+    sample_marker_.ns = "samples_uniform_box";
+    sample_marker_.id = 3;
     RCLCPP_INFO(getLogger(), "Configured in Approach 3: Baseline Uniform Bounding Box Corridor mode.");
   }
   else
   {
     mode_ = SamplingMode::CARTESIAN_IK;
     sampler_name_ = "GMMConstraintSampler_CartesianIK";
+    sample_marker_.ns = "samples_cartesian_ik";
+    sample_marker_.id = 1;
     RCLCPP_INFO(getLogger(), "Configured in Approach 1: Cartesian GMM + Warm-Started IK mode.");
   }
 
@@ -591,21 +597,44 @@ void GMMConstraintSampler::publishVisualSample(const Eigen::Vector3d& point, boo
   p.z = point.z();
 
   std_msgs::msg::ColorRGBA color;
-  if (accepted)
+  if (mode_ == SamplingMode::JOINT_PROJECTED)
   {
-    // Vibrant green for valid accepted samples
-    color.r = 0.1f;
-    color.g = 0.9f;
-    color.b = 0.3f;
-    color.a = 0.8f;
+    if (accepted)
+    {
+      // Electric Cyan / Blue for Joint Projection
+      color.r = 0.0f; color.g = 0.85f; color.b = 1.0f; color.a = 0.85f;
+    }
+    else
+    {
+      // Magenta / Purple for rejected
+      color.r = 0.85f; color.g = 0.15f; color.b = 0.85f; color.a = 0.35f;
+    }
   }
-  else
+  else if (mode_ == SamplingMode::UNIFORM_BOX)
   {
-    // Red/orange for collision/IK rejected samples
-    color.r = 0.9f;
-    color.g = 0.2f;
-    color.b = 0.1f;
-    color.a = 0.3f;
+    if (accepted)
+    {
+      // Bright Amber / Gold for Uniform Box
+      color.r = 1.0f; color.g = 0.75f; color.b = 0.0f; color.a = 0.85f;
+    }
+    else
+    {
+      // Rust / Dark Orange for rejected
+      color.r = 0.75f; color.g = 0.35f; color.b = 0.0f; color.a = 0.35f;
+    }
+  }
+  else // CARTESIAN_IK
+  {
+    if (accepted)
+    {
+      // Vibrant Emerald Green for Cartesian GMM
+      color.r = 0.05f; color.g = 0.95f; color.b = 0.3f; color.a = 0.85f;
+    }
+    else
+    {
+      // Bright Red for rejected
+      color.r = 0.95f; color.g = 0.15f; color.b = 0.15f; color.a = 0.35f;
+    }
   }
 
   sample_marker_.header.stamp = rclcpp::Clock().now();

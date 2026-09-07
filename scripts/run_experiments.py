@@ -300,7 +300,7 @@ class GazeboExperimentRunner(Node):
         goal_constraint.orientation_constraints.append(ori_constraint)
         return goal_constraint
 
-    def plan_and_execute(self, target_pose, apply_constraints=False, use_deformed=True, planning_time=10.0):
+    def plan_and_execute(self, target_pose, apply_constraints=False, use_deformed=True, planning_time=3.0):
         """Plans and executes motion to target_pose with optional GMM corridor constraints."""
         req = MoveGroup.Goal()
         req.request.group_name = self.group_name
