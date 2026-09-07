@@ -3,8 +3,10 @@
 #include <rclcpp/logging.hpp>
 #include <geometry_msgs/msg/point.hpp>
 #include <std_msgs/msg/color_rgba.hpp>
+#include <std_msgs/msg/string.hpp>
 
 #include <cmath>
+#include <sstream>
 #include <algorithm>
 
 namespace tp_gmm
@@ -27,11 +29,13 @@ GMMConstraintSampler::GMMConstraintSampler(
     const std::string& group_name,
     tp_gmm::msg::GaussianMixture::ConstSharedPtr gmm_msg,
     SamplingMode mode,
-    rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr viz_pub)
+    rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr viz_pub,
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr stats_pub)
   : constraint_samplers::ConstraintSampler(scene, group_name)
   , mode_(mode)
   , gmm_msg_(std::move(gmm_msg))
   , viz_pub_(std::move(viz_pub))
+  , stats_pub_(std::move(stats_pub))
 {
   rng_.seed(std::random_device{}());
 
@@ -47,9 +51,43 @@ GMMConstraintSampler::GMMConstraintSampler(
   sample_marker_.color.a = 0.8;
 }
 
+GMMConstraintSampler::~GMMConstraintSampler()
+{
+  publishSamplingStats(true);
+  RCLCPP_INFO(getLogger(), "[%s] Destroyed. Total samples drawn: %zu, accepted: %zu (rate: %.1f%%)",
+              sampler_name_.c_str(), samples_drawn_, samples_accepted_,
+              samples_drawn_ > 0 ? (100.0 * static_cast<double>(samples_accepted_) / samples_drawn_) : 0.0);
+}
+
+void GMMConstraintSampler::publishSamplingStats(bool is_final)
+{
+  if (!stats_pub_) return;
+
+  std::string mode_str = "cartesian_ik";
+  if (mode_ == SamplingMode::JOINT_PROJECTED) mode_str = "joint_projected";
+  else if (mode_ == SamplingMode::UNIFORM_BOX) mode_str = "uniform_box";
+
+  double rate = samples_drawn_ > 0 ? (static_cast<double>(samples_accepted_) / static_cast<double>(samples_drawn_)) : 0.0;
+
+  std::stringstream ss;
+  ss << "{"
+     << "\"mode\":\"" << mode_str << "\","
+     << "\"samples_drawn\":" << samples_drawn_ << ","
+     << "\"samples_accepted\":" << samples_accepted_ << ","
+     << "\"rate\":" << rate << ","
+     << "\"final\":" << (is_final ? "true" : "false")
+     << "}";
+
+  std_msgs::msg::String msg;
+  msg.data = ss.str();
+  stats_pub_->publish(msg);
+}
+
 bool GMMConstraintSampler::configure(const moveit_msgs::msg::Constraints& constr)
 {
   clear();
+  samples_drawn_ = 0;
+  samples_accepted_ = 0;
 
   if (!jmg_)
   {
@@ -63,6 +101,12 @@ bool GMMConstraintSampler::configure(const moveit_msgs::msg::Constraints& constr
     mode_ = SamplingMode::JOINT_PROJECTED;
     sampler_name_ = "GMMConstraintSampler_JointProjected";
     RCLCPP_INFO(getLogger(), "Configured in Approach 2: Direct Joint-Space GMM Projection mode.");
+  }
+  else if (constr.name == "gmm_uniform_box")
+  {
+    mode_ = SamplingMode::UNIFORM_BOX;
+    sampler_name_ = "GMMConstraintSampler_UniformBox";
+    RCLCPP_INFO(getLogger(), "Configured in Approach 3: Baseline Uniform Bounding Box Corridor mode.");
   }
   else
   {
@@ -97,37 +141,132 @@ bool GMMConstraintSampler::configure(const moveit_msgs::msg::Constraints& constr
   RCLCPP_INFO(getLogger(), "Using end-effector link '%s' for group '%s'",
               ee_link_->getName().c_str(), jmg_->getName().c_str());
 
-  if (!gmm_msg_ || gmm_msg_->gaussians.empty())
-  {
-    RCLCPP_WARN(getLogger(), "No GMM data available in GMMConstraintSampler. Cannot configure.");
-    return false;
-  }
-
-  if (!parseGMMMessage(*gmm_msg_))
-  {
-    RCLCPP_ERROR(getLogger(), "Failed to parse GaussianMixture message.");
-    return false;
-  }
-
-  // Determine nominal orientation
-  Eigen::Quaterniond default_orientation(1.0, 0.0, 0.0, 0.0); // Default downward orientation
+  // Determine nominal orientation:
+  // 1. If an orientation constraint was provided, use it.
+  // 2. Otherwise, inherit the current end-effector orientation from the planning scene (e.g. current robot pose).
+  // 3. Fallback to standard Franka downward orientation (w=0, x=1, y=0, z=0: 180 deg around X).
   if (!constr.orientation_constraints.empty())
   {
     const auto& q_msg = constr.orientation_constraints[0].orientation;
-    default_orientation = Eigen::Quaterniond(q_msg.w, q_msg.x, q_msg.y, q_msg.z);
-    default_orientation.normalize();
+    default_orientation_ = Eigen::Quaterniond(q_msg.w, q_msg.x, q_msg.y, q_msg.z);
+    default_orientation_.normalize();
+    RCLCPP_INFO(getLogger(), "[GMMConstraintSampler] Nominal orientation set from OrientationConstraint: [w=%.3f, x=%.3f, y=%.3f, z=%.3f]",
+                default_orientation_.w(), default_orientation_.x(), default_orientation_.y(), default_orientation_.z());
   }
-
-  for (auto& comp : components_)
+  else if (scene_ && ee_link_)
   {
-    comp.orientation = default_orientation;
+    Eigen::Matrix3d current_rot = scene_->getCurrentState().getGlobalLinkTransform(ee_link_).rotation();
+    default_orientation_ = Eigen::Quaterniond(current_rot);
+    default_orientation_.normalize();
+    RCLCPP_INFO(getLogger(), "[GMMConstraintSampler] Nominal orientation inherited from current robot state: [w=%.3f, x=%.3f, y=%.3f, z=%.3f]",
+                default_orientation_.w(), default_orientation_.x(), default_orientation_.y(), default_orientation_.z());
+  }
+  else
+  {
+    default_orientation_ = Eigen::Quaterniond(0.0, 1.0, 0.0, 0.0);
+    RCLCPP_INFO(getLogger(), "[GMMConstraintSampler] Nominal orientation defaulted to downward: [w=0.0, x=1.0, y=0.0, z=0.0]");
   }
 
-  precomputeNominalJointStatesAndJacobians();
+  // Parse GMM components if message is available
+  if (gmm_msg_ && !gmm_msg_->gaussians.empty())
+  {
+    if (parseGMMMessage(*gmm_msg_))
+    {
+      for (auto& comp : components_)
+      {
+        comp.orientation = default_orientation_;
+      }
+      precomputeNominalJointStatesAndJacobians();
+    }
+  }
+
+  // Approach 3: Uniform Bounding Box configuration
+  if (mode_ == SamplingMode::UNIFORM_BOX)
+  {
+    uniform_boxes_.clear();
+    box_weights_.clear();
+
+    if (!constr.position_constraints.empty())
+    {
+      const auto& region = constr.position_constraints[0].constraint_region;
+      for (size_t i = 0; i < region.primitives.size() && i < region.primitive_poses.size(); ++i)
+      {
+        const auto& prim = region.primitives[i];
+        const auto& pose = region.primitive_poses[i];
+        if (prim.type == shape_msgs::msg::SolidPrimitive::BOX && prim.dimensions.size() >= 3)
+        {
+          BoundingBoxData b;
+          b.half_extents = Eigen::Vector3d(prim.dimensions[0] * 0.5,
+                                           prim.dimensions[1] * 0.5,
+                                           prim.dimensions[2] * 0.5);
+          b.center = Eigen::Vector3d(pose.position.x, pose.position.y, pose.position.z);
+          b.orientation = Eigen::Quaterniond(pose.orientation.w, pose.orientation.x, pose.orientation.y, pose.orientation.z);
+          b.orientation.normalize();
+          b.volume = prim.dimensions[0] * prim.dimensions[1] * prim.dimensions[2];
+          uniform_boxes_.push_back(b);
+          box_weights_.push_back(std::max(b.volume, 1e-6));
+        }
+      }
+    }
+
+    // Fallback: build bounding boxes from GMM components if no box primitives specified
+    if (uniform_boxes_.empty() && !components_.empty())
+    {
+      for (const auto& comp : components_)
+      {
+        BoundingBoxData b;
+        Eigen::Vector3d diag = comp.cov_cartesian.diagonal().cwiseSqrt();
+        b.half_extents = 2.5 * diag;
+        b.center = comp.mean;
+        b.orientation = comp.orientation;
+        b.volume = 8.0 * b.half_extents.x() * b.half_extents.y() * b.half_extents.z();
+        uniform_boxes_.push_back(b);
+        box_weights_.push_back(std::max(b.volume, 1e-6));
+      }
+    }
+
+    if (uniform_boxes_.empty())
+    {
+      RCLCPP_ERROR(getLogger(), "UNIFORM_BOX mode requested but no bounding box primitives found!");
+      return false;
+    }
+
+    box_dist_ = std::discrete_distribution<int>(box_weights_.begin(), box_weights_.end());
+    is_valid_ = true;
+    RCLCPP_INFO(getLogger(), "GMMConstraintSampler successfully configured in UNIFORM_BOX mode with %zu bounding boxes.",
+                uniform_boxes_.size());
+
+    // Publish initial box centers preview
+    if (viz_pub_)
+    {
+      for (const auto& b : uniform_boxes_)
+      {
+        publishVisualSample(b.center, true);
+      }
+    }
+    return true;
+  }
+
+  // Approaches 1 & 2 require GMM components
+  if (components_.empty())
+  {
+    RCLCPP_ERROR(getLogger(), "No valid GMM components available to configure GMMConstraintSampler.");
+    return false;
+  }
 
   is_valid_ = !components_.empty();
   RCLCPP_INFO(getLogger(), "GMMConstraintSampler successfully configured with %zu Gaussian components.",
               components_.size());
+
+  // Immediately publish initial preview of GMM centers to /gmm_sampling_visualization
+  if (is_valid_ && viz_pub_)
+  {
+    for (const auto& comp : components_)
+    {
+      publishVisualSample(comp.mean, true);
+    }
+  }
+
   return is_valid_;
 }
 
@@ -150,44 +289,41 @@ bool GMMConstraintSampler::parseGMMMessage(const tp_gmm::msg::GaussianMixture& m
       // 4D TP-GMM: [time, x, y, z] -> extract spatial coordinates [1, 2, 3]
       comp.mean = Eigen::Vector3d(g.means[1], g.means[2], g.means[3]);
 
-      comp.cov_cartesian.setZero();
-      for (size_t r = 0; r < 3; ++r)
+      // Extract 3x3 spatial block from 4x4 covariance matrix
+      Eigen::Matrix3d cov;
+      for (int r = 0; r < 3; ++r)
       {
-        for (size_t c = 0; c < 3; ++c)
+        for (int c = 0; c < 3; ++c)
         {
-          size_t idx = (r + 1) * 4 + (c + 1);
-          if (idx < g.covariances.size())
-            comp.cov_cartesian(r, c) = g.covariances[idx];
+          cov(r, c) = g.covariances[(r + 1) * 4 + (c + 1)];
         }
       }
+      comp.cov_cartesian = cov;
     }
-    else if (dim >= 3)
+    else if (dim == 3)
     {
-      // 3D GMM: [x, y, z]
       comp.mean = Eigen::Vector3d(g.means[0], g.means[1], g.means[2]);
-
-      comp.cov_cartesian.setZero();
-      for (size_t r = 0; r < 3; ++r)
+      Eigen::Matrix3d cov;
+      for (int r = 0; r < 3; ++r)
       {
-        for (size_t c = 0; c < 3; ++c)
+        for (int c = 0; c < 3; ++c)
         {
-          size_t idx = r * dim + c;
-          if (idx < g.covariances.size())
-            comp.cov_cartesian(r, c) = g.covariances[idx];
+          cov(r, c) = g.covariances[r * 3 + c];
         }
       }
+      comp.cov_cartesian = cov;
     }
     else
     {
-      RCLCPP_ERROR(getLogger(), "Gaussian dimension %zu is less than 3! Cannot use for 3D sampling.", dim);
+      RCLCPP_ERROR(getLogger(), "Unsupported Gaussian dimensionality: %zu", dim);
       return false;
     }
 
-    // Ensure symmetry and positive definiteness via small diagonal regularization
+    // Symmetrize and add small regularizer for positive definiteness
     comp.cov_cartesian = 0.5 * (comp.cov_cartesian + comp.cov_cartesian.transpose());
-    comp.cov_cartesian += 1e-5 * Eigen::Matrix3d::Identity();
+    comp.cov_cartesian += 1e-4 * Eigen::Matrix3d::Identity();
 
-    // Cholesky decomposition of 3x3 Cartesian covariance: Sigma = L * L^T
+    // Compute Cholesky factorization Sigma = L * L^T for efficient sampling
     Eigen::LLT<Eigen::Matrix3d> llt(comp.cov_cartesian);
     if (llt.info() == Eigen::Success)
     {
@@ -195,20 +331,18 @@ bool GMMConstraintSampler::parseGMMMessage(const tp_gmm::msg::GaussianMixture& m
     }
     else
     {
-      // Extra regularization if ill-conditioned
-      Eigen::Matrix3d reg = comp.cov_cartesian + 1e-4 * Eigen::Matrix3d::Identity();
-      Eigen::LLT<Eigen::Matrix3d> llt_reg(reg);
-      comp.cholesky_L_x = llt_reg.matrixL();
+      // Fallback: eigenvalue decomposition for semi-definite matrices
+      Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> es(comp.cov_cartesian);
+      Eigen::Vector3d eigenvalues = es.eigenvalues().cwiseMax(1e-4);
+      comp.cholesky_L_x = es.eigenvectors() * eigenvalues.cwiseSqrt().asDiagonal();
     }
 
-    double w = (i < msg.weights.size()) ? static_cast<double>(msg.weights[i]) : 1.0;
-    if (w <= 0.0) w = 1e-4;
-
-    weights_.push_back(w);
+    double weight = (i < msg.weights.size()) ? msg.weights[i] : 1.0;
+    weights_.push_back(std::max(weight, 1e-6));
     components_.push_back(comp);
   }
 
-  // Normalize weights
+  // Normalize component weights
   double total_weight = 0.0;
   for (double w : weights_) total_weight += w;
   if (total_weight > 0.0)
@@ -253,6 +387,8 @@ void GMMConstraintSampler::precomputeNominalJointStatesAndJacobians()
       // Fallback: use reference state joint values
       comp.nominal_joint_positions = previous_joint_positions;
     }
+    RCLCPP_INFO(getLogger(), "[GMMConstraintSampler] Component %zu nominal IK %s (pos: [%.2f, %.2f, %.2f])",
+                k, ik_success ? "SUCCEEDED" : "FAILED (using fallback)", comp.mean.x(), comp.mean.y(), comp.mean.z());
 
     // Approach 2: Compute Joint-Space Covariance via First-Order Jacobian Projection
     if (mode_ == SamplingMode::JOINT_PROJECTED)
@@ -264,28 +400,27 @@ void GMMConstraintSampler::precomputeNominalJointStatesAndJacobians()
       Eigen::MatrixXd J;
       temp_state.getJacobian(jmg_, ee_link_, Eigen::Vector3d::Zero(), J);
 
-      // Position Jacobian (3 x num_joints)
-      Eigen::MatrixXd J_pos = J.topRows(3);
+      // Extract translational part J_v (3 x num_joints)
+      Eigen::MatrixXd J_v = J.topRows(3);
 
-      // Damped Moore-Penrose pseudo-inverse: J_dag = J^T * (J * J^T + lambda^2 * I)^(-1)
-      double lambda = 0.01;
-      Eigen::Matrix3d JJt = J_pos * J_pos.transpose() + (lambda * lambda) * Eigen::Matrix3d::Identity();
-      Eigen::MatrixXd J_dag = J_pos.transpose() * JJt.inverse();
+      // Damped pseudo-inverse: J_pinv = J_v^T * (J_v * J_v^T + lambda^2 * I)^(-1)
+      double lambda = 0.05;
+      Eigen::Matrix3d J_damped = J_v * J_v.transpose() + lambda * lambda * Eigen::Matrix3d::Identity();
+      Eigen::MatrixXd J_pinv = J_v.transpose() * J_damped.inverse();
 
-      // Null space projection matrix: N = (I - J_dag * J_pos)
+      // Joint covariance projection: Sigma_q = J_pinv * Sigma_x * J_pinv^T + regularizer
+      comp.cov_joint = J_pinv * comp.cov_cartesian * J_pinv.transpose();
+
+      // Null-space variance to allow exploration without changing end-effector pose
       Eigen::MatrixXd I_n = Eigen::MatrixXd::Identity(num_joints, num_joints);
-      Eigen::MatrixXd N = I_n - J_dag * J_pos;
+      Eigen::MatrixXd N = I_n - J_pinv * J_v;
+      double nullspace_var = 0.005; // 0.005 rad^2 exploration variance
+      comp.cov_joint += nullspace_var * (N * N.transpose());
 
-      // Joint covariance: Sigma_q = J_dag * Sigma_x * J_dag^T + sigma_null^2 * (N * N^T) + eps * I
-      double sigma_null = 0.05; // 0.05 rad variance along null space
-      comp.cov_joint = J_dag * comp.cov_cartesian * J_dag.transpose()
-                       + (sigma_null * sigma_null) * (N * N.transpose())
-                       + 1e-5 * I_n;
+      // Regularize for numerical stability
+      comp.cov_joint += 1e-4 * I_n;
 
-      // Ensure exact symmetry
-      comp.cov_joint = 0.5 * (comp.cov_joint + comp.cov_joint.transpose());
-
-      // Cholesky decomposition of joint covariance (num_joints x num_joints)
+      // Compute Cholesky factorization for joint distribution
       Eigen::LLT<Eigen::MatrixXd> llt_q(comp.cov_joint);
       if (llt_q.info() == Eigen::Success)
       {
@@ -293,9 +428,9 @@ void GMMConstraintSampler::precomputeNominalJointStatesAndJacobians()
       }
       else
       {
-        Eigen::MatrixXd reg_q = comp.cov_joint + 1e-4 * I_n;
-        Eigen::LLT<Eigen::MatrixXd> llt_q_reg(reg_q);
-        comp.cholesky_L_q = llt_q_reg.matrixL();
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(comp.cov_joint);
+        Eigen::VectorXd evs = es.eigenvalues().cwiseMax(1e-4);
+        comp.cholesky_L_q = es.eigenvectors() * evs.cwiseSqrt().asDiagonal();
       }
     }
   }
@@ -305,7 +440,7 @@ bool GMMConstraintSampler::sample(moveit::core::RobotState& state,
                                   const moveit::core::RobotState& /*reference_state*/,
                                   unsigned int max_attempts)
 {
-  if (!is_valid_ || components_.empty()) return false;
+  if (!is_valid_) return false;
 
   unsigned int num_joints = jmg_->getVariableCount();
 
@@ -313,35 +448,28 @@ bool GMMConstraintSampler::sample(moveit::core::RobotState& state,
   {
     ++samples_drawn_;
 
-    // 1. Discrete component selection k ~ Categorical(weights)
-    int k = component_dist_(rng_);
-    const auto& comp = components_[k];
-
-    if (mode_ == SamplingMode::CARTESIAN_IK)
+    if (mode_ == SamplingMode::UNIFORM_BOX)
     {
       // =====================================================================
-      // Approach 1: Cartesian GMM Sampling + Warm-Started IK
+      // Approach 3: Baseline Uniform Bounding Box Corridor Sampling
       // =====================================================================
-      // Draw standard normal vector z ~ N(0, I_3)
-      Eigen::Vector3d z(normal_dist_(rng_), normal_dist_(rng_), normal_dist_(rng_));
+      if (uniform_boxes_.empty()) continue;
 
-      // Truncate at 3-sigma (confidence boundary)
-      if (z.norm() > 3.0)
-      {
-        z = z.normalized() * 3.0;
-      }
+      int b_idx = box_dist_(rng_);
+      const auto& box = uniform_boxes_[b_idx];
 
-      // Compute Cartesian sample: x = mu_k + L_x * z
-      Eigen::Vector3d pos = comp.mean + comp.cholesky_L_x * z;
-      Eigen::Isometry3d target_pose = Eigen::Translation3d(pos) * comp.orientation;
+      // Uniform random in [-half_extents, +half_extents]
+      std::uniform_real_distribution<double> dist_x(-box.half_extents.x(), box.half_extents.x());
+      std::uniform_real_distribution<double> dist_y(-box.half_extents.y(), box.half_extents.y());
+      std::uniform_real_distribution<double> dist_z(-box.half_extents.z(), box.half_extents.z());
 
-      // Warm-start IK with nominal joint state
-      if (!comp.nominal_joint_positions.empty())
-      {
-        state.setJointGroupPositions(jmg_, comp.nominal_joint_positions);
-      }
+      Eigen::Vector3d local_p(dist_x(rng_), dist_y(rng_), dist_z(rng_));
+      Eigen::Vector3d pos = box.center + box.orientation * local_p;
 
-      // Fast IK solve (warm-started)
+      Eigen::Isometry3d target_pose = Eigen::Translation3d(pos) * default_orientation_;
+
+      // Standard MoveIt IK solve without GMM warm-start (baseline uniform)
+      state.setToRandomPositions(jmg_);
       if (state.setFromIK(jmg_, target_pose, ee_link_->getName(), ik_timeout_))
       {
         state.update();
@@ -349,58 +477,102 @@ bool GMMConstraintSampler::sample(moveit::core::RobotState& state,
         {
           ++samples_accepted_;
           publishVisualSample(pos, true);
+          publishSamplingStats(false);
           return true;
         }
       }
       publishVisualSample(pos, false);
+      publishSamplingStats(false);
     }
-    else if (mode_ == SamplingMode::JOINT_PROJECTED)
+    else
     {
-      // =====================================================================
-      // Approach 2: Direct Joint-Space GMM Projection (Zero Runtime IK)
-      // =====================================================================
-      if (comp.nominal_joint_positions.empty() || comp.cholesky_L_q.rows() != num_joints)
+      if (components_.empty()) continue;
+
+      // 1. Discrete component selection k ~ Categorical(weights)
+      int k = component_dist_(rng_);
+      const auto& comp = components_[k];
+
+      if (mode_ == SamplingMode::CARTESIAN_IK)
       {
-        continue;
-      }
+        // =====================================================================
+        // Approach 1: Cartesian GMM Sampling + Warm-Started IK
+        // =====================================================================
+        Eigen::Vector3d z(normal_dist_(rng_), normal_dist_(rng_), normal_dist_(rng_));
+        if (z.norm() > 3.0)
+        {
+          z = z.normalized() * 3.0;
+        }
 
-      // Draw standard normal vector w ~ N(0, I_n)
-      Eigen::VectorXd w(num_joints);
-      for (unsigned int j = 0; j < num_joints; ++j)
+        Eigen::Vector3d pos = comp.mean + comp.cholesky_L_x * z;
+        Eigen::Isometry3d target_pose = Eigen::Translation3d(pos) * comp.orientation;
+
+        // Warm-start IK with nominal joint state
+        if (!comp.nominal_joint_positions.empty())
+        {
+          state.setJointGroupPositions(jmg_, comp.nominal_joint_positions);
+        }
+
+        // Fast IK solve (warm-started)
+        if (state.setFromIK(jmg_, target_pose, ee_link_->getName(), ik_timeout_))
+        {
+          state.update();
+          if (!scene_->isStateColliding(state, jmg_->getName()))
+          {
+            ++samples_accepted_;
+            publishVisualSample(pos, true);
+            publishSamplingStats(false);
+            return true;
+          }
+        }
+        publishVisualSample(pos, false);
+        publishSamplingStats(false);
+      }
+      else if (mode_ == SamplingMode::JOINT_PROJECTED)
       {
-        w(j) = normal_dist_(rng_);
+        // =====================================================================
+        // Approach 2: Direct Joint-Space GMM Projection (Zero Runtime IK)
+        // =====================================================================
+        if (comp.nominal_joint_positions.empty() || comp.cholesky_L_q.rows() != num_joints)
+        {
+          continue;
+        }
+
+        Eigen::VectorXd w(num_joints);
+        for (unsigned int j = 0; j < num_joints; ++j)
+        {
+          w(j) = normal_dist_(rng_);
+        }
+
+        double max_norm = std::sqrt(18.48);
+        if (w.norm() > max_norm)
+        {
+          w = w.normalized() * max_norm;
+        }
+
+        Eigen::VectorXd q_nominal(num_joints);
+        for (unsigned int j = 0; j < num_joints; ++j)
+        {
+          q_nominal(j) = comp.nominal_joint_positions[j];
+        }
+
+        Eigen::VectorXd q_sample = q_nominal + comp.cholesky_L_q * w;
+
+        state.setJointGroupPositions(jmg_, q_sample.data());
+        state.enforceBounds(jmg_);
+        state.update();
+
+        Eigen::Vector3d pos = state.getGlobalLinkTransform(ee_link_).translation();
+
+        if (!scene_->isStateColliding(state, jmg_->getName()))
+        {
+          ++samples_accepted_;
+          publishVisualSample(pos, true);
+          publishSamplingStats(false);
+          return true;
+        }
+        publishVisualSample(pos, false);
+        publishSamplingStats(false);
       }
-
-      // Truncate at 99% Chi-squared confidence radius (for n=7, sqrt(chi^2_7(0.99)) ~ 4.29)
-      double max_norm = std::sqrt(18.48);
-      if (w.norm() > max_norm)
-      {
-        w = w.normalized() * max_norm;
-      }
-
-      // Compute joint sample: q = q_bar_k + L_q * w
-      Eigen::VectorXd q_nominal(num_joints);
-      for (unsigned int j = 0; j < num_joints; ++j)
-      {
-        q_nominal(j) = comp.nominal_joint_positions[j];
-      }
-
-      Eigen::VectorXd q_sample = q_nominal + comp.cholesky_L_q * w;
-
-      // Enforce physical robot joint bounds
-      state.setJointGroupPositions(jmg_, q_sample.data());
-      state.enforceBounds(jmg_);
-      state.update();
-
-      Eigen::Vector3d pos = state.getGlobalLinkTransform(ee_link_).translation();
-
-      if (!scene_->isStateColliding(state, jmg_->getName()))
-      {
-        ++samples_accepted_;
-        publishVisualSample(pos, true);
-        return true;
-      }
-      publishVisualSample(pos, false);
     }
   }
 
@@ -471,6 +643,10 @@ GMMConstraintSamplerAllocator::GMMConstraintSamplerAllocator()
   viz_pub_ = node_->create_publisher<visualization_msgs::msg::Marker>(
       "/gmm_sampling_visualization", 10);
 
+  // Publisher for sampling benchmark statistics
+  stats_pub_ = node_->create_publisher<std_msgs::msg::String>(
+      "/planning_sampling_stats", 10);
+
   // Background spin thread for topic callbacks
   spin_thread_ = std::thread([this]() {
     rclcpp::executors::SingleThreadedExecutor executor;
@@ -503,11 +679,15 @@ void GMMConstraintSamplerAllocator::gmmCallback(const tp_gmm::msg::GaussianMixtu
 
 bool GMMConstraintSamplerAllocator::canService(
     const planning_scene::PlanningSceneConstPtr& /*scene*/,
-    const std::string& /*group_name*/,
+    const std::string& group_name,
     const moveit_msgs::msg::Constraints& constr) const
 {
-  // Allocate if the constraint name requests GMM Cartesian IK or Joint Projection
-  return (constr.name == "gmm_cartesian_ik" || constr.name == "gmm_joint_projected");
+  bool match = (constr.name == "gmm_cartesian_ik" ||
+                constr.name == "gmm_joint_projected" ||
+                constr.name == "gmm_uniform_box");
+  RCLCPP_INFO(getLogger(), "[GMMConstraintSamplerAllocator] canService check: group='%s', constraint.name='%s' -> canService=%s",
+              group_name.c_str(), constr.name.c_str(), match ? "TRUE" : "FALSE");
+  return match;
 }
 
 constraint_samplers::ConstraintSamplerPtr GMMConstraintSamplerAllocator::alloc(
@@ -515,8 +695,18 @@ constraint_samplers::ConstraintSamplerPtr GMMConstraintSamplerAllocator::alloc(
     const std::string& group_name,
     const moveit_msgs::msg::Constraints& constr)
 {
-  SamplingMode mode = (constr.name == "gmm_joint_projected") ?
-                      SamplingMode::JOINT_PROJECTED : SamplingMode::CARTESIAN_IK;
+  RCLCPP_INFO(getLogger(), "[GMMConstraintSamplerAllocator] alloc() invoked for constraint '%s' on group '%s'!",
+              constr.name.c_str(), group_name.c_str());
+
+  SamplingMode mode = SamplingMode::CARTESIAN_IK;
+  if (constr.name == "gmm_joint_projected")
+  {
+    mode = SamplingMode::JOINT_PROJECTED;
+  }
+  else if (constr.name == "gmm_uniform_box")
+  {
+    mode = SamplingMode::UNIFORM_BOX;
+  }
 
   tp_gmm::msg::GaussianMixture::SharedPtr gmm_copy;
   {
@@ -524,13 +714,20 @@ constraint_samplers::ConstraintSamplerPtr GMMConstraintSamplerAllocator::alloc(
     gmm_copy = latest_gmm_;
   }
 
-  auto sampler = std::make_shared<GMMConstraintSampler>(scene, group_name, gmm_copy, mode, viz_pub_);
+  if (mode != SamplingMode::UNIFORM_BOX && !gmm_copy)
+  {
+    RCLCPP_ERROR(getLogger(), "[GMMConstraintSamplerAllocator] Cannot alloc: latest_gmm_ has not been received yet!");
+    return nullptr;
+  }
+
+  auto sampler = std::make_shared<GMMConstraintSampler>(scene, group_name, gmm_copy, mode, viz_pub_, stats_pub_);
   if (sampler->configure(constr))
   {
+    RCLCPP_INFO(getLogger(), "[GMMConstraintSamplerAllocator] GMMConstraintSampler allocated and configured successfully!");
     return sampler;
   }
 
-  RCLCPP_WARN(getLogger(), "Failed to configure GMMConstraintSampler. Falling back.");
+  RCLCPP_WARN(getLogger(), "[GMMConstraintSamplerAllocator] Failed to configure GMMConstraintSampler. Falling back.");
   return nullptr;
 }
 

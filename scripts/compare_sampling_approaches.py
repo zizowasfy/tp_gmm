@@ -10,8 +10,8 @@ Evaluates each test scenario side-by-side with identical start, goal, obstacle,
 and deformed GMM corridor conditions. Records:
 - Planning success rate (%)
 - Stage-by-stage timing breakdown (ms): TP-GMM reproduction, RL deformation, OMPL search
-- Path metrics: Cartesian path length (m), Joint space path length (rad), Waypoint count
-- Safety: Minimum obstacle clearance (m)
+- Sampling efficiency: Total samples drawn, Valid samples accepted, Acceptance rate (%)
+- Path metrics: Joint space path length (rad), Waypoint count
 """
 
 import sys
@@ -27,6 +27,7 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped, Pose
+from std_msgs.msg import String
 from moveit_msgs.msg import DisplayTrajectory, RobotTrajectory
 
 from ament_index_python.packages import get_package_share_directory
@@ -49,9 +50,24 @@ class SamplingBenchmarkRunner(GazeboExperimentRunner):
             10
         )
 
+        # Real-time sampling statistics subscriber from MoveIt constraint sampler
+        self.last_sampling_stats = None
+        self.stats_sub = self.create_subscription(
+            String,
+            "/planning_sampling_stats",
+            self.sampling_stats_cb,
+            10
+        )
+
     def display_trajectory_cb(self, msg: DisplayTrajectory):
         if msg.trajectory:
             self.last_planned_trajectory = msg.trajectory[-1]
+
+    def sampling_stats_cb(self, msg: String):
+        try:
+            self.last_sampling_stats = json.loads(msg.data)
+        except Exception:
+            pass
 
     def plan_only(self, target_pose, apply_constraints=True, use_deformed=True, planning_time=10.0):
         """Sends planning request to MoveGroup with plan_only=True to evaluate without moving the robot."""
@@ -61,7 +77,7 @@ class SamplingBenchmarkRunner(GazeboExperimentRunner):
         req = MoveGroup.Goal()
         req.request.group_name = self.group_name
         req.request.planner_id = "RRTConnectkConfigDefault"
-        req.request.num_planning_attempts = 10
+        req.request.num_planning_attempts = 1
         req.request.allowed_planning_time = planning_time
         req.request.max_velocity_scaling_factor = 0.8
         req.request.max_acceleration_scaling_factor = 0.8
@@ -85,8 +101,8 @@ class SamplingBenchmarkRunner(GazeboExperimentRunner):
                 path_constraint.name = "gmm_cartesian_ik"
                 if bv_to_use is not None:
                     p_const.constraint_region = bv_to_use
-            else:
-                path_constraint.name = "position_constraint"
+            else:  # uniform_box (Approach 3 baseline)
+                path_constraint.name = "gmm_uniform_box"
                 if bv_to_use is not None:
                     p_const.constraint_region = bv_to_use
 
@@ -95,6 +111,7 @@ class SamplingBenchmarkRunner(GazeboExperimentRunner):
 
         req.planning_options.plan_only = True
         self.last_planned_trajectory = None
+        self.last_sampling_stats = None
 
         t0 = time.perf_counter()
         future = self.move_action_client.send_goal_async(req)
@@ -102,11 +119,17 @@ class SamplingBenchmarkRunner(GazeboExperimentRunner):
         goal_handle = future.result()
 
         if not goal_handle or not goal_handle.accepted:
-            return False, 0.0, None
+            return False, 0.0, None, None
 
         res_future = goal_handle.get_result_async()
         rclpy.spin_until_future_complete(self, res_future)
         dt = (time.perf_counter() - t0) * 1000.0  # ms
+
+        # Spin briefly to ensure the final statistics message is received
+        for _ in range(10):
+            rclpy.spin_once(self, timeout_sec=0.01)
+            if self.last_sampling_stats and self.last_sampling_stats.get("final", False):
+                break
 
         res = res_future.result().result
         success = (res.error_code.val == res.error_code.SUCCESS)
@@ -116,30 +139,27 @@ class SamplingBenchmarkRunner(GazeboExperimentRunner):
         if not traj.joint_trajectory.points and self.last_planned_trajectory:
             traj = self.last_planned_trajectory
 
-        return success, dt, traj
+        stats = deepcopy(self.last_sampling_stats)
+        return success, dt, traj, stats
 
 
 def compute_trajectory_metrics(traj: RobotTrajectory, obs_center: np.ndarray, obs_radius: float = 0.04):
-    """Calculates path length, joint space displacement, and clearance to the cylinder obstacle."""
+    """Calculates path length and waypoint count."""
     if not traj or not traj.joint_trajectory.points:
         return {
             "num_waypoints": 0,
             "joint_path_length": 0.0,
-            "min_obstacle_clearance": 0.0,
         }
 
     points = traj.joint_trajectory.points
     num_waypoints = len(points)
 
-    # 1. Joint-space cumulative length
     joint_length = 0.0
     for i in range(1, num_waypoints):
         q1 = np.array(points[i - 1].positions)
         q2 = np.array(points[i].positions)
         joint_length += float(np.linalg.norm(q2 - q1))
 
-    # Note: Accurate forward kinematics end-effector Cartesian clearance
-    # is approximated or computed via joint displacement.
     return {
         "num_waypoints": num_waypoints,
         "joint_path_length": joint_length,
@@ -159,9 +179,9 @@ def run_benchmark(trials=5, modes=None, clearance=0.5):
     runner = SamplingBenchmarkRunner(desired_clearance=clearance)
     results = {m: [] for m in modes}
 
-    print(f"\n{'='*75}")
+    print(f"\n{'='*95}")
     print(f"   STARTING GMM SAMPLING BENCHMARK ({trials} Test Trials across {len(modes)} Modes)")
-    print(f"{'='*75}\n")
+    print(f"{'='*95}\n")
 
     for trial_idx in range(1, trials + 1):
         print(f"\n--- [Trial {trial_idx}/{trials}] Setting up Randomized Scenario ---")
@@ -225,22 +245,31 @@ def run_benchmark(trials=5, modes=None, clearance=0.5):
         # 3. Test each sampling mode on the exact same scenario
         for mode in modes:
             runner.set_sampling_mode(mode)
-            success, plan_time_ms, traj = runner.plan_only(goal_pose, apply_constraints=True)
+            success, plan_time_ms, traj, stats = runner.plan_only(goal_pose, apply_constraints=True)
 
             metrics = compute_trajectory_metrics(traj, np.array([obs_x, obs_y, obs_z]))
+            samples_drawn = int(stats.get("samples_drawn", 0)) if stats else 0
+            samples_accepted = int(stats.get("samples_accepted", 0)) if stats else 0
+            sampling_rate_pct = (samples_accepted / max(1, samples_drawn)) * 100.0 if samples_drawn > 0 else 0.0
+
             trial_record = {
                 "trial": trial_idx,
                 "mode": mode,
                 "success": success,
                 "deform_time_ms": t_deform_ms,
                 "planning_time_ms": plan_time_ms,
+                "samples_drawn": samples_drawn,
+                "samples_accepted": samples_accepted,
+                "sampling_rate_pct": sampling_rate_pct,
                 "joint_path_length": metrics.get("joint_path_length", 0.0),
                 "num_waypoints": metrics.get("num_waypoints", 0),
             }
             results[mode].append(trial_record)
 
             status_str = "SUCCESS" if success else "FAILED"
-            print(f"  [{mode:17s}] {status_str:7s} | Plan Time: {plan_time_ms:6.1f} ms | Waypoints: {metrics['num_waypoints']:3d} | Joint Len: {metrics['joint_path_length']:.2f} rad")
+            print(f"  [{mode:17s}] {status_str:7s} | Plan Time: {plan_time_ms:6.1f} ms | "
+                  f"Samples: {samples_drawn:4d} (Valid: {samples_accepted:3d}, {sampling_rate_pct:4.1f}%) | "
+                  f"Waypoints: {metrics['num_waypoints']:3d} | Joint Len: {metrics['joint_path_length']:.2f} rad")
 
     # 4. Print Summary Comparison Table
     print_comparison_summary(results, mode_names)
@@ -258,11 +287,11 @@ def run_benchmark(trials=5, modes=None, clearance=0.5):
 
 
 def print_comparison_summary(results, mode_names):
-    print("\n" + "=" * 82)
-    print(f"{'GMM SAMPLING STRATEGIES BENCHMARK SUMMARY':^82}")
-    print("=" * 82)
-    print(f"{'Sampling Mode':<35} | {'Success':<9} | {'Avg Plan Time':<15} | {'Avg Joint Len':<13}")
-    print("-" * 82)
+    print("\n" + "=" * 106)
+    print(f"{'GMM SAMPLING STRATEGIES BENCHMARK SUMMARY':^106}")
+    print("=" * 106)
+    print(f"{'Sampling Mode':<35} | {'Success':<8} | {'Avg Plan Time':<15} | {'Avg Samples Drawn':<18} | {'Accept Rate':<12} | {'Avg Joint Len':<13}")
+    print("-" * 106)
 
     for mode, records in results.items():
         if not records:
@@ -274,18 +303,30 @@ def print_comparison_summary(results, mode_names):
         if successes:
             avg_time = np.mean([r["planning_time_ms"] for r in successes])
             std_time = np.std([r["planning_time_ms"] for r in successes])
+            
+            avg_samples = np.mean([r["samples_drawn"] for r in successes])
+            std_samples = np.std([r["samples_drawn"] for r in successes])
+
+            avg_rate = np.mean([r["sampling_rate_pct"] for r in successes])
+            std_rate = np.std([r["sampling_rate_pct"] for r in successes])
+
             avg_jlen = np.mean([r["joint_path_length"] for r in successes])
             std_jlen = np.std([r["joint_path_length"] for r in successes])
+
             time_str = f"{avg_time:5.1f} ± {std_time:4.1f} ms"
+            samples_str = f"{avg_samples:5.1f} ± {std_samples:4.1f}"
+            rate_str = f"{avg_rate:4.1f} ± {std_rate:3.1f} %"
             jlen_str = f"{avg_jlen:4.2f} ± {std_jlen:3.2f} rad"
         else:
             time_str = "N/A"
+            samples_str = "N/A"
+            rate_str = "N/A"
             jlen_str = "N/A"
 
         name = mode_names.get(mode, mode)
-        print(f"{name:<35} | {succ_rate:5.1f}%   | {time_str:<15} | {jlen_str:<13}")
+        print(f"{name:<35} | {succ_rate:5.1f}%  | {time_str:<15} | {samples_str:<18} | {rate_str:<12} | {jlen_str:<13}")
 
-    print("=" * 82 + "\n")
+    print("=" * 106 + "\n")
 
 
 def main():

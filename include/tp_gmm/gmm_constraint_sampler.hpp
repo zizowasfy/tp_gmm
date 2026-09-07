@@ -7,6 +7,8 @@
 #include <moveit_msgs/msg/constraints.hpp>
 #include <tp_gmm/msg/gaussian_mixture.hpp>
 #include <visualization_msgs/msg/marker.hpp>
+#include <std_msgs/msg/string.hpp>
+#include <shape_msgs/msg/solid_primitive.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include <Eigen/Dense>
@@ -24,7 +26,8 @@ namespace tp_gmm
 enum class SamplingMode
 {
   CARTESIAN_IK = 0,     // Approach 1: Cartesian GMM + warm-started IK
-  JOINT_PROJECTED = 1   // Approach 2: Direct Joint-Space GMM (zero runtime IK)
+  JOINT_PROJECTED = 1,  // Approach 2: Direct Joint-Space GMM (zero runtime IK)
+  UNIFORM_BOX = 2       // Approach 3: Baseline Uniform Bounding Box corridor
 };
 
 struct GMMComponent
@@ -41,6 +44,14 @@ struct GMMComponent
   Eigen::MatrixXd cholesky_L_q;      // n x n Cholesky factor
 };
 
+struct BoundingBoxData
+{
+  Eigen::Vector3d center;
+  Eigen::Quaterniond orientation;
+  Eigen::Vector3d half_extents;
+  double volume{0.0};
+};
+
 class GMMConstraintSampler : public constraint_samplers::ConstraintSampler
 {
 public:
@@ -48,9 +59,10 @@ public:
                        const std::string& group_name,
                        tp_gmm::msg::GaussianMixture::ConstSharedPtr gmm_msg,
                        SamplingMode mode = SamplingMode::CARTESIAN_IK,
-                       rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr viz_pub = nullptr);
+                       rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr viz_pub = nullptr,
+                       rclcpp::Publisher<std_msgs::msg::String>::SharedPtr stats_pub = nullptr);
 
-  ~GMMConstraintSampler() override = default;
+  ~GMMConstraintSampler() override;
 
   bool configure(const moveit_msgs::msg::Constraints& constr) override;
 
@@ -76,6 +88,8 @@ public:
   size_t getSamplesDrawn() const { return samples_drawn_; }
   size_t getSamplesAccepted() const { return samples_accepted_; }
 
+  void publishSamplingStats(bool is_final = false);
+
 private:
   bool parseGMMMessage(const tp_gmm::msg::GaussianMixture& msg);
   void precomputeNominalJointStatesAndJacobians();
@@ -89,13 +103,20 @@ private:
   std::vector<double> weights_;
   std::discrete_distribution<int> component_dist_;
 
+  // Approach 3: Bounding boxes for uniform corridor sampling
+  std::vector<BoundingBoxData> uniform_boxes_;
+  std::vector<double> box_weights_;
+  std::discrete_distribution<int> box_dist_;
+
   const moveit::core::LinkModel* ee_link_{nullptr};
+  Eigen::Quaterniond default_orientation_{0.0, 1.0, 0.0, 0.0}; // Downward orientation (w=0, x=1, y=0, z=0)
   double ik_timeout_{0.005}; // 5ms warm-started IK timeout
 
   std::mt19937 rng_;
   std::normal_distribution<double> normal_dist_{0.0, 1.0};
 
   rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr viz_pub_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr stats_pub_;
   mutable std::mutex viz_mutex_;
   visualization_msgs::msg::Marker sample_marker_;
 
@@ -138,6 +159,7 @@ private:
   rclcpp::Subscription<tp_gmm::msg::GaussianMixture>::SharedPtr gmm_sub_;
   rclcpp::Subscription<tp_gmm::msg::GaussianMixture>::SharedPtr deformed_gmm_sub_;
   rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr viz_pub_;
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr stats_pub_;
 
   mutable std::mutex gmm_mutex_;
   tp_gmm::msg::GaussianMixture::SharedPtr latest_gmm_;

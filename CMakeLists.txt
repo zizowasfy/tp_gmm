@@ -81,6 +81,7 @@ ament_target_dependencies(gmm_constraint_sampler_lib
   geometry_msgs
   visualization_msgs
   std_msgs
+  shape_msgs
   moveit_core
   moveit_ros_planning
   moveit_msgs

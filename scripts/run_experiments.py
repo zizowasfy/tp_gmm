@@ -25,6 +25,8 @@ from rclpy.node import Node
 from rclpy.action import ActionClient
 from scipy.spatial.transform import Rotation as R
 
+import json
+from std_msgs.msg import String
 from geometry_msgs.msg import PoseStamped, Pose, PoseArray, Point
 from moveit_msgs.msg import BoundingVolume, Constraints, PositionConstraint, OrientationConstraint, DisplayTrajectory, CollisionObject, PlanningScene
 from moveit_msgs.srv import ApplyPlanningScene, GetCartesianPath
@@ -100,6 +102,10 @@ class GazeboExperimentRunner(Node):
         self.create_subscription(BoundingVolume, f"{self.namespace}/gmm_moveit", self.gmm_constraint_cb, 10)
         self.create_subscription(BoundingVolume, f"{self.namespace}/deformed_gmm_moveit", self.deformed_gmm_constraint_cb, 10)
 
+        # Sampling statistics subscriber
+        self.last_sampling_stats = None
+        self.create_subscription(String, "/planning_sampling_stats", self.sampling_stats_cb, 10)
+
         self.gmm_bounding_volume = None
         self.deformed_gmm_bounding_volume = None
 
@@ -109,6 +115,12 @@ class GazeboExperimentRunner(Node):
             sys.exit(1)
 
         self.get_logger().info(f"Experiment Runner Node Ready! Active Sampling Mode: {self.sampling_mode}")
+
+    def sampling_stats_cb(self, msg: String):
+        try:
+            self.last_sampling_stats = json.loads(msg.data)
+        except Exception:
+            pass
 
     def set_sampling_mode(self, mode):
         """Easily swap the sampling mode at runtime: 'cartesian_ik', 'joint_projected', or 'uniform_box'."""
@@ -293,7 +305,7 @@ class GazeboExperimentRunner(Node):
         req = MoveGroup.Goal()
         req.request.group_name = self.group_name
         req.request.planner_id = "RRTConnectkConfigDefault"
-        req.request.num_planning_attempts = 10
+        req.request.num_planning_attempts = 1 #10
         req.request.allowed_planning_time = planning_time
         req.request.max_velocity_scaling_factor = 0.8
         req.request.max_acceleration_scaling_factor = 0.8
@@ -321,7 +333,7 @@ class GazeboExperimentRunner(Node):
                     p_const.constraint_region = bv_to_use
             else: # uniform_box (Approach 3 baseline)
                 self.get_logger().info("Enforcing Approach 3: Uniform Bounding Box corridor sampling in MoveGroup...")
-                path_constraint.name = "position_constraint"
+                path_constraint.name = "gmm_uniform_box"
                 if bv_to_use is not None:
                     p_const.constraint_region = bv_to_use
 
@@ -329,6 +341,7 @@ class GazeboExperimentRunner(Node):
             req.request.path_constraints = path_constraint
 
         req.planning_options.plan_only = False
+        self.last_sampling_stats = None
         
         future = self.move_action_client.send_goal_async(req)
         rclpy.spin_until_future_complete(self, future)
@@ -341,6 +354,18 @@ class GazeboExperimentRunner(Node):
         result_future = goal_handle.get_result_async()
         rclpy.spin_until_future_complete(self, result_future)
         res = result_future.result().result
+
+        # Brief spin to ensure final sampling statistics message is received
+        for _ in range(5):
+            rclpy.spin_once(self, timeout_sec=0.01)
+            if self.last_sampling_stats and self.last_sampling_stats.get("final", False):
+                break
+
+        if self.last_sampling_stats:
+            drawn = self.last_sampling_stats.get("samples_drawn", 0)
+            accepted = self.last_sampling_stats.get("samples_accepted", 0)
+            rate = self.last_sampling_stats.get("rate", 0.0) * 100.0
+            self.get_logger().info(f"Sampling Efficiency: {drawn} samples drawn, {accepted} valid ({rate:.1f}% acceptance rate)")
 
         if res.error_code.val == res.error_code.SUCCESS:
             self.get_logger().info("MoveGroup trajectory execution succeeded!")
