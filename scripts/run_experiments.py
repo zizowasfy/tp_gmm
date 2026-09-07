@@ -123,8 +123,8 @@ class GazeboExperimentRunner(Node):
             pass
 
     def set_sampling_mode(self, mode):
-        """Easily swap the sampling mode at runtime: 'cartesian_ik', 'joint_projected', or 'uniform_box'."""
-        valid_modes = ["cartesian_ik", "joint_projected", "uniform_box"]
+        """Easily swap the sampling mode at runtime: 'cartesian_ik', 'joint_projected', 'uniform_box', or 'default_unconstrained'."""
+        valid_modes = ["cartesian_ik", "joint_projected", "uniform_box", "default_unconstrained"]
         if mode in valid_modes:
             self.sampling_mode = mode
             self.get_logger().info(f"Switched active sampling mode to: '{self.sampling_mode}'")
@@ -314,7 +314,7 @@ class GazeboExperimentRunner(Node):
         req.request.goal_constraints.append(goal_constraint)
         
         bv_to_use = self.deformed_gmm_bounding_volume if use_deformed else self.gmm_bounding_volume
-        if apply_constraints:
+        if apply_constraints and self.sampling_mode != "default_unconstrained":
             path_constraint = Constraints()
             p_const = PositionConstraint()
             p_const.header.frame_id = self.frame_id
@@ -339,6 +339,8 @@ class GazeboExperimentRunner(Node):
 
             path_constraint.position_constraints.append(p_const)
             req.request.path_constraints = path_constraint
+        elif self.sampling_mode == "default_unconstrained":
+            self.get_logger().info("Using Default OMPL Uniform State Sampler (unconstrained workspace)...")
 
         req.planning_options.plan_only = False
         self.last_sampling_stats = None
@@ -691,8 +693,8 @@ def main():
     parser.add_argument('--ref-robot', type=str, default='auto', help="Reference robot for demonstration frame ('auto', 'franka_panda', 'ur10', 'native')")
     parser.add_argument('--clearance', '-c', type=float, default=0.5, help='Desired clearance factor [0.0 - 1.0] (default: 0.5)')
     parser.add_argument('--sampling-mode', '-s', type=str, default='cartesian_ik',
-                        choices=['cartesian_ik', 'joint_projected', 'uniform_box'],
-                        help="Sampling strategy: 'cartesian_ik' (Approach 1), 'joint_projected' (Approach 2), 'uniform_box' (Approach 3 baseline)")
+                        choices=['cartesian_ik', 'joint_projected', 'uniform_box', 'default_unconstrained'],
+                        help="Sampling strategy: 'cartesian_ik' (Approach 1), 'joint_projected' (Approach 2), 'uniform_box' (Approach 3 baseline), 'default_unconstrained' (Default OMPL workspace sampling)")
     parser.add_argument('--auto', action='store_true', default=True, help='Run trials automatically without pausing')
     parser.add_argument('--manual', dest='auto', action='store_false', help='Prompt before each trial')
 

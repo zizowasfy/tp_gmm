@@ -86,7 +86,7 @@ class SamplingBenchmarkRunner(GazeboExperimentRunner):
         req.request.goal_constraints.append(goal_constraint)
 
         bv_to_use = self.deformed_gmm_bounding_volume if use_deformed else self.gmm_bounding_volume
-        if apply_constraints:
+        if apply_constraints and self.sampling_mode != "default_unconstrained":
             path_constraint = Constraints()
             p_const = PositionConstraint()
             p_const.header.frame_id = self.frame_id
@@ -168,9 +168,26 @@ def compute_trajectory_metrics(traj: RobotTrajectory, obs_center: np.ndarray, ob
 
 def run_benchmark(trials=5, modes=None, clearance=0.5):
     if modes is None:
-        modes = ["uniform_box", "cartesian_ik", "joint_projected"]
+        modes = ["default_unconstrained", "uniform_box", "cartesian_ik", "joint_projected"]
+    else:
+        # Normalize mode strings
+        normalized = []
+        for m in modes:
+            m_clean = m.strip().lower()
+            if m_clean in ["default", "default_ompl", "unconstrained", "ompl", "default_unconstrained"]:
+                normalized.append("default_unconstrained")
+            elif m_clean in ["uniform", "uniform_box", "box"]:
+                normalized.append("uniform_box")
+            elif m_clean in ["cartesian", "cartesian_ik", "ik"]:
+                normalized.append("cartesian_ik")
+            elif m_clean in ["joint", "joint_projected", "projected"]:
+                normalized.append("joint_projected")
+            else:
+                normalized.append(m_clean)
+        modes = normalized
 
     mode_names = {
+        "default_unconstrained": "Default OMPL (Whole Workspace)",
         "uniform_box": "Approach 3: Uniform Box (Baseline)",
         "cartesian_ik": "Approach 1: Cartesian + Warm IK",
         "joint_projected": "Approach 2: Joint Projection",
@@ -245,12 +262,13 @@ def run_benchmark(trials=5, modes=None, clearance=0.5):
         # 3. Test each sampling mode on the exact same scenario
         for mode in modes:
             runner.set_sampling_mode(mode)
-            success, plan_time_ms, traj, stats = runner.plan_only(goal_pose, apply_constraints=True)
+            apply_constraints = (mode != "default_unconstrained")
+            success, plan_time_ms, traj, stats = runner.plan_only(goal_pose, apply_constraints=apply_constraints)
 
             metrics = compute_trajectory_metrics(traj, np.array([obs_x, obs_y, obs_z]))
-            samples_drawn = int(stats.get("samples_drawn", 0)) if stats else 0
-            samples_accepted = int(stats.get("samples_accepted", 0)) if stats else 0
-            sampling_rate_pct = (samples_accepted / max(1, samples_drawn)) * 100.0 if samples_drawn > 0 else 0.0
+            samples_drawn = int(stats.get("samples_drawn", 0)) if stats else None
+            samples_accepted = int(stats.get("samples_accepted", 0)) if stats else None
+            sampling_rate_pct = ((samples_accepted / max(1, samples_drawn)) * 100.0) if (stats and samples_drawn and samples_drawn > 0) else None
 
             trial_record = {
                 "trial": trial_idx,
@@ -267,8 +285,13 @@ def run_benchmark(trials=5, modes=None, clearance=0.5):
             results[mode].append(trial_record)
 
             status_str = "SUCCESS" if success else "FAILED"
-            print(f"  [{mode:17s}] {status_str:7s} | Plan Time: {plan_time_ms:6.1f} ms | "
-                  f"Samples: {samples_drawn:4d} (Valid: {samples_accepted:3d}, {sampling_rate_pct:4.1f}%) | "
+            if stats and samples_drawn is not None:
+                samples_info = f"Samples: {samples_drawn:4d} (Valid: {samples_accepted:3d}, {sampling_rate_pct:4.1f}%)"
+            else:
+                samples_info = "Samples:    N/A (Workspace Sampling)"
+
+            print(f"  [{mode:21s}] {status_str:7s} | Plan Time: {plan_time_ms:6.1f} ms | "
+                  f"{samples_info} | "
                   f"Waypoints: {metrics['num_waypoints']:3d} | Joint Len: {metrics['joint_path_length']:.2f} rad")
 
     # 4. Print Summary Comparison Table
@@ -287,11 +310,11 @@ def run_benchmark(trials=5, modes=None, clearance=0.5):
 
 
 def print_comparison_summary(results, mode_names):
-    print("\n" + "=" * 106)
-    print(f"{'GMM SAMPLING STRATEGIES BENCHMARK SUMMARY':^106}")
-    print("=" * 106)
+    print("\n" + "=" * 110)
+    print(f"{'GMM SAMPLING STRATEGIES & OMPL BENCHMARK SUMMARY':^110}")
+    print("=" * 110)
     print(f"{'Sampling Mode':<35} | {'Success':<8} | {'Avg Plan Time':<15} | {'Avg Samples Drawn':<18} | {'Accept Rate':<12} | {'Avg Joint Len':<13}")
-    print("-" * 106)
+    print("-" * 110)
 
     for mode, records in results.items():
         if not records:
@@ -304,18 +327,24 @@ def print_comparison_summary(results, mode_names):
             avg_time = np.mean([r["planning_time_ms"] for r in successes])
             std_time = np.std([r["planning_time_ms"] for r in successes])
             
-            avg_samples = np.mean([r["samples_drawn"] for r in successes])
-            std_samples = np.std([r["samples_drawn"] for r in successes])
+            valid_samples = [r["samples_drawn"] for r in successes if r["samples_drawn"] is not None]
+            if valid_samples:
+                avg_samples = np.mean(valid_samples)
+                std_samples = np.std(valid_samples)
+                samples_str = f"{avg_samples:5.1f} ± {std_samples:4.1f}"
 
-            avg_rate = np.mean([r["sampling_rate_pct"] for r in successes])
-            std_rate = np.std([r["sampling_rate_pct"] for r in successes])
+                rates = [r["sampling_rate_pct"] for r in successes if r["sampling_rate_pct"] is not None]
+                avg_rate = np.mean(rates)
+                std_rate = np.std(rates)
+                rate_str = f"{avg_rate:4.1f} ± {std_rate:3.1f} %"
+            else:
+                samples_str = "N/A (Workspace)"
+                rate_str = "N/A"
 
             avg_jlen = np.mean([r["joint_path_length"] for r in successes])
             std_jlen = np.std([r["joint_path_length"] for r in successes])
 
             time_str = f"{avg_time:5.1f} ± {std_time:4.1f} ms"
-            samples_str = f"{avg_samples:5.1f} ± {std_samples:4.1f}"
-            rate_str = f"{avg_rate:4.1f} ± {std_rate:3.1f} %"
             jlen_str = f"{avg_jlen:4.2f} ± {std_jlen:3.2f} rad"
         else:
             time_str = "N/A"
@@ -326,15 +355,15 @@ def print_comparison_summary(results, mode_names):
         name = mode_names.get(mode, mode)
         print(f"{name:<35} | {succ_rate:5.1f}%  | {time_str:<15} | {samples_str:<18} | {rate_str:<12} | {jlen_str:<13}")
 
-    print("=" * 106 + "\n")
+    print("=" * 110 + "\n")
 
 
 def main():
     parser = argparse.ArgumentParser(description="GMM Sampling Approaches Comparison Benchmark")
     parser.add_argument('--trials', '-n', type=int, default=5, help='Number of benchmark test cases (default: 5)')
     parser.add_argument('--clearance', '-c', type=float, default=0.5, help='Clearance factor [0.0 - 1.0] (default: 0.5)')
-    parser.add_argument('--modes', nargs='+', default=['uniform_box', 'cartesian_ik', 'joint_projected'],
-                        help="Modes to test ('uniform_box', 'cartesian_ik', 'joint_projected')")
+    parser.add_argument('--modes', nargs='+', default=['default_unconstrained', 'uniform_box', 'cartesian_ik', 'joint_projected'],
+                        help="Modes to test ('default_unconstrained', 'uniform_box', 'cartesian_ik', 'joint_projected')")
 
     args, ros_args = parser.parse_known_args()
     rclpy.init(args=ros_args if ros_args else None)
