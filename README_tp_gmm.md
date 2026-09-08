@@ -68,3 +68,7 @@ Once the model is trained, you can pass new `start_pose` and `goal_pose` frames 
 - Removed `papermill` overhead by converting Jupyter notebook (`demons_to_samples_ur10_demons.ipynb`) into a pure Python module.
 - Replaced slow file I/O operations (`np.loadtxt` on thousands of `.txt` files) with in-memory parameter passing between data extraction and `tpGMM` training.
 - Reduced inference time by caching `TPGMM_model` as a class attribute in `tp_gmm_node.py`.
+
+## Cartesian and joint-projected GMM sampling
+
+See [SAMPLING.md](SAMPLING.md) for the fresh `sampling-approaches-cod` implementation, RViz laboratory, live mode switching, paired benchmark, mathematics and validation commands.

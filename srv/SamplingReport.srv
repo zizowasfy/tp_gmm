@@ -1,0 +1,9 @@
+string request_id
+# Query after the MoveGroup result; no reliance on sampler destruction or DDS timing.
+moveit_msgs/RobotState trajectory_start
+moveit_msgs/RobotTrajectory trajectory
+bool release
+---
+bool success
+string message
+string json

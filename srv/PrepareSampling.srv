@@ -1,0 +1,23 @@
+# Immutable, single-plan model and proposal settings. All lengths are SI units.
+GaussianMixture model
+string group_name
+string link_name
+string mode
+geometry_msgs/Quaternion orientation
+uint32 seed
+float64 cutoff
+float64 covariance_floor
+float64 uniform_fraction
+float64 cartesian_fraction
+float64 ik_timeout
+uint32 branches
+uint32 anchor_attempts
+float64 nullspace_stddev
+float64 max_joint_delta
+float64 linearization_tolerance
+bool visualize
+---
+bool success
+string message
+string request_id
+moveit_msgs/Constraints constraints

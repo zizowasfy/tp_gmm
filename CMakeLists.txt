@@ -18,6 +18,7 @@ find_package(std_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(shape_msgs REQUIRED)
 
+find_package(pluginlib REQUIRED)
 find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
@@ -32,7 +33,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/StartTPGMM.srv"
   "srv/ReproduceTPGMM.srv"
   "srv/DeformTPGMM.srv"
-  DEPENDENCIES geometry_msgs std_msgs
+  "srv/PrepareSampling.srv"
+  "srv/SamplingReport.srv"
+  DEPENDENCIES geometry_msgs std_msgs moveit_msgs
 )
 
 # C++ Executables and Libraries
@@ -68,6 +71,13 @@ ament_target_dependencies(gmm_moveit_lib
 )
 rclcpp_components_register_node(gmm_moveit_lib PLUGIN "tp_gmm::GMMMoveIt" EXECUTABLE gmm_moveit_node)
 
+add_library(gmm_constraint_sampler SHARED src/gmm_constraint_sampler.cpp)
+target_compile_features(gmm_constraint_sampler PUBLIC cxx_std_17)
+ament_target_dependencies(gmm_constraint_sampler rclcpp pluginlib moveit_core moveit_ros_planning
+  moveit_msgs geometry_msgs visualization_msgs shape_msgs)
+rosidl_target_interfaces(gmm_constraint_sampler ${PROJECT_NAME} "rosidl_typesupport_cpp")
+pluginlib_export_plugin_description_file(moveit_core gmm_constraint_sampler_plugin_description.xml)
+
 # Install Python scripts and modules
 install(PROGRAMS
   scripts/tp_gmm_node.py
@@ -76,6 +86,10 @@ install(PROGRAMS
   scripts/demons_to_samples.py
   scripts/validate_policy.py
   scripts/run_experiments.py
+  scripts/sampling_client.py
+  scripts/compare_sampling_approaches.py
+  scripts/plot_sampling_comparison.py
+  scripts/sampling_fidelity.py
   scripts/standalone_policy.py
   scripts/dir_paths.py
   scripts/visualize_demonstrations.py
@@ -84,6 +98,7 @@ install(PROGRAMS
 
 # Install C++ nodes/libraries
 install(TARGETS
+  gmm_constraint_sampler
   gmm_rviz_converter
   gmm_rviz_converter_node
   gmm_moveit_lib
@@ -93,6 +108,8 @@ install(TARGETS
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
+install(FILES SAMPLING.md DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY tasks DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY include DESTINATION share/${PROJECT_NAME})
@@ -107,5 +124,13 @@ ament_export_dependencies(
   std_msgs
   moveit_msgs
 )
+
+if(BUILD_TESTING)
+  enable_testing()
+  add_executable(test_sampling_math tests/test_sampling_math.cpp)
+  target_compile_features(test_sampling_math PRIVATE cxx_std_17)
+  target_compile_options(test_sampling_math PRIVATE -UNDEBUG)
+  add_test(NAME sampling_math COMMAND test_sampling_math)
+endif()
 
 ament_package()

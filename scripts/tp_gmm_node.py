@@ -208,6 +208,7 @@ class TPGMM(Node):
 
     def deform_tpgmm_callback(self, request, response):
         
+        callback_start = time.perf_counter()
         _task_name = request.task_name #'pick'
         task_dir = ensure_task_dir(_task_name)
 
@@ -224,6 +225,9 @@ class TPGMM(Node):
         else:
             with open(task_dir / 'demons_info.pkl', 'rb') as fp:
                 task_demons_info = pickle.load(fp)
+
+        response.model_load_s = time.perf_counter() - callback_start
+        reproduction_start = time.perf_counter()
 
         # Sorting the Task Parameters into Frames format
         # NOTE: if the RL policy trained on different start and goal poses, we should use the original tpgmm start and goal poses, i.e., request.tpgmm_start_pose and request.tpgmm_goal_pose
@@ -257,10 +261,12 @@ class TPGMM(Node):
         self.get_logger().info(f"... reproduce_time: {time.time() - reproduce_time}")
 
         ## Saving and Publishing the Original GMM in Cartesian Space
-        original_gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id)
+        original_gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id, write_bag=False)
         self.tpgmm_viz_pub.publish(original_gmm)
         self.get_logger().info("Original GMM is Published!")
         response.original_gmm = original_gmm
+        response.reproduction_s = time.perf_counter() - reproduction_start
+        deformation_start = time.perf_counter()
 
         # Extract origianl means and covariances
         original_mu = torch.zeros((1, TPGMM_model.model.nbStates, 3), device=self.device, dtype=torch.float32)
@@ -308,15 +314,21 @@ class TPGMM(Node):
                 rnew.Mu[2, k, :] = deformed_mu[0, k, 1].item()
                 rnew.Mu[3, k, :] = deformed_mu[0, k, 2].item()
             
+            if str(self.device).startswith("cuda"):
+                torch.cuda.synchronize(self.device)
+            response.rl_deformation_s = time.perf_counter() - deformation_start
+            response.policy_applied = True
+            regression_start = time.perf_counter()
             # Recompute trajectory via GMR using deformed rnew.Mu
             rnew = TPGMM_model.recompute_trajectory(rnew, start_point[1:, :])
 
+            response.deformed_regression_s = time.perf_counter() - regression_start
             self.get_logger().info("GMM has been deformed and trajectory recomputed successfully.")
         else:
             self.get_logger().warn("Policy is not loaded, returning original GMM")
 
         ## Saving and Publishing GMM in Cartesian Space
-        gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id)
+        gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id, write_bag=False)
         self.tpgmm_deformed_viz_pub.publish(gmm)
         self.get_logger().info("Deformed GMM is Published!")
 
@@ -332,6 +344,7 @@ class TPGMM(Node):
         self.get_logger().info("Deformed Regressed Trajectory is Published!")
 
         response.deformed_gmm = gmm
+        response.total_s = time.perf_counter() - callback_start
         return response
 
 def main(args=None):

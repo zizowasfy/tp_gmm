@@ -12,3 +12,10 @@ float32 desired_clearance
 ---
 tp_gmm/GaussianMixture original_gmm
 tp_gmm/GaussianMixture deformed_gmm
+# Disjoint wall-clock stages. RL includes input preparation, inference and mean update.
+float64 model_load_s
+float64 reproduction_s
+float64 rl_deformation_s
+float64 deformed_regression_s
+float64 total_s
+bool policy_applied
