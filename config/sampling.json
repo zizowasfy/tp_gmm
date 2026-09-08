@@ -1,4 +1,6 @@
 {
+  "corridor_mode": "legacy_weighted",
+  "corridor_scale": 10.0,
   "cutoff": 3.0,
   "covariance_floor": 1e-8,
   "uniform_fraction": 0.1,

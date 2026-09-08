@@ -8,12 +8,16 @@ def distribution_report(rows, metadata):
     output = []
     settings = metadata['settings']
     cutoff, floor = settings['cutoff'], settings['covariance_floor']
-    # Spatial covariance of a spherical-radius-truncated multivariate normal.
-    covariance_ratio = chi2.cdf(cutoff**2, 5) / chi2.cdf(cutoff**2, 3)
     for digest, model in metadata['models'].items():
         for mode in metadata['modes']:
             selected_rows = [r for r in rows if r.get('model_sha256') == digest and r['mode'] == mode and not r.get('warmup')]
             for k, component in enumerate(model['gaussians']):
+                radius = (0.5 * settings.get('corridor_scale', 10.0) * model['weights'][k]
+                          if settings.get('corridor_mode', 'covariance') == 'legacy_weighted' else cutoff)
+                if radius <= 0:
+                    continue
+                # Each component can have a different historical truncation radius.
+                covariance_ratio = chi2.cdf(radius**2, 5) / chi2.cdf(radius**2, 3)
                 dimension = len(component['means'])
                 mean = np.array(component['means'][-3:])
                 covariance = np.array(component['covariances']).reshape(dimension, dimension)[-3:, -3:]
@@ -31,7 +35,7 @@ def distribution_report(rows, metadata):
                     empirical_mean = total/count
                     empirical_cov = outer/count - np.outer(empirical_mean, empirical_mean)
                     output.append(dict(model_sha256=digest, mode=mode, component=k, stage=stage,
-                        count=int(count), empirical_mean=empirical_mean.tolist(),
+                        cutoff=float(radius), count=int(count), empirical_mean=empirical_mean.tolist(),
                         empirical_covariance=empirical_cov.tolist(), expected_proposal_mean=mean.tolist(),
                         expected_truncated_covariance=expected.tolist(),
                         mean_error_m=float(np.linalg.norm(empirical_mean-mean)),

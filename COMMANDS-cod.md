@@ -132,6 +132,20 @@ The supplied RViz configuration enables these two MarkerArray displays:
 | `/gmm_sampling/markers` | Request-specific proposals, valid/rejected FK samples, and GMM support ellipsoids |
 | `/gmm_sampling/paths` | Latest returned end-effector path for each sampling mode |
 
+The default region matches `/deformed_gmm_rviz_converter_output`: diameter = `10 × component weight × sqrt(covariance eigenvalue)`, using the same covariance floor. Both sampling approaches and the uniform baseline use the matching hard box corridor. For five equal weights this restores the old 1σ radius, rather than the initial Cod implementation's 3σ radius. The learned covariance itself is preserved.
+
+After updating this version, stop the runner and restart **Gazebo/MoveIt and the TP-GMM launch**, sourcing `install/setup.bash` in each terminal. The preparation service schema and loaded sampler library changed; restarting only RViz does not apply the fix.
+
+To explicitly use the wider covariance region, put `"corridor_mode": "covariance", "cutoff": 3.0` in the JSON passed to `--sampler-config`, and match the converter:
+
+```bash
+ros2 launch tp_gmm lfd_launch.py gmm_legacy_weighted_scale:=false gmm_cutoff:=3.0
+```
+
+For custom historical scaling, match JSON `corridor_scale` with launch argument `gmm_corridor_scale`; match `covariance_floor` with `gmm_covariance_floor` in either mode. Leave converter `normalize` false.
+
+The hard path region is a union of enclosing boxes, as in the old pipeline. Box corners and rejected red FK samples can be outside ellipsoids. Cyan proposals stay within their component ellipsoid. Isolate the current request namespace when comparing with the latest deformed model.
+
 ### Sample colors
 
 | Color | Meaning |
@@ -271,7 +285,9 @@ Edit a copy of `src/tp_gmm/config/sampling.json` and pass it using `--sampler-co
 
 | Key | Default | Meaning |
 |---|---:|---|
-| `cutoff` | `3.0` | Cartesian standard-normal rejection radius |
+| `corridor_mode` | `legacy_weighted` | Historical confined region; `covariance` enables cutoff-based region |
+| `corridor_scale` | `10.0` | Historical diameter multiplier: scale × original weight × standard deviation |
+| `cutoff` | `3.0` | Cartesian rejection radius when `corridor_mode` is `covariance` |
 | `covariance_floor` | `1e-8` | Spatial covariance eigenvalue floor, m² |
 | `uniform_fraction` | `0.1` | Standard constrained-sampler exploration probability |
 | `cartesian_fraction` | `0.1` | Cartesian IK fraction of remaining projected-mode proposals |

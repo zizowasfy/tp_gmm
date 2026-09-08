@@ -31,6 +31,7 @@
 #include "gmm_rviz_converter.h"
 #include <tp_gmm/msg/gaussian_mixture.hpp>
 #include <tp_gmm/msg/gaussian.hpp>
+#include <tp_gmm/sampling_math.hpp>
 
 #include <rclcpp/rclcpp.hpp>
 #include <visualization_msgs/msg/marker.hpp>
@@ -54,8 +55,7 @@ public:
   : Node("gmm_rviz_converter", options)
   {
     std::string temp_string;
-    double temp_double;
-    int temp_int;
+    int temp_int = PARAM_DEFAULT_MAX_MARKERS;
 
     this->declare_parameter(PARAM_NAME_FRAME_ID, PARAM_DEFAULT_FRAME_ID);
     this->declare_parameter(PARAM_NAME_COORD_MASK, PARAM_DEFAULT_COORD_MASK);
@@ -65,6 +65,9 @@ public:
     this->declare_parameter(PARAM_NAME_MAX_MARKERS, PARAM_DEFAULT_MAX_MARKERS);
     this->declare_parameter(PARAM_NAME_RVIZ_NAMESPACE, PARAM_DEFAULT_RVIZ_NAMESPACE);
     this->declare_parameter(PARAM_NAME_NORMALIZE, PARAM_DEFAULT_NORMALIZE);
+    this->declare_parameter("cutoff", 3.0);
+    this->declare_parameter("covariance_floor", 1e-8);
+    this->declare_parameter("legacy_weighted_scale", true);
 
     this->get_parameter(PARAM_NAME_FRAME_ID, m_frame_id);
     this->get_parameter(PARAM_NAME_COORD_MASK, temp_string);
@@ -96,7 +99,7 @@ public:
     m_sub = this->create_subscription<tp_gmm::msg::GaussianMixture>(
       input_topic, 1, std::bind(&GMMRvizConverter::onGMM, this, std::placeholders::_1));
 
-    m_pub = this->create_publisher<visualization_msgs::msg::MarkerArray>(output_topic, 1);
+    m_pub = this->create_publisher<visualization_msgs::msg::MarkerArray>(output_topic, rclcpp::QoS(1).transient_local());
 
     this->get_parameter(PARAM_NAME_SCALE, m_scale);
     this->get_parameter(PARAM_NAME_MAX_MARKERS, temp_int);
@@ -109,6 +112,39 @@ public:
   {
     visualization_msgs::msg::MarkerArray msg;
     RCLCPP_INFO(this->get_logger(), "gmm_rviz_converter: Received message.");
+
+    // Read these at publication time so parameter changes apply to the next GMM.
+    const double cutoff = this->get_parameter("cutoff").as_double();
+    const double covariance_floor = this->get_parameter("covariance_floor").as_double();
+    const bool legacy = this->get_parameter("legacy_weighted_scale").as_bool();
+    if (!std::isfinite(cutoff) || cutoff < 1 || cutoff > 6 ||
+        !std::isfinite(covariance_floor) || covariance_floor < 1e-12 || covariance_floor > 1e-3)
+    {
+      RCLCPP_ERROR(this->get_logger(), "Invalid Gaussian cutoff or covariance_floor; model not published");
+      return;
+    }
+    if (mix->weights.size() != mix->gaussians.size())
+    {
+      RCLCPP_ERROR(this->get_logger(), "Expected one weight per Gaussian; model not published");
+      return;
+    }
+    // Validate every component before indexed coordinate extraction/publication.
+    for (const auto& gaussian : mix->gaussians)
+    {
+      const size_t dimension = gaussian.means.size();
+      if (dimension == 0 || gaussian.covariances.size() != dimension * dimension)
+      {
+        RCLCPP_ERROR(this->get_logger(), "Invalid covariance dimensions; model not published");
+        return;
+      }
+      for (const auto& coordinate : m_conversion_mask)
+        if (!coordinate->IsConstant(m_conversion_mask, gaussian) &&
+            coordinate->GetIndex(m_conversion_mask, gaussian) >= dimension)
+        {
+          RCLCPP_ERROR(this->get_logger(), "coordinate_mask exceeds Gaussian dimension; model not published");
+          return;
+        }
+    }
 
     uint i;
 
@@ -124,38 +160,47 @@ public:
       marker.action = visualization_msgs::msg::Marker::ADD;
       marker.lifetime = rclcpp::Duration::from_seconds(0);
 
-      Eigen::Vector3f coords;
+      Eigen::Vector3d coords;
       for (uint ir = 0; ir < NUM_OUTPUT_COORDINATES; ir++)
         coords[ir] = m_conversion_mask[ir]->GetMean(m_conversion_mask, mix->gaussians[i]);
       marker.pose.position.x = coords.x();
       marker.pose.position.y = coords.y();
       marker.pose.position.z = coords.z();
 
-      Eigen::Matrix3f covmat;
+      Eigen::Matrix3d covmat;
       for (uint ir = 0; ir < NUM_OUTPUT_COORDINATES; ir++)
         for (uint ic = 0; ic < NUM_OUTPUT_COORDINATES; ic++)
           covmat(ir, ic) = m_conversion_mask[ir]->GetCov(m_conversion_mask, mix->gaussians[i], ic);
 
-      Eigen::EigenSolver<Eigen::Matrix3f> evsolver(covmat);
-
-      Eigen::Matrix3f eigenvectors = evsolver.eigenvectors().real();
-      if (eigenvectors.determinant() < 0.0)
-        eigenvectors.col(0) = -eigenvectors.col(0);
-      Eigen::Matrix3f rotation = eigenvectors;
-      Eigen::Quaternionf quat = Eigen::Quaternionf(Eigen::AngleAxisf(rotation));
-
+      // Same canonical covariance, eigenvalue floor and full-diameter convention as
+      // the request-scoped sampler. The region policy is applied separately below.
+      sampling::Gaussian gaussian;
+      try
+      {
+        gaussian = sampling::canonicalGaussian(coords, covmat, covariance_floor);
+      }
+      catch (const std::invalid_argument& error)
+      {
+        RCLCPP_ERROR(this->get_logger(), "Invalid Gaussian %u: %s; model not published", i, error.what());
+        return;
+      }
+      const Eigen::Quaterniond quat(gaussian.axes);
       marker.pose.orientation.x = quat.x();
       marker.pose.orientation.y = quat.y();
       marker.pose.orientation.z = quat.z();
       marker.pose.orientation.w = quat.w();
 
-      Eigen::Vector3f eigenvalues = evsolver.eigenvalues().real();
-      Eigen::Vector3f scale = Eigen::Vector3f(eigenvalues.array().abs().sqrt());
-      if (m_normalize)
-        scale.normalize();
-      marker.scale.x = mix->weights[i] * scale.x() * m_scale;
-      marker.scale.y = mix->weights[i] * scale.y() * m_scale;
-      marker.scale.z = mix->weights[i] * scale.z() * m_scale;
+      Eigen::Vector3d scale = 2.0 * cutoff * gaussian.eigenvalues.cwiseSqrt();
+      if (legacy)
+      {
+        // Preserve the historical planning corridor dimensions.
+        scale = gaussian.eigenvalues.cwiseSqrt();
+        if (m_normalize) scale.normalize();
+        scale *= mix->weights[i] * m_scale;
+      }
+      marker.scale.x = scale.x();
+      marker.scale.y = scale.y();
+      marker.scale.z = scale.z();
 
       marker.color.a = 0.3; //1.0;
       rainbow(float(i) / float(mix->gaussians.size()), marker.color.r, marker.color.g, marker.color.b);

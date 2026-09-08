@@ -49,7 +49,9 @@ Pass `--sampler-config src/tp_gmm/config/sampling.json` to either runner to over
 
 | Setting | Default | Meaning |
 |---|---:|---|
-| `cutoff` | 3 | Reject standard-normal position draws with radius greater than this |
+| `corridor_mode` | `legacy_weighted` | Preserve historical region dimensions; `covariance` opts into the wider cutoff region |
+| `corridor_scale` | 10 | Historical full-diameter multiplier, used with each original component weight |
+| `cutoff` | 3 | Standard-normal rejection radius in `covariance` mode |
 | `covariance_floor` | 1e-8 m² | Small eigenvalue floor, used identically for sampling and corridor geometry |
 | `uniform_fraction` | 0.1 | Probability of using MoveIt's ordinary constrained sampler |
 | `cartesian_fraction` | 0.1 | In projected mode, Cartesian + IK fraction of remaining proposals |
@@ -107,6 +109,12 @@ The `sampling.rviz` configuration enables two MarkerArray displays:
 
 Run the comparison with `--visualize --repeats 1 --warmup 0`. For the executing experiment pipeline, sample visualization is enabled unless `--no-sample-viz` is passed. Expand the marker display's namespaces to isolate a request or proposal stage. Sample buffers contain the latest 1,000 points per stage, publish at 10 Hz, and remain visible for 30 seconds after the request is released. Fast plans also publish a final snapshot. Paths persist until replaced for their mode. For timing runs, keep visualization off.
 
+Both `/deformed_gmm_rviz_converter_output` and request-specific `/gmm_sampling/markers` use the historical region dimensions by default. Five equally weighted components give 1σ radii with scale 10, rather than the initial Cod implementation's 3σ radii. The original TP-GMM covariance is not shrunk or deformed again. Compare the current request: old sample markers can persist for 30 seconds after release.
+
+For a custom profile, match converter geometry using `lfd_launch.py` arguments `gmm_corridor_scale`, `gmm_covariance_floor`, and `gmm_legacy_weighted_scale`. Set the latter to `false` and match `gmm_cutoff` when opting into `corridor_mode: covariance`. Historical `normalize=true` display scaling is not supported as a sampler corridor policy; leave it false.
+
+The path constraint remains the historical union of **boxes**, not an exact union of ellipsoids. Uniform samples and path segments can occupy box corners outside the drawn ellipsoids; rejected red FK samples can also be outside. Cyan GMM proposals are truncated inside their component ellipsoid.
+
 Cyan points in projected mode are the *linear task-space draws*, before nonlinear FK; green/red points show actual FK. Red points do not cover IK failures or rejected joint vectors for which FK was not computed. Neither point cloud is the RRT tree: steering and interpolation generate additional planner vertices.
 
 Visual containment alone does not establish distribution fidelity. `distribution_checks` in the JSON compares empirical per-component means/covariances with the analytically truncated Gaussian, with sample counts reported. Low counts are noisy. The exact proposal reference is appropriate for Cartesian draws and projected linear draws; projected FK and accepted states are expected to differ because of nonlinearity, IK, bounds and collision conditioning.
@@ -115,7 +123,7 @@ Visual containment alone does not establish distribution fidelity. `distribution
 
 The spatial marginal is extracted from either `[x,y,z]` or row-major `[time,x,y,z]` messages. The whole model is validated before registration: dimensions, finite values, positive-semidefinite spatial covariances and nonnegative weights with positive total. Covariance symmetrization is alias-safe; materially negative eigenvalues are rejected. The canonical eigensystem is used for every downstream representation.
 
-Cartesian proposals select `k ~ Categorical(normalized weights)` and draw `x = mu[k] + L[k] z`, rejecting until `||z|| <= cutoff`. There is no radial clipping or joint-limit clamping. For cutoff 3 in 3-D the retained probability is approximately 97.1%, and the retained covariance is approximately `0.917807 * Sigma`. Each target gets a randomized IK seed and the configured orientation bias. Joint bounds, all configured path constraints, feasibility, collisions and any inherited validity callback are checked before reporting a valid target.
+Cartesian proposals select `k ~ Categorical(normalized weights)` and draw `x = mu[k] + L[k] z`, rejecting until `||z|| <= c_k`. In the default `legacy_weighted` mode, `c_k = corridor_scale * original_weight[k] / 2`; in `covariance` mode, `c_k = cutoff`. The model covariance remains unchanged; the proposal is conditioned on this component region. There is no radial clipping or joint-limit clamping. For the optional covariance-mode cutoff 3 in 3-D the retained probability is approximately 97.1%, and the retained covariance is approximately `0.917807 * Sigma`. Each target gets a randomized IK seed and the configured orientation bias. Joint bounds, all configured path constraints, feasibility, collisions and any inherited validity callback are checked before reporting a valid target.
 
 Projection solves several diverse IK anchors per component and verifies their FK residual. An SVD gives a full-row-rank right inverse `A` and an orthonormal null basis `Z`, with `J A = I` and `J Z = 0`. A draw is
 
@@ -127,7 +135,7 @@ Before truncation, the local joint covariance is `A Sigma A^T + sigma_null² Z Z
 
 Known fixed GMM frames, including a rotated/translated fixed robot base, are supported. IK targets transform into the model frame; FK and Jacobians transform into the GMM frame. Moving GMM frames are rejected. This version constrains the named link origin (zero tool-point offset) and exposes position corridors; the quaternion is a proposal bias, not a hard path orientation constraint. The validated robot/group is the fixed-base Panda `panda_arm` / `panda_hand`.
 
-The hard corridor is a union of oriented enclosing boxes with full dimensions `2 * cutoff * sqrt(eigenvalue)`. Weights affect selection probability only. Boxes enclose ellipsoids; they are not an exact ellipsoidal constraint. The `uniform` baseline wraps MoveIt's unmodified IK constraint sampler: primitive indices and orientations retain its standard policy, so this baseline differs in more than just the positional proposal. Both GMM modes share the same configured orientation/exploration policy.
+The hard corridor is a union of oriented enclosing boxes with full dimensions `2 * c_k * sqrt(eigenvalue)`. Default `legacy_weighted` mode therefore restores the old converter's `10 * original_weight[k] * sqrt(eigenvalue)` dimensions (with the shared covariance floor). This is an explicit historical region policy: weights set the region size as well as the component selection frequency. `covariance` mode uses weights only for selection. Zero-weight historical components contribute no region. Small-radius proposals use uniform-ball rejection weighted by the Gaussian density, avoiding clipping and excessive rejection from an unrestricted Gaussian. Boxes enclose ellipsoids; they are not an exact ellipsoidal constraint. The `uniform` baseline wraps MoveIt's unmodified IK constraint sampler: primitive indices and orientations retain its standard policy, so this baseline differs in more than just the positional proposal. Both GMM modes share the same configured orientation/exploration policy.
 
 ## Request ownership and timing
 
@@ -155,6 +163,7 @@ ctest --test-dir build/tp_gmm -R sampling_math --output-on-failure
 ROS_LOG_DIR=/tmp/tpgmm-tests python3 -m unittest discover -s src/tp_gmm/tests
 # Requires the plan-only laboratory on the same ROS domain:
 python3 src/tp_gmm/tests/test_sampling_protocol.py
+python3 src/tp_gmm/tests/test_gmm_marker_geometry.py
 ```
 
 The mathematical test covers covariance factorization/symmetrization, malformed covariance rejection, a 150,000-draw truncation check, Mahalanobis coordinates, and SVD task covariance/null-space identities. Protocol tests cover malformed arrays/NaNs/indefinite covariance, transactional registration, interleaved model identities, released IDs and late-joining RViz marker delivery. Reporting tests cover failed trials, warmups, zero timings and absent metrics. See the workspace validation output for measured planning results.

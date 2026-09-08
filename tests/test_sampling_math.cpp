@@ -30,6 +30,27 @@ int main()
   assert(boundary == 0 && (sum/count).norm() < 0.015);
   // E[z_i^2 | ||z||<=3] = 0.917807... in three dimensions.
   assert((outer/count - 0.917807*Eigen::Matrix3d::Identity()).norm() < 0.02);
+  // The small-corridor algorithm must preserve the conditional normal density.
+  // Compare E[z_i^2 | ||z||<=0.5] against a numerical radial integral.
+  double mass = 0, radial_second = 0;
+  for (int i = 0; i < 10000; ++i)
+  {
+    const double r = 0.5 * (i + 0.5) / 10000;
+    const double density = r*r * std::exp(-r*r/2);
+    mass += density; radial_second += r*r * density;
+  }
+  const double expected = radial_second / (3 * mass);
+  outer.setZero(); sum.setZero();
+  for (unsigned i = 0; i < count; ++i)
+  {
+    Eigen::Vector3d z; assert(truncatedNormal(rng, normal, 0.5, z));
+    assert(z.norm() < 0.5); sum += z; outer += z*z.transpose();
+  }
+  assert((sum/count).norm() < 0.003);
+  assert((outer/count - expected*Eigen::Matrix3d::Identity()).norm() < 0.001);
+  Eigen::Vector3d tiny;
+  assert(truncatedNormal(rng, normal, 1e-8, tiny) && tiny.norm() <= 1e-8);
+  assert(!truncatedNormal(rng, normal, 0, tiny));
   Eigen::MatrixXd j(3,7);
   j << 1,0,0,0.2,0.1,0.3,0, 0,1,0,0,0.3,0.1,0.1, 0,0,1,0.1,0,0.3,0.1;
   auto p = project(j);

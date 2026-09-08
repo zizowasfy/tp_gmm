@@ -24,7 +24,7 @@ struct SamplingSession
   moveit_msgs::msg::Constraints constraints;
   std::string id;
   std::vector<sampling::Gaussian> gaussians;
-  std::vector<double> weights;
+  std::vector<double> weights, cutoffs;
   std::mutex mutex;
   Metrics metrics;
   // Four independently bounded buffers: raw Cartesian, valid FK, rejected FK, uniform valid.
@@ -189,7 +189,7 @@ private:
     local_["cartesian_attempts"]++;
     const auto start = Clock::now();
     Eigen::Vector3d z;
-    if (!sampling::truncatedNormal(rng_, normal_, session_->config.cutoff, z)) return false;
+    if (!sampling::truncatedNormal(rng_, normal_, session_->cutoffs[k], z)) return false;
     Eigen::Vector3d x = session_->gaussians[k].mean + session_->gaussians[k].factor * z;
     local_["draw_s"] += seconds(start);
     moments(local_, "component_" + std::to_string(k) + "_proposal_", x);
@@ -204,7 +204,7 @@ private:
     const auto start = Clock::now();
     const Anchor& anchor = anchors_[k][std::uniform_int_distribution<size_t>(0, anchors_[k].size() - 1)(rng_)];
     Eigen::Vector3d z;
-    if (!sampling::truncatedNormal(rng_, normal_, session_->config.cutoff, z)) return false;
+    if (!sampling::truncatedNormal(rng_, normal_, session_->cutoffs[k], z)) return false;
     const Eigen::Vector3d linear_target = session_->gaussians[k].mean + session_->gaussians[k].factor * z;
     moments(local_, "component_" + std::to_string(k) + "_projected_linear_", linear_target);
     record(0, linear_target);
@@ -225,7 +225,7 @@ private:
     local_["linearization_checks"]++;
     moments(local_, "component_" + std::to_string(k) + "_projected_fk_", x);
     if (residual > session_->config.linearization_tolerance ||
-        sampling::mahalanobisSquared(session_->gaussians[k], x) > session_->config.cutoff * session_->config.cutoff)
+        sampling::mahalanobisSquared(session_->gaussians[k], x) > session_->cutoffs[k] * session_->cutoffs[k])
     { local_["projection_support_rejections"]++; record(2, x); return false; }
     return true;
   }
@@ -318,7 +318,9 @@ void GMMConstraintSamplerAllocator::prepare(const srv::PrepareSampling::Request&
     if (req.mode != "cartesian_ik" && req.mode != "joint_projected" && req.mode != "uniform") throw std::invalid_argument("Unknown sampling mode");
     if (req.group_name.empty() || req.link_name.empty() || req.model.header.frame_id.empty()) throw std::invalid_argument("Group, link and model frame are required");
     auto range = [](double x, double lo, double hi) { return std::isfinite(x) && x >= lo && x <= hi; };
-    if (!range(req.cutoff, 1, 6) || !range(req.covariance_floor, 1e-12, 1e-3) ||
+    if (req.corridor_mode != "legacy_weighted" && req.corridor_mode != "covariance")
+      throw std::invalid_argument("Unknown corridor_mode");
+    if (!range(req.corridor_scale, 0.001, 1000) || !range(req.cutoff, 1, 6) || !range(req.covariance_floor, 1e-12, 1e-3) ||
         !range(req.uniform_fraction, 0, 1) || !range(req.cartesian_fraction, 0, 1) ||
         !range(req.ik_timeout, 0.0001, 0.1) || !range(req.nullspace_stddev, 0, 0.5) ||
         !range(req.max_joint_delta, 0.01, 2) || !range(req.linearization_tolerance, 1e-5, 0.1) ||
@@ -359,8 +361,13 @@ void GMMConstraintSamplerAllocator::prepare(const srv::PrepareSampling::Request&
       auto g = sampling::canonicalGaussian(mean, covariance, req.covariance_floor);
       if (!range(req.model.weights[k], 0, 1e20)) throw std::invalid_argument("Invalid component weight");
       total += req.model.weights[k]; session->weights.push_back(req.model.weights[k]); session->gaussians.push_back(g);
+      // Preserve the historical hard region independently of the sampling covariance.
+      const double radius = req.corridor_mode == "legacy_weighted" ?
+          0.5 * req.corridor_scale * req.model.weights[k] : req.cutoff;
+      session->cutoffs.push_back(radius);
+      if (radius == 0) continue;  // A zero-prior historical component has no region.
       shape_msgs::msg::SolidPrimitive box; box.type = box.BOX;
-      for (int j = 0; j < 3; ++j) box.dimensions.push_back(2 * req.cutoff * std::sqrt(g.eigenvalues[j]));
+      for (int j = 0; j < 3; ++j) box.dimensions.push_back(2 * radius * std::sqrt(g.eigenvalues[j]));
       geometry_msgs::msg::Pose pose; pose.position = point(mean);
       const Eigen::Quaterniond q(g.axes); pose.orientation.w = q.w(); pose.orientation.x = q.x(); pose.orientation.y = q.y(); pose.orientation.z = q.z();
       position.constraint_region.primitives.push_back(box); position.constraint_region.primitive_poses.push_back(pose);
@@ -475,7 +482,9 @@ void GMMConstraintSamplerAllocator::report(const srv::SamplingReport::Request& r
     std::ostringstream json; json << std::setprecision(12) << "{\"request_id\":\"" << session->id << "\",\"mode\":\"" << session->config.mode << "\"";
     for (const auto& [key, value] : metrics)
     { json << ",\"" << key << "\":"; if (std::isfinite(value)) json << value; else json << "null"; }
-    json << ",\"weights\":[";
+    json << ",\"corridor_mode\":\"" << session->config.corridor_mode << "\",\"component_cutoffs\":[";
+    for (size_t k = 0; k < session->cutoffs.size(); ++k) { if (k) json << ','; json << session->cutoffs[k]; }
+    json << "],\"weights\":[";
     for (size_t k = 0; k < session->weights.size(); ++k) { if (k) json << ','; json << session->weights[k]; }
     json << "]}";
     publishMarkers();
@@ -507,10 +516,11 @@ void GMMConstraintSamplerAllocator::publishMarkers()
     }
     for (size_t k = 0; k < session->gaussians.size(); ++k)
     {
+      if (session->cutoffs[k] == 0) continue;
       const auto& g = session->gaussians[k]; auto m = base(); m.ns = id + "/support"; m.id = k; m.type = m.SPHERE;
       m.pose.position = point(g.mean); const Eigen::Quaterniond q(g.axes);
       m.pose.orientation.w = q.w(); m.pose.orientation.x = q.x(); m.pose.orientation.y = q.y(); m.pose.orientation.z = q.z();
-      const Eigen::Vector3d scale = 2 * session->config.cutoff * g.eigenvalues.cwiseSqrt();
+      const Eigen::Vector3d scale = 2 * session->cutoffs[k] * g.eigenvalues.cwiseSqrt();
       m.scale.x = scale.x(); m.scale.y = scale.y(); m.scale.z = scale.z();
       m.color.r = 0.65; m.color.g = 0.4; m.color.b = 1; m.color.a = 0.12; array.markers.push_back(m);
     }

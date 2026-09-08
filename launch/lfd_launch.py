@@ -2,8 +2,19 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
+
+    # Preserve the historical corridor by default; match any custom sampler profile.
+    cutoff_arg = DeclareLaunchArgument('gmm_cutoff', default_value='3.0')
+    floor_arg = DeclareLaunchArgument('gmm_covariance_floor', default_value='1e-8')
+    gmm_geometry = {
+        'cutoff': ParameterValue(LaunchConfiguration('gmm_cutoff'), value_type=float),
+        'covariance_floor': ParameterValue(LaunchConfiguration('gmm_covariance_floor'), value_type=float),
+        'legacy_weighted_scale': ParameterValue(LaunchConfiguration('gmm_legacy_weighted_scale'), value_type=bool),
+        'scale': ParameterValue(LaunchConfiguration('gmm_corridor_scale'), value_type=float),
+    }
 
     task_arg = DeclareLaunchArgument(
         'task',
@@ -51,6 +62,7 @@ def generate_launch_description():
         package='tp_gmm',
         executable='gmm_rviz_converter_node',
         name='gmm_rviz_converter_node',
+        parameters=[gmm_geometry],
         output='screen'
     )
 
@@ -66,6 +78,7 @@ def generate_launch_description():
         executable='gmm_rviz_converter_node',
         name='deformed_gmm_rviz_converter_node',
         parameters=[{
+            **gmm_geometry,
             'input_topic': '/gmm/deformed_cartesian_space',
             'output_topic': 'deformed_gmm_rviz_converter_output'
         }],
@@ -86,6 +99,10 @@ def generate_launch_description():
 
 
     return LaunchDescription([
+        DeclareLaunchArgument('gmm_legacy_weighted_scale', default_value='true'),
+        DeclareLaunchArgument('gmm_corridor_scale', default_value='10.0'),
+        cutoff_arg,
+        floor_arg,
         task_arg,
         subtask_arg,
         tp_gmm_node,

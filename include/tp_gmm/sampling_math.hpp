@@ -31,7 +31,22 @@ inline Gaussian canonicalGaussian(const Eigen::Vector3d& mean, const Eigen::Matr
 inline bool truncatedNormal(std::mt19937& rng, std::normal_distribution<double>& normal,
                             double cutoff, Eigen::Vector3d& z)
 {
-  // Bounded rejection, never radial clipping. cutoff >= 1 is required by the service.
+  // Small historical corridors need efficient rejection from a uniform ball.
+  // Accepting with exp(-||z||^2/2) gives the same conditional normal density.
+  if (!std::isfinite(cutoff) || cutoff <= 0) return false;
+  if (cutoff < 1)
+  {
+    std::uniform_real_distribution<double> uniform(0, 1);
+    for (unsigned i = 0; i < 128; ++i)
+    {
+      for (int j = 0; j < 3; ++j) z[j] = 2 * uniform(rng) - 1;
+      if (z.squaredNorm() > 1) continue;
+      z *= cutoff;
+      if (uniform(rng) <= std::exp(-0.5 * z.squaredNorm())) return true;
+    }
+    return false;
+  }
+  // Bounded rejection, never radial clipping.
   for (unsigned i = 0; i < 128; ++i)
   {
     for (int j = 0; j < 3; ++j) z[j] = normal(rng);

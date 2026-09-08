@@ -7,7 +7,7 @@ import rclpy
 from tp_gmm.srv import PrepareSampling, SamplingReport
 
 MODES = ('cartesian_ik', 'joint_projected', 'uniform')
-DEFAULTS = dict(cutoff=3.0, covariance_floor=1e-8, uniform_fraction=0.1,
+DEFAULTS = dict(corridor_mode='legacy_weighted', corridor_scale=10.0, cutoff=3.0, covariance_floor=1e-8, uniform_fraction=0.1,
                 cartesian_fraction=0.1, ik_timeout=0.005, branches=3,
                 anchor_attempts=16, nullspace_stddev=0.08, max_joint_delta=0.6,
                 linearization_tolerance=0.01)

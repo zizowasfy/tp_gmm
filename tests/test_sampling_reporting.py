@@ -22,3 +22,18 @@ class ReportingTest(unittest.TestCase):
         self.assertIsNone(summary['valid_per_attempt'])
         self.assertIsNone(summary['min_world_clearance_m_median'])
         self.assertEqual(summary['inactive_sampler_trials'], 1)
+
+    def test_fidelity_uses_each_historical_component_radius(self):
+        import numpy as np
+        from sampling_fidelity import distribution_report
+        component = dict(means=[0., 0., 0.], covariances=np.eye(3).ravel().tolist())
+        metadata = dict(settings=dict(cutoff=3., covariance_floor=1e-8,
+                                     corridor_mode='legacy_weighted', corridor_scale=10.),
+                        models={'fixture': dict(gaussians=[component, component], weights=[0.1, 0.9])},
+                        modes=['cartesian_ik'])
+        rows = [dict(mode='cartesian_ik', model_sha256='fixture', sampling={
+            'component_0_proposal_count': 2, 'component_1_proposal_count': 2})]
+        checks = distribution_report(rows, metadata)
+        self.assertEqual([c['cutoff'] for c in checks], [0.5, 4.5])
+        self.assertLess(checks[0]['expected_truncated_covariance'][0][0], 0.05)
+        self.assertGreater(checks[1]['expected_truncated_covariance'][0][0], 0.99)
