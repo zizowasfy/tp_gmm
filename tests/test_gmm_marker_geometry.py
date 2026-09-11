@@ -82,6 +82,15 @@ def main():
             response = wait(node, parameters.call_async(request))
             assert all(result.successful for result in response.results)
 
+        # Unconfigured converter and client must agree on the current 2-sigma default.
+        default = sampling.prepare(model, 'panda_arm', 'panda_hand', Quaternion(x=1., w=0.), 'cartesian_ik')
+        ids.append(default.request_id)
+        default_markers = publish_model()
+        for marker, box in zip(default_markers, default.constraints.position_constraints[0].constraint_region.primitives):
+            np.testing.assert_allclose([marker.scale.x, marker.scale.y, marker.scale.z],
+                                       4 * np.sqrt([1e-8, 0.0001, 0.0004]), rtol=1e-6)
+            np.testing.assert_allclose([marker.scale.x, marker.scale.y, marker.scale.z], box.dimensions)
+
         for mode, cutoff, floor in [('legacy_weighted', 3., 1e-8), ('covariance', 2., 1e-7)]:
             model.weights = [0.1, 0.9]
             set_parameters(cutoff=cutoff, covariance_floor=floor, legacy_weighted_scale=mode == 'legacy_weighted')

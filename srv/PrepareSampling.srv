@@ -6,9 +6,9 @@ string mode
 geometry_msgs/Quaternion orientation
 uint32 seed
 # legacy_weighted preserves the original marker-derived corridor; covariance uses cutoff.
-string corridor_mode "legacy_weighted"
+string corridor_mode "covariance"
 float64 corridor_scale 10.0
-float64 cutoff
+float64 cutoff 2.0
 float64 covariance_floor
 float64 uniform_fraction
 float64 cartesian_fraction

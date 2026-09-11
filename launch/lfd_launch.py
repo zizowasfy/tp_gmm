@@ -6,8 +6,8 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
 
-    # Preserve the historical corridor by default; match any custom sampler profile.
-    cutoff_arg = DeclareLaunchArgument('gmm_cutoff', default_value='3.0')
+    # Match the covariance corridor used by the retrained model experiments.
+    cutoff_arg = DeclareLaunchArgument('gmm_cutoff', default_value='2.0')
     floor_arg = DeclareLaunchArgument('gmm_covariance_floor', default_value='1e-8')
     gmm_geometry = {
         'cutoff': ParameterValue(LaunchConfiguration('gmm_cutoff'), value_type=float),
@@ -35,24 +35,7 @@ def generate_launch_description():
         name='tp_gmm',
         parameters=[
             {
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-15_17-18-11_ppo_torch/checkpoints/best_agent.pt'
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-06-04_16-49-13_ppo_torch_envs=32/checkpoints/best_agent.pt'
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-05_21-41-30_ppo_torch/checkpoints/best_agent.pt'
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-21_23-14-27_ppo_torch/checkpoints/best_agent.pt'
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-25_22-25-09_ppo_torch/checkpoints/best_agent.pt'
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-25_23-08-51_ppo_torch/checkpoints/best_agent.pt'
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-26_13-09-35_ppo_torch/checkpoints/best_agent.pt',
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-26_14-02-37_ppo_torch/checkpoints/best_agent.pt'
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-26_19-15-12_ppo_torch/checkpoints/best_agent.pt',
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-26_21-56-10_ppo_torch/checkpoints/best_agent.pt',
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-31_10-49-08_ppo_torch/checkpoints/best_agent.pt',
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-31_11-36-52_ppo_torch/checkpoints/best_agent.pt',
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-31_21-09-18_ppo_torch/checkpoints/best_agent.pt',
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-31_21-55-45_ppo_torch/checkpoints/best_agent.pt',
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-08-31_22-40-43_ppo_torch/checkpoints/best_agent.pt',
-                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-01_01-05-26_ppo_torch/checkpoints/best_agent.pt',
-                'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-03_20-31-51_ppo_torch/checkpoints/best_agent.pt',
-
+                'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-11_21-20-28_ppo_torch/checkpoints/best_agent.pt',
             }
         ],
         output='screen'
@@ -99,7 +82,7 @@ def generate_launch_description():
 
 
     return LaunchDescription([
-        DeclareLaunchArgument('gmm_legacy_weighted_scale', default_value='true'),
+        DeclareLaunchArgument('gmm_legacy_weighted_scale', default_value='false'),
         DeclareLaunchArgument('gmm_corridor_scale', default_value='10.0'),
         cutoff_arg,
         floor_arg,

@@ -65,9 +65,9 @@ public:
     this->declare_parameter(PARAM_NAME_MAX_MARKERS, PARAM_DEFAULT_MAX_MARKERS);
     this->declare_parameter(PARAM_NAME_RVIZ_NAMESPACE, PARAM_DEFAULT_RVIZ_NAMESPACE);
     this->declare_parameter(PARAM_NAME_NORMALIZE, PARAM_DEFAULT_NORMALIZE);
-    this->declare_parameter("cutoff", 3.0);
+    this->declare_parameter("cutoff", 2.0);
     this->declare_parameter("covariance_floor", 1e-8);
-    this->declare_parameter("legacy_weighted_scale", true);
+    this->declare_parameter("legacy_weighted_scale", false);
 
     this->get_parameter(PARAM_NAME_FRAME_ID, m_frame_id);
     this->get_parameter(PARAM_NAME_COORD_MASK, temp_string);

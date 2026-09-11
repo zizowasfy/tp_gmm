@@ -34,8 +34,8 @@ source install/setup.bash
 # 79 is the isolated domain used for the Codex validation runs.
 export ROS_DOMAIN_ID=79
 
-# Existing checkpoint used for the Codex validation runs.
-export TPGMM_POLICY_CKPT=/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-03_20-31-51_ppo_torch/checkpoints/best_agent.pt
+# Current policy retrained for the GMM with regularization 0.005.
+export TPGMM_POLICY_CKPT=/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-11_21-20-28_ppo_torch/checkpoints/best_agent.pt
 ```
 
 Choose one robot bringup per ROS domain: either the plan-only laboratory or the Gazebo/mock-hardware workflow. They provide overlapping node and service names.
@@ -132,15 +132,17 @@ The supplied RViz configuration enables these two MarkerArray displays:
 | `/gmm_sampling/markers` | Request-specific proposals, valid/rejected FK samples, and GMM support ellipsoids |
 | `/gmm_sampling/paths` | Latest returned end-effector path for each sampling mode |
 
-The default region matches `/deformed_gmm_rviz_converter_output`: diameter = `10 × component weight × sqrt(covariance eigenvalue)`, using the same covariance floor. Both sampling approaches and the uniform baseline use the matching hard box corridor. For five equal weights this restores the old 1σ radius, rather than the initial Cod implementation's 3σ radius. The learned covariance itself is preserved.
+The default region uses `corridor_mode: covariance` and `cutoff: 2.0`. Both GMM converters and `/gmm_sampling/markers` show ellipsoids with full diameters `4 × sqrt(covariance eigenvalue)`. Component weights affect sampling frequency, not marker size. Both sampling approaches and the uniform baseline use matching enclosing box constraints.
 
-After updating this version, stop the runner and restart **Gazebo/MoveIt and the TP-GMM launch**, sourcing `install/setup.bash` in each terminal. The preparation service schema and loaded sampler library changed; restarting only RViz does not apply the fix.
+The retrained model's covariance is read directly from its GaussianMixture messages. The training regularization (`diagRegularizationFactor = 0.005`) is already incorporated in the model; do not apply it again as a visualization scale or covariance floor. The numerical covariance floor remains `1e-8` m².
 
-To explicitly use the wider covariance region, put `"corridor_mode": "covariance", "cutoff": 3.0` in the JSON passed to `--sampler-config`, and match the converter:
+Restart the TP-GMM/converter launch and runner after sourcing `install/setup.bash`. These are now the launch defaults, so this explicit command is optional:
 
 ```bash
-ros2 launch tp_gmm lfd_launch.py gmm_legacy_weighted_scale:=false gmm_cutoff:=3.0
+ros2 launch tp_gmm lfd_launch.py gmm_legacy_weighted_scale:=false gmm_cutoff:=2.0
 ```
+
+The runner defaults and `config/sampling.json` use the same covariance/2.0 settings. An explicit `--sampler-config` overrides those defaults. The execution launch selects the 11 September retrained policy; use the same checkpoint for standalone or laboratory launches.
 
 For custom historical scaling, match JSON `corridor_scale` with launch argument `gmm_corridor_scale`; match `covariance_floor` with `gmm_covariance_floor` in either mode. Leave converter `normalize` false.
 
@@ -285,9 +287,9 @@ Edit a copy of `src/tp_gmm/config/sampling.json` and pass it using `--sampler-co
 
 | Key | Default | Meaning |
 |---|---:|---|
-| `corridor_mode` | `legacy_weighted` | Historical confined region; `covariance` enables cutoff-based region |
+| `corridor_mode` | `covariance` | Covariance cutoff region; `legacy_weighted` restores historical weighted sizing |
 | `corridor_scale` | `10.0` | Historical diameter multiplier: scale × original weight × standard deviation |
-| `cutoff` | `3.0` | Cartesian rejection radius when `corridor_mode` is `covariance` |
+| `cutoff` | `2.0` | Cartesian rejection radius when `corridor_mode` is `covariance` |
 | `covariance_floor` | `1e-8` | Spatial covariance eigenvalue floor, m² |
 | `uniform_fraction` | `0.1` | Standard constrained-sampler exploration probability |
 | `cartesian_fraction` | `0.1` | Cartesian IK fraction of remaining projected-mode proposals |
@@ -322,7 +324,7 @@ For mock controllers without Gazebo physics, use `ros2 launch moveit_resources_p
 ros2 launch tp_gmm lfd_launch.py
 ```
 
-The launch file currently embeds the 3 September checkpoint used above. Its `task` and `subtask` arguments are declared but do not select the task passed to the model service; use the runner's `--task` argument. The Codex sampler receives models from service responses and does not depend on the legacy marker-to-box bridge.
+The launch file currently embeds the 11 September checkpoint used above. Its `task` and `subtask` arguments are declared but do not select the task passed to the model service; use the runner's `--task` argument. The Codex sampler receives models from service responses and does not depend on the legacy marker-to-box bridge.
 
 To choose a checkpoint without those extra visualization nodes, run this instead:
 
