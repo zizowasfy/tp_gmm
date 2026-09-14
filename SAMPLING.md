@@ -173,3 +173,8 @@ The live sample-stream integration check also runs nine plan-only requests, veri
 ```bash
 python3 src/tp_gmm/tests/test_sampling_visual_stream.py --output sampling_results/visual-check
 ```
+
+
+## Clearance generalization
+
+The separate `run_clearance_sweep.py` runner performs paired 0.1–1.0 clearance sweeps across random pose environments, with request-matched DSGMR curves, FK/cylinder clearance analysis, an unconstrained `ompl_uniform` baseline and exportable figures. See [CLEARANCE_ANALYSIS.md](CLEARANCE_ANALYSIS.md).

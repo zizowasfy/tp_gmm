@@ -1,0 +1,45 @@
+{
+  "start_low": [
+    0.28,
+    -0.2,
+    0.57
+  ],
+  "start_high": [
+    0.38,
+    0.2,
+    0.66
+  ],
+  "goal_low": [
+    0.53,
+    -0.2,
+    0.45
+  ],
+  "goal_high": [
+    0.65,
+    0.2,
+    0.54
+  ],
+  "obstacle_fraction": [
+    0.4,
+    0.6
+  ],
+  "obstacle_offset_low": [
+    -0.025,
+    -0.035,
+    -0.025
+  ],
+  "obstacle_offset_high": [
+    0.025,
+    0.035,
+    0.025
+  ],
+  "radius": [
+    0.03,
+    0.05
+  ],
+  "height": [
+    0.25,
+    0.38
+  ],
+  "minimum_endpoint_separation": 0.2
+}

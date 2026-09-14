@@ -88,6 +88,9 @@ install(PROGRAMS
   scripts/run_experiments.py
   scripts/sampling_client.py
   scripts/compare_sampling_approaches.py
+  scripts/run_clearance_sweep.py
+  scripts/clearance_analysis.py
+  scripts/plot_clearance_analysis.py
   scripts/plot_sampling_comparison.py
   scripts/sampling_fidelity.py
   scripts/standalone_policy.py
@@ -108,7 +111,7 @@ install(TARGETS
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
-install(FILES SAMPLING.md DESTINATION share/${PROJECT_NAME})
+install(FILES COMMANDS-cod.md SAMPLING.md CLEARANCE_ANALYSIS.md DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY tasks DESTINATION share/${PROJECT_NAME})

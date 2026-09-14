@@ -12,6 +12,7 @@ from tp_gmm.msg import GaussianMixture
 from tp_gmm.srv import StartTPGMM, ReproduceTPGMM, DeformTPGMM
 
 import pickle
+import hashlib
 
 ## System and directories stuff
 import sys
@@ -48,6 +49,17 @@ from TPGMM_GMR import TPGMM_GMR
 from copy import deepcopy,copy
 import torch
 
+def trajectory_message(data, frame):
+    message = PoseArray()
+    message.header.frame_id = frame
+    for point in data.T:
+        pose = Pose()
+        pose.position.x, pose.position.y, pose.position.z = map(float, point[1:4])
+        pose.orientation.w = 1.0
+        message.poses.append(pose)
+    return message
+
+
 class TPGMM(Node):
     def __init__(self):
         super().__init__('tp_gmm_node')
@@ -66,11 +78,14 @@ class TPGMM(Node):
 
         ckpt_path = self.get_parameter('policy_ckpt_path').get_parameter_value().string_value
         self.action_scale = self.get_parameter('action_scale').get_parameter_value().double_value
+        self.policy_checkpoint = ckpt_path
+        self.policy_sha256 = ''
 
         if os.path.exists(ckpt_path):
             try:
                 self.policy = TPGMMDeformationPolicy.load_from_skrl_checkpoint(ckpt_path)
                 self.policy.to(self.device)
+                self.policy_sha256 = hashlib.sha256(Path(ckpt_path).read_bytes()).hexdigest()
                 self.get_logger().info(f"Successfully loaded policy from {ckpt_path}")
             except Exception as e:
                 self.get_logger().error(f"Failed to load policy: {e}")
@@ -265,6 +280,10 @@ class TPGMM(Node):
         self.tpgmm_viz_pub.publish(original_gmm)
         self.get_logger().info("Original GMM is Published!")
         response.original_gmm = original_gmm
+        response.original_trajectory = trajectory_message(rnew.Data, request.frame_id)
+        response.policy_checkpoint = self.policy_checkpoint
+        response.policy_sha256 = self.policy_sha256
+        response.action_scale = self.action_scale
         response.reproduction_s = time.perf_counter() - reproduction_start
         deformation_start = time.perf_counter()
 
@@ -344,6 +363,7 @@ class TPGMM(Node):
         self.get_logger().info("Deformed Regressed Trajectory is Published!")
 
         response.deformed_gmm = gmm
+        response.deformed_trajectory = trajectory_message(rnew.Data, request.frame_id)
         response.total_s = time.perf_counter() - callback_start
         return response
 

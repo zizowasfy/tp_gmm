@@ -19,3 +19,10 @@ float64 rl_deformation_s
 float64 deformed_regression_s
 float64 total_s
 bool policy_applied
+
+# Request-matched DSGMR trajectories for clearance analysis (positions in frame_id).
+geometry_msgs/PoseArray original_trajectory
+geometry_msgs/PoseArray deformed_trajectory
+string policy_checkpoint
+string policy_sha256
+float64 action_scale

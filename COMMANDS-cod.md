@@ -1,6 +1,6 @@
 # TP-GMM & MoveIt 2 — Codex Branch Command Guide
 
-Command reference for **`sampling-approaches-cod`**: building, running Cartesian + IK and joint-projected GMM sampling, inspecting samples in RViz, comparing approaches, and testing the pipeline.
+Command reference for **`sampling-approaches-cod`**: building, running Cartesian + IK and joint-projected GMM sampling, inspecting samples in RViz, comparing approaches, sweeping RL clearance, and testing the pipeline.
 
 The changed repositories are `tp_gmm`, `moveit2`, and `moveit_resources`. The validated robot is the fixed-base Franka Panda (`panda_arm` / `panda_hand`). For implementation details and mathematics, see [SAMPLING.md](/home/zizo/the_folder/ws_moveit/src/tp_gmm/SAMPLING.md). The separate [COMMANDS-gem.md](/home/zizo/the_folder/ws_moveit/src/COMMANDS-gem.md) describes the Gemini implementation.
 
@@ -16,6 +16,7 @@ The changed repositories are `tp_gmm`, `moveit2`, and `moveit_resources`. The va
 8. [Demonstrations & Policy Validation](#8-demonstrations--policy-validation)
 9. [Automated Tests](#9-automated-tests)
 10. [ROS Diagnostics & Troubleshooting](#10-ros-diagnostics--troubleshooting)
+11. [RL Clearance Generalization Sweeps](#11-rl-clearance-generalization-sweeps)
 
 ---
 
@@ -142,7 +143,7 @@ Restart the TP-GMM/converter launch and runner after sourcing `install/setup.bas
 ros2 launch tp_gmm lfd_launch.py gmm_legacy_weighted_scale:=false gmm_cutoff:=2.0
 ```
 
-The runner defaults and `config/sampling.json` use the same covariance/2.0 settings. An explicit `--sampler-config` overrides those defaults. The execution launch selects the 11 September retrained policy; use the same checkpoint for standalone or laboratory launches.
+The runner defaults and `config/sampling.json` use the same covariance/2.0 settings. An explicit `--sampler-config` overrides those defaults. The execution launch uses its `policy_ckpt_path` entry; pass the intended checkpoint explicitly for standalone or laboratory launches.
 
 For custom historical scaling, match JSON `corridor_scale` with launch argument `gmm_corridor_scale`; match `covariance_floor` with `gmm_covariance_floor` in either mode. Leave converter `normalize` false.
 
@@ -324,7 +325,7 @@ For mock controllers without Gazebo physics, use `ros2 launch moveit_resources_p
 ros2 launch tp_gmm lfd_launch.py
 ```
 
-The launch file currently embeds the 11 September checkpoint used above. Its `task` and `subtask` arguments are declared but do not select the task passed to the model service; use the runner's `--task` argument. The Codex sampler receives models from service responses and does not depend on the legacy marker-to-box bridge.
+The launch file selects the checkpoint in its `policy_ckpt_path` entry; check this when switching between policies. Its `task` and `subtask` arguments are declared but do not select the task passed to the model service; use the runner's `--task` argument. The Codex sampler receives models from service responses and does not depend on the legacy marker-to-box bridge.
 
 To choose a checkpoint without those extra visualization nodes, run this instead:
 
@@ -602,3 +603,92 @@ ros2 topic echo /rosout | rg 'GMM|TP-GMM|Allocating specialized|Exception caught
 | MoveIt success but benchmark failure | Inspect `failure_stage`, `planner_success`, `path_audit_passed`, and `path_invalid_samples`; the post-plan audit can reject a returned path |
 
 Stop each launched process with **Ctrl+C** in its terminal before changing bringup workflows or rebuilding a running sampler.
+
+
+## 11. RL Clearance Generalization Sweeps
+
+See [CLEARANCE_ANALYSIS.md](CLEARANCE_ANALYSIS.md) for the experiment design and metric definitions. Each trial fixes the environment and endpoint joint states across **ten clearance values, 0.1–1.0**. The experiment is plan-only; it changes MoveIt's planning scene and restores its own objects on exit. It does not execute the robot or reposition Gazebo entities.
+
+### Build and start the model service
+
+The deformation service now returns request-matched original/deformed DSGMR trajectories and policy provenance. Rebuild once and restart the TP-GMM service before using the sweep:
+
+```bash
+colcon build --packages-select tp_gmm --cmake-args -DCMAKE_BUILD_TYPE=Release
+source install/setup.bash
+```
+
+Use the existing Gazebo/MoveIt pipeline on its ROS domain, or start an isolated laboratory. For the latter, run the following in the bringup terminal after the workspace setup in Section 1:
+
+```bash
+export ROS_DOMAIN_ID=81
+ros2 launch tp_gmm sampling_demo.launch.py rviz:=false \
+  policy_ckpt_path:="$TPGMM_POLICY_CKPT"
+```
+
+Set `ROS_DOMAIN_ID=81` in the runner terminal too. The checkpoint is loaded by the TP-GMM node; the sweep records the actual loaded path/hash. Choose the checkpoint matching the prior model being evaluated.
+
+### Run one sampler or a paired comparison
+
+```bash
+# Five environments × ten levels = 50 plans.
+ros2 run tp_gmm run_clearance_sweep.py --trials 5 \
+  --sampler cartesian_ik --seed 42 --output clearance_results/cartesian
+
+# Five environments × ten levels × three samplers = 150 plans.
+ros2 run tp_gmm run_clearance_sweep.py --trials 5 \
+  --samplers cartesian_ik joint_projected ompl_uniform \
+  --planning-time 5 --seed 42 --output clearance_results/paired
+
+# Include 0.0 for eleven levels and use the pure sampling profile.
+ros2 run tp_gmm run_clearance_sweep.py --trials 5 \
+  --sampler joint_projected --include-zero \
+  --sampler-config src/tp_gmm/config/sampling_pure.json \
+  --output clearance_results/projected_with_zero
+```
+
+`ompl_uniform` sends empty path constraints and uses the full bounded joint space. It differs from the older `uniform` mode, which samples inside the GMM corridor. It is not uniform in Cartesian volume. Its planning request is independent of the requested clearance; any baseline trend reflects stochastic planning.
+
+### Replay environments and regenerate figures
+
+```bash
+ros2 run tp_gmm run_clearance_sweep.py --trials 5 \
+  --sampler joint_projected \
+  --environments clearance_results/cartesian/environments.json \
+  --output clearance_results/replay_projected
+
+# Offline plotting; ROS does not need to be running.
+python3 src/tp_gmm/scripts/plot_clearance_analysis.py \
+  clearance_results/paired/results.json --max-examples 10
+```
+
+Replaying preserves poses but solves endpoint IK again. Use one `--samplers` invocation to share exactly the same endpoint joint states and deformation response across modes.
+
+### Configuration and outputs
+
+| Option | Default | Purpose |
+|---|---|---|
+| `--trials` | 5 | Number of random endpoint-valid environments |
+| `--include-zero` | off | Add clearance 0.0 to the ten default levels |
+| `--environment-config` | built-in ranges | Override ranges from `config/clearance_environment.json` |
+| `--max-environment-attempts` | 40 | Bound endpoint-IK environment selection attempts |
+| `--sampler-config` | sampler defaults | JSON sampler configuration; defaults to covariance mode, cutoff 2.0 |
+| `--max-clearance-margin` | 0.30 m | Interpret normalized clearance using the training scale |
+| `--base-buffer` | 0.08 m | Training reward's additional physical buffer |
+| `--obstacle-reference` | `top` | Policy reference point; use `center` when that matches training/deployment |
+| `--joint-step` | 0.02 | Joint-vector spacing for FK and validity audits |
+| `--curve-step` | 0.002 m | Polyline spacing for obstacle-distance analysis |
+| `--trim-fraction` | 0.1 | Additional interior metric excludes each endpoint's arc-length fraction |
+| `--visualize` | off | Enable custom sampler markers; figures are always generated |
+
+Clearance input is normalized, not metres. The training metric uses intermediate Gaussian means' 3-D distance to the policy reference point, minus radius, with target `base_buffer + clearance × max_clearance_margin`. Actual trajectory clearance uses signed distance to the finite cylinder surface. It measures trajectory points/end-effector origin, not the whole robot surface.
+
+Each output directory contains `results.json`, scalar `trials.csv`, per-point `trajectory_points.csv`, replayable `environments.json`, exact model pairs under `models/`, and `summary.md`. PNG/PDF figures under `figures/` show clearance response, success/time/path length, per-environment behavior, endpoint errors, 3-D overlays, and clearance along each curve. Failures remain in success rates; invalid paths are excluded from successful-path statistics. Use a fresh output directory for each run.
+
+### Clearance regression tests
+
+```bash
+python3 -m unittest discover -s src/tp_gmm/tests -p 'test_clearance*.py'
+```
+
+These cover cylinder geometry, between-vertex crossings, normalized sweep levels, random-design reproducibility, training-reference metrics, missing/failed levels, and the plan-only unconstrained OMPL request contract.
