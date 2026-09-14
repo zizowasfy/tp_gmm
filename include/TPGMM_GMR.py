@@ -72,7 +72,7 @@ class TPGMM_GMR(object):
         return Data_posearray, DataAll
     
     # Converts the learnded GMM into a format that gmm_rviz_converter node can visualize it in Rviz
-    def convertToGM(self, r, down_sample_factor, frame_id):
+    def convertToGM(self, r, down_sample_factor, frame_id, write_bag=True):
 
         ## converting to GaussianMixture() msg 
         nbGaussians = r.Mu.shape[1]
@@ -93,6 +93,9 @@ class TPGMM_GMR(object):
         gmm.header.frame_id = frame_id
 
         # print("r.Mu[:,1,0] == r.Mu[:,1,-1]: ", r.Mu[:,1,0] == r.Mu[:,1,-1]) # debuging.
+        if not write_bag:
+            return gmm
+
         ## Writing to rosbag (ROS 2 format)
         import shutil
         from rosbags.rosbag2 import Writer

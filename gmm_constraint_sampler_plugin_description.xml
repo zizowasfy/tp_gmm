@@ -1,0 +1,5 @@
+<library path="gmm_constraint_sampler">
+  <class name="tp_gmm/GMMConstraintSamplerAllocator" type="tp_gmm::GMMConstraintSamplerAllocator" base_class_type="constraint_samplers::ConstraintSamplerAllocator">
+    <description>Request-scoped Cartesian IK and local joint-projected GMM sampling.</description>
+  </class>
+</library>

@@ -1,0 +1,7 @@
+# Runtime diagnostics and request release; no trajectory analysis.
+string request_id
+bool release true
+---
+bool success
+string message
+string json

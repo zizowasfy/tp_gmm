@@ -2,6 +2,10 @@
 
 This package provides a Task-Parameterized Gaussian Mixture Model (TP-GMM) implementation for robot motion planning and learning from demonstration in ROS 2. It takes human demonstrations, learns a generalized statistical model of the task conditioned on frames (like start and goal poses), and reproduces a motion path adapted to new frame configurations.
 
+## GMM sampling runtime (`gazebo_exps`)
+
+The reusable MoveIt samplers (`cartesian_ik` and `joint_projected`) are documented in [GMM_SAMPLING.md](GMM_SAMPLING.md). That guide covers the modular C++ implementation, importable `tp_gmm_sampling` client, Gazebo integration, configuration and functional checks. Comparison/sweep tooling remains on the separate `sampling-approaches-cod` branch.
+
 ## Codebase Structure
 
 The `tp_gmm` package is structured into several key directories:

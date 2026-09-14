@@ -188,7 +188,7 @@ class TPGMM(Node):
         self.get_logger().info(f"... reproduce_time: {time.time() - reproduce_time}")
 
         ## Saving and Publishing GMM in Cartesian Space
-        gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id)
+        gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id, write_bag=False)
         self.tpgmm_viz_pub.publish(gmm)
         self.get_logger().info("GMM is Published!")
 
@@ -257,7 +257,7 @@ class TPGMM(Node):
         self.get_logger().info(f"... reproduce_time: {time.time() - reproduce_time}")
 
         ## Saving and Publishing the Original GMM in Cartesian Space
-        original_gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id)
+        original_gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id, write_bag=False)
         self.tpgmm_viz_pub.publish(original_gmm)
         self.get_logger().info("Original GMM is Published!")
         response.original_gmm = original_gmm
@@ -316,7 +316,7 @@ class TPGMM(Node):
             self.get_logger().warn("Policy is not loaded, returning original GMM")
 
         ## Saving and Publishing GMM in Cartesian Space
-        gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id)
+        gmm = TPGMM_model.convertToGM(rnew, task_demons_info['down_sample_factor'], request.frame_id, write_bag=False)
         self.tpgmm_deformed_viz_pub.publish(gmm)
         self.get_logger().info("Deformed GMM is Published!")
 
