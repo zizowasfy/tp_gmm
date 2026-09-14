@@ -35,6 +35,7 @@ def generate_launch_description():
         name='tp_gmm',
         parameters=[
             {
+                # 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-03_20-31-51_ppo_torch/checkpoints/best_agent.pt',
                 'policy_ckpt_path': '/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-11_21-20-28_ppo_torch/checkpoints/best_agent.pt',
             }
         ],
@@ -63,7 +64,8 @@ def generate_launch_description():
         parameters=[{
             **gmm_geometry,
             'input_topic': '/gmm/deformed_cartesian_space',
-            'output_topic': 'deformed_gmm_rviz_converter_output'
+            'output_topic': 'deformed_gmm_rviz_converter_output',
+            'cutoff': 2.0,
         }],
         output='screen'
     )
