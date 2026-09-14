@@ -34,7 +34,9 @@ def generate_launch_description():
         package='tp_gmm',
         executable='tp_gmm_node.py',
         name='tp_gmm',
-        parameters=[{'policy_ckpt_path': LaunchConfiguration('policy_ckpt_path')}],
+        parameters=[{
+            'policy_ckpt_path': LaunchConfiguration('policy_ckpt_path')
+            }],
         output='screen'
     )
 
@@ -79,7 +81,7 @@ def generate_launch_description():
 
 
     return LaunchDescription([
-        DeclareLaunchArgument('policy_ckpt_path', default_value='/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-03_20-31-51_ppo_torch/checkpoints/best_agent.pt'),
+        DeclareLaunchArgument('policy_ckpt_path', default_value='/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-11_21-20-28_ppo_torch/checkpoints/best_agent.pt'),
         DeclareLaunchArgument('gmm_cutoff', default_value='2.0'),
         DeclareLaunchArgument('gmm_covariance_floor', default_value='1e-8'),
         task_arg,

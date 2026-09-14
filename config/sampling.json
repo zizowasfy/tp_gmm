@@ -1,8 +1,8 @@
 {
   "cutoff": 2.0,
   "covariance_floor": 1e-8,
-  "uniform_fraction": 0.1,
-  "cartesian_fraction": 0.1,
+  "uniform_fraction": 0.0,
+  "cartesian_fraction": 0.0,
   "ik_timeout": 0.005,
   "branches": 3,
   "anchor_attempts": 16,

@@ -2,7 +2,7 @@
 
 This branch contains the Cartesian + IK and local joint-projected samplers as reusable MoveIt constraint-sampler modules. The comparison/sweep runners, plotting/report-generation files and experimental model archives remain on `sampling-approaches-cod`.
 
-The implementation uses a selective runtime port, not a full merge. Source: `tp_gmm` commit `6065612` on `sampling-approaches-cod`. The isolated MoveIt allocator fix is cherry-picked with provenance. Panda plugin activation and sample-only RViz configuration are ported separately. The source branches are preserved.
+The implementation uses a selective runtime port, not a full merge. Source: `tp_gmm` commit `6065612` on `sampling-approaches-cod`. The isolated MoveIt allocator fix is cherry-picked with provenance. Panda plugin activation and runtime RViz configuration are ported separately. The source branches are preserved.
 
 ## Runtime modules
 
@@ -14,6 +14,7 @@ The implementation uses a selective runtime port, not a full merge. Source: `tp_
 | `src/sampling/sampler.cpp` | Shared frame transforms, validity checks, exploration, counters and sample buffering |
 | `src/sampling/request_registry.cpp` | Validate immutable requests, allocate the plugin, report/release bounded sessions |
 | `src/sampling/visualization.cpp` | Optional request-matched sample clouds and covariance ellipsoids |
+| `python/tp_gmm_sampling/path_visualizer.py` | Optional successful planned end-effector paths using MoveIt FK |
 | `python/tp_gmm_sampling` | Importable Python client independent of any task/experiment runner |
 
 The plugin accepts a `GaussianMixture`, group, link, fixed model frame and proposal orientation. It has no battery, object-name, task-name, training-policy or RRTConnect dependency. The planner remains selected by the caller's normal MoveIt request. The existing Panda Gazebo bringup is the validation adapter, not the future benchmark environment.
@@ -118,7 +119,22 @@ To run a normal unconstrained OMPL planner in a future benchmark, omit GMM path 
 
 ## Visualization and checks
 
-`/gmm_sampling/markers` provides raw proposals, valid/rejected FK samples, uniform fallback samples and covariance support ellipsoids. The sample-only `sampling.rviz` has no comparison-path display. Data are request-scoped, bounded, transient-local, and remain visible for up to 30 seconds after release. Match `gmm_cutoff` and `gmm_covariance_floor` on `lfd_launch.py` to custom sampler settings so original/deformed converter geometry agrees.
+`/gmm_sampling/markers` provides raw proposals, valid/rejected FK samples, uniform fallback samples and covariance support ellipsoids. Data are request-scoped, bounded, transient-local, and remain visible for up to 30 seconds after release. Match `gmm_cutoff` and `gmm_covariance_floor` on `lfd_launch.py` to custom sampler settings so original/deformed converter geometry agrees.
+
+`/gmm_sampling/paths` restores the successful planned end-effector path display in `sampling.rviz`: green for `cartesian_ik`, blue for `joint_projected`. The runner publishes only after successful constrained planning/execution. It retains the latest path per mode while the runner is alive, including for late RViz subscribers; paths are not a history of trials and are not measured execution traces. Existing RViz sessions can add a MarkerArray display for this topic with Transient Local durability.
+
+Both displays default to enabled and have independent switches:
+
+```bash
+# Keep successful paths, hide sampled points and support markers:
+ros2 run tp_gmm run_experiments.py --no-sample-viz
+# Keep samples, hide successful paths:
+ros2 run tp_gmm run_experiments.py --no-path-viz
+# Disable both for timing runs:
+ros2 run tp_gmm run_experiments.py --no-sample-viz --no-path-viz
+```
+
+Path visualization performs FK after the action succeeds, with joint interpolation at at most 0.02 radians in joint-vector distance (for Panda). Its additional wall time is outside MoveIt's planning time. Work is bounded to 2000 points and 10 seconds; visualization errors warn without changing the motion result. Applications can reuse `PathVisualizer(node, namespace='').publish(result.planned_trajectory, result.trajectory_start, link_name, frame_id, mode)` after a successful result. Keep the visualizer alive to retain its transient-local paths, and call it outside callbacks already spinning the node.
 
 ```bash
 ctest --test-dir build/tp_gmm -R sampling_math --output-on-failure

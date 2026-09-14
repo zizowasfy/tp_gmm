@@ -20,7 +20,7 @@ import numpy as np
 from copy import deepcopy
 import json
 from rcl_interfaces.msg import SetParametersResult
-from tp_gmm_sampling import SamplingClient, MODES
+from tp_gmm_sampling import SamplingClient, PathVisualizer, MODES
 from pathlib import Path
 
 import rclpy
@@ -52,7 +52,7 @@ ROBOT_CONFIGS = {
 }
 
 class GazeboExperimentRunner(Node):
-    def __init__(self, robot_type="franka_panda", namespace="", task_name="franka_pick_cube", desired_clearance=0.8, obstacle_radius=0.04, ref_robot="auto", sampling_mode="cartesian_ik", visualize_samples=True, sampler_options=None):
+    def __init__(self, robot_type="franka_panda", namespace="", task_name="franka_pick_cube", desired_clearance=0.8, obstacle_radius=0.04, ref_robot="auto", sampling_mode="cartesian_ik", visualize_samples=True, sampler_options=None, visualize_paths=True):
         super().__init__('gazebo_experiment_runner')
 
         self.robot_type = robot_type
@@ -65,6 +65,7 @@ class GazeboExperimentRunner(Node):
         self.visualize_samples = visualize_samples
         self.sampler_options = sampler_options or {}
         self.sampling = SamplingClient(self, namespace)
+        self.path_visualizer = PathVisualizer(self, namespace) if visualize_paths else None
         self.original_model = self.deformed_model = None
         self.last_sampling_stats = None
         self.sampling_sequence = 0
@@ -321,8 +322,9 @@ class GazeboExperimentRunner(Node):
         req.request.goal_constraints.append(goal_constraint)
         
         prepared = None
+        mode = self.get_parameter('sampling_mode').value
         if apply_constraints:
-            prepared = self.prepare_sampling(target_pose, use_deformed)
+            prepared = self.prepare_sampling(target_pose, use_deformed, mode=mode)
             req.request.path_constraints = prepared.constraints
 
         req.planning_options.plan_only = False
@@ -342,6 +344,9 @@ class GazeboExperimentRunner(Node):
             res = response.result
             ok = res.error_code.val == res.error_code.SUCCESS
             self.get_logger().info(f"MoveGroup execution completed: success={ok}, code={res.error_code.val}")
+            if ok and prepared and self.path_visualizer is not None:
+                self.path_visualizer.publish(res.planned_trajectory, res.trajectory_start,
+                                             self.ee_link, self.frame_id, mode)
             return ok
         finally:
             if prepared:
@@ -670,6 +675,7 @@ def main():
 
     parser.add_argument('--sampling-mode', choices=MODES, default='cartesian_ik')
     parser.add_argument('--no-sample-viz', action='store_true', help='Disable sample markers for timing runs')
+    parser.add_argument('--no-path-viz', action='store_true', help='Disable successful end-effector path markers and FK visualization work')
     parser.add_argument('--sampler-config', type=Path, help='JSON object overriding sampling settings')
     args, ros_args = parser.parse_known_args()
 
@@ -682,6 +688,7 @@ def main():
         ref_robot=args.ref_robot,
         sampling_mode=args.sampling_mode,
         visualize_samples=not args.no_sample_viz,
+        visualize_paths=not args.no_path_viz,
         sampler_options=json.loads(args.sampler_config.read_text()) if args.sampler_config else None
     )
 

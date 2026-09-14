@@ -21,6 +21,7 @@ from tp_gmm.msg import Gaussian, GaussianMixture
 from visualization_msgs.msg import MarkerArray
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
 from sampling_client import SamplingClient
+from tp_gmm_sampling import PathVisualizer
 
 
 def wait(node, future, timeout=30):
@@ -34,6 +35,7 @@ def main():
     rclpy.init()
     node = Node('gmm_runtime_test')
     sampling = SamplingClient(node)
+    paths = PathVisualizer(node)
     ik = node.create_client(GetPositionIK, '/compute_ik')
     validity = node.create_client(GetStateValidity, '/check_state_validity')
     action = ActionClient(node, MoveGroup, '/move_action')
@@ -98,6 +100,12 @@ def main():
                     wait(node,result_future)
                     raise
                 assert result.error_code.val == result.error_code.SUCCESS, result.error_code.val
+                assert paths.publish(result.planned_trajectory, result.trajectory_start,
+                                     'panda_hand', 'panda_link0', mode)
+                path = paths.paths[mode]
+                assert len(path.points) >= len(result.planned_trajectory.joint_trajectory.points)
+                assert np.allclose([path.points[0].x,path.points[0].y,path.points[0].z], [.45,-.03,.55], atol=.002)
+                assert np.allclose([path.points[-1].x,path.points[-1].y,path.points[-1].z], [.45,.03,.55], atol=.002)
                 stats = sampling.report(prepared.request_id,release=False)
                 assert stats['sampler_active'] and stats['valid_samples'] > 0
                 assert stats['cartesian_attempts' if mode=='cartesian_ik' else 'projected_attempts'] > 0
@@ -125,6 +133,20 @@ def main():
                 print(f'PASS: {mode} allocated, planned, respected the corridor and published contained proposals')
             finally:
                 sampling.release(prepared.request_id)
+        # A late RViz subscriber receives both retained successful paths.
+        received = []
+        node.create_subscription(MarkerArray, '/gmm_sampling/paths', received.append,
+                                 QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL))
+        deadline = time.monotonic() + 3
+        while not received and time.monotonic() < deadline:
+            rclpy.spin_once(node, timeout_sec=.1)
+        assert received and {m.ns for m in received[-1].markers} == {'cartesian_ik', 'joint_projected'}
+        # Invalid visualizations must neither fail the caller nor replace successful paths.
+        before = dict(paths.paths)
+        from moveit_msgs.msg import RobotTrajectory
+        assert not paths.publish(RobotTrajectory(), start, 'panda_hand', 'panda_link0', 'cartesian_ik')
+        assert paths.paths == before
+        print('PASS: successful FK paths, late-subscriber retention and nonfatal visualization failure')
     finally:
         node.destroy_node()
         rclpy.shutdown()
