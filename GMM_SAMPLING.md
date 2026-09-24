@@ -107,7 +107,7 @@ The two supported modes are `cartesian_ik` and `joint_projected`. Covariance-mod
 
 - `cutoff=2.0`, `covariance_floor=1e-8`: truncated Gaussian radius and numerical eigenvalue floor. Mixture weights select components; they do not scale geometry.
 - `uniform_fraction=0.1`: uniform exploration inside the same hard corridor, checked for bounds, constraints, feasibility and collisions. It is not workspace-wide exploration.
-- `cartesian_fraction=0.1`: in projected mode, a fraction of non-uniform attempts use Cartesian IK. Set both fractions to zero to examine each method without these explicit mixture terms. Components without valid projection anchors still use Cartesian IK rescue.
+- `cartesian_fraction=0.1`: in projected mode, a fraction of non-uniform attempts use Cartesian IK. At zero, components without valid projection anchors are rejected (`missing_anchor_rejections`); there is no online Cartesian IK rescue. With a positive fraction, the existing unanchored-component rescue remains available and is counted.
 - `ik_timeout=0.005`, `branches=3`, `anchor_attempts=16`: IK budget and projection anchor coverage.
 - `nullspace_stddev=0.08`, `max_joint_delta=0.6`, `linearization_tolerance=0.01`: local projection trust and FK-residual limits.
 

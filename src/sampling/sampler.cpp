@@ -76,7 +76,14 @@ bool GMMConstraintSampler::sample(moveit::core::RobotState& state, const moveit:
       local_["component_" + std::to_string(k) + "_selected"]++;
       bool projected = session_->config.mode == "joint_projected" &&
                        uniform_(rng_) >= session_->config.cartesian_fraction && !anchors_[k].empty();
-      if (session_->config.mode == "joint_projected" && anchors_[k].empty()) local_["missing_anchor_fallbacks"]++;
+      if (session_->config.mode == "joint_projected" && anchors_[k].empty())
+      {
+        // Zero Cartesian mixing means a genuinely projected-only sampler.
+        // Reject an unanchored component instead of silently solving online IK.
+        if (session_->config.cartesian_fraction == 0.)
+        { local_["missing_anchor_rejections"]++; continue; }
+        local_["missing_anchor_fallbacks"]++;
+      }
       bool ok = projected ? jointSample(candidate, k) : cartesianSample(candidate, k);
       if (ok)
       {

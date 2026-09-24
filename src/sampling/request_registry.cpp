@@ -48,7 +48,7 @@ void GMMConstraintSamplerAllocator::prepare(const srv::PrepareSampling::Request&
          "jacobian_setup_s", "fk_mapping_s", "validity_s", "uniform_sampler_s", "sampler_calls", "failed_calls",
          "attempts", "valid_samples", "uniform_attempts", "uniform_valid", "cartesian_attempts", "cartesian_valid",
          "projected_attempts", "projected_valid", "online_ik_calls", "online_ik_success", "anchor_ik_calls",
-         "anchor_ik_success", "anchors", "unanchored_components", "missing_anchor_fallbacks", "singular_anchors",
+         "anchor_ik_success", "anchors", "unanchored_components", "missing_anchor_fallbacks", "missing_anchor_rejections", "singular_anchors",
          "trust_region_rejections", "projection_support_rejections", "bounds_rejections", "constraint_rejections",
          "collision_checks", "collision_rejections", "callback_rejections", "feasibility_rejections",
          "linearization_residual_sum_m", "linearization_checks", "proposal_mahalanobis_squared_sum",
