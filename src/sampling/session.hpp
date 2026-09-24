@@ -1,4 +1,6 @@
 #pragma once
+#include <tp_gmm/path_proposal.hpp>
+#include <memory>
 #include <tp_gmm/sampling_math.hpp>
 #include <tp_gmm/srv/prepare_sampling.hpp>
 #include <geometry_msgs/msg/point.hpp>
@@ -21,8 +23,9 @@ struct SamplingSession
   std::vector<double> weights, cutoffs;
   std::mutex mutex;
   Metrics metrics;
-  // Four independently bounded buffers: raw Cartesian, valid FK, rejected FK, uniform valid.
-  std::deque<geometry_msgs::msg::Point> points[4];
+  std::shared_ptr<const sampling::ReferencePath> reference;
+  // Bounded buffers: raw GMM, valid FK, rejected FK, uniform valid, raw GMR.
+  std::deque<geometry_msgs::msg::Point> points[5];
   Clock::time_point created = Clock::now();
 };
 inline geometry_msgs::msg::Point point(const Eigen::Vector3d& x)

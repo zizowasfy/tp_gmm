@@ -70,6 +70,17 @@ bool GMMConstraintSampler::sample(moveit::core::RobotState& state, const moveit:
       local_["uniform_sampler_s"] += seconds(begin);
       if (ok && valid(candidate)) { state = candidate; local_["uniform_valid"]++; record(3, fk(candidate)); success = true; }
     }
+    else if (session_->config.proposal == "gmr_path" ||
+             (session_->config.proposal == "hybrid" && uniform_(rng_) < session_->config.gmr_fraction))
+    {
+      if (gmrSample(candidate))
+      {
+        const Eigen::Vector3d x = fk(candidate);
+        if (valid(candidate))
+        { state = candidate; success = true; record(1, x); local_["gmr_valid"]++; local_["cartesian_valid"]++; }
+        else record(2, x);
+      }
+    }
     else
     {
       const size_t k = mixture_(rng_);

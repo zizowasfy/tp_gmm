@@ -8,7 +8,7 @@ from rclpy.qos import QoSProfile, DurabilityPolicy
 from moveit_msgs.srv import GetPositionFK
 from visualization_msgs.msg import Marker, MarkerArray
 
-from .client import MODES
+from .client import MODES, PROPOSALS
 
 
 class PathVisualizer:
@@ -27,12 +27,15 @@ class PathVisualizer:
             QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL))
         self.paths = {}
 
-    def publish(self, trajectory, start_state, link, frame, mode, timeout=10.0):
+    def publish(self, trajectory, start_state, link, frame, mode, timeout=10.0, proposal='gmm'):
         """Publish a complete path or leave the previous display intact on failure."""
         try:
             deadline = time.monotonic() + timeout
             if mode not in MODES:
                 raise ValueError(f'Unknown sampling mode: {mode}')
+            if proposal not in PROPOSALS:
+                raise ValueError(f'Unknown proposal: {proposal}')
+            key = mode if proposal == 'gmm' else f'{mode}/{proposal}'
             if trajectory.multi_dof_joint_trajectory.points:
                 raise ValueError('Path visualization currently supports fixed-base joint trajectories')
             joints = trajectory.joint_trajectory
@@ -60,12 +63,14 @@ class PathVisualizer:
             request.robot_state.is_diff = False
             marker = Marker()
             marker.header.frame_id = frame
-            marker.ns, marker.id = mode, 0
+            marker.ns, marker.id = key, 0
             marker.type, marker.action = Marker.LINE_STRIP, Marker.ADD
             marker.pose.orientation.w = 1.0
             marker.scale.x = .005
             marker.color.r, marker.color.g, marker.color.b = (
                 (.1, 1., .1) if mode == 'cartesian_ik' else (.1, .3, 1.))
+            if proposal != 'gmm':
+                marker.color.r, marker.color.g, marker.color.b = (1., .2, .8)
             marker.color.a = 1.0
 
             def append_fk(q):
@@ -93,7 +98,7 @@ class PathVisualizer:
             for a, b, count in zip(configurations[:-1], configurations[1:], steps):
                 for i in range(1, count + 1):
                     append_fk([x + (y - x) * i / count for x, y in zip(a, b)])
-            self.paths[mode] = marker
+            self.paths[key] = marker
             self.publisher.publish(MarkerArray(markers=list(self.paths.values())))
             return True
         except Exception as error:

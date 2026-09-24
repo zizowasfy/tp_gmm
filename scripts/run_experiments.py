@@ -20,7 +20,7 @@ import numpy as np
 from copy import deepcopy
 import json
 from rcl_interfaces.msg import SetParametersResult
-from tp_gmm_sampling import SamplingClient, PathVisualizer, MODES
+from tp_gmm_sampling import SamplingClient, PathVisualizer, MODES, PROPOSALS
 from pathlib import Path
 
 import rclpy
@@ -67,6 +67,7 @@ class GazeboExperimentRunner(Node):
         self.sampling = SamplingClient(self, namespace)
         self.path_visualizer = PathVisualizer(self, namespace) if visualize_paths else None
         self.original_model = self.deformed_model = None
+        self.original_reference = self.deformed_reference = None
         self.last_sampling_stats = None
         self.sampling_sequence = 0
 
@@ -128,16 +129,20 @@ class GazeboExperimentRunner(Node):
                 return SetParametersResult(successful=False, reason=f'Choose one of {MODES}')
         return SetParametersResult(successful=True)
 
-    def prepare_sampling(self, target_pose, use_deformed=True, mode=None, seed=None):
+    def prepare_sampling(self, target_pose, use_deformed=True, mode=None, seed=None, proposal=None):
         model = self.deformed_model if use_deformed else self.original_model
         if model is None or not model.gaussians:
             raise RuntimeError('No request-matched GMM; deformation must succeed before constrained planning')
         self.sampling_sequence += 1
+        options = dict(self.sampler_options)
+        if proposal is not None:
+            options["proposal"] = proposal
         return self.sampling.prepare(
             model, self.group_name, self.ee_link, target_pose.pose.orientation,
             mode or self.get_parameter('sampling_mode').value,
             seed=self.sampling_sequence if seed is None else seed,
-            visualize=self.visualize_samples, **self.sampler_options)
+            visualize=self.visualize_samples,
+            reference_path=self.deformed_reference if use_deformed else self.original_reference, **options)
 
     def gmm_constraint_cb(self, msg):
         self.gmm_bounding_volume = msg
@@ -346,7 +351,8 @@ class GazeboExperimentRunner(Node):
             self.get_logger().info(f"MoveGroup execution completed: success={ok}, code={res.error_code.val}")
             if ok and prepared and self.path_visualizer is not None:
                 self.path_visualizer.publish(res.planned_trajectory, res.trajectory_start,
-                                             self.ee_link, self.frame_id, mode)
+                                             self.ee_link, self.frame_id, mode,
+                                             proposal=self.sampler_options.get("proposal", "gmm"))
             return ok
         finally:
             if prepared:
@@ -421,6 +427,7 @@ class GazeboExperimentRunner(Node):
     def call_deform_tpgmm_service(self, start_pose_robot, goal_pose_robot, obstacle_pose):
         """Calls DeformTPGMM service to predict deformation with RL policy."""
         self.original_model = self.deformed_model = None
+        self.original_reference = self.deformed_reference = None
         self.get_logger().info("Invoking DeformTPGMM service (RL Policy + GMM)...")
         if not self.deform_tpgmm_client.wait_for_service(timeout_sec=5.0):
             self.get_logger().error("DeformTPGMM service not available!")
@@ -456,6 +463,7 @@ class GazeboExperimentRunner(Node):
             self.get_logger().error('TP-GMM returned an empty model')
             return False
         self.original_model, self.deformed_model = result.original_gmm, result.deformed_gmm
+        self.original_reference, self.deformed_reference = result.original_trajectory, result.deformed_trajectory
         return True
 
     def run_single_trial(self, trial_idx):
@@ -676,9 +684,18 @@ def main():
     parser.add_argument('--sampling-mode', choices=MODES, default='cartesian_ik')
     parser.add_argument('--no-sample-viz', action='store_true', help='Disable sample markers for timing runs')
     parser.add_argument('--no-path-viz', action='store_true', help='Disable successful end-effector path markers and FK visualization work')
+    parser.add_argument('--sampling-proposal', choices=PROPOSALS, help='Override proposal in sampler config')
+    parser.add_argument('--gmr-stddev', type=float, help='GMR standard deviation in metres')
+    parser.add_argument('--gmr-fraction', type=float, help='GMR probability for hybrid proposals')
     parser.add_argument('--sampler-config', type=Path, help='JSON object overriding sampling settings')
     args, ros_args = parser.parse_known_args()
 
+    options = json.loads(args.sampler_config.read_text()) if args.sampler_config else {}
+    for key, value in [('proposal', args.sampling_proposal), ('gmr_stddev', args.gmr_stddev), ('gmr_fraction', args.gmr_fraction)]:
+        if value is not None:
+            options[key] = value
+    if options.get('proposal', 'gmm') != 'gmm' and args.sampling_mode != 'cartesian_ik':
+        parser.error('GMR proposals require --sampling-mode cartesian_ik')
     rclpy.init(args=ros_args if ros_args else None)
 
     runner = GazeboExperimentRunner(
@@ -689,7 +706,7 @@ def main():
         sampling_mode=args.sampling_mode,
         visualize_samples=not args.no_sample_viz,
         visualize_paths=not args.no_path_viz,
-        sampler_options=json.loads(args.sampler_config.read_text()) if args.sampler_config else None
+        sampler_options=options
     )
 
     try:

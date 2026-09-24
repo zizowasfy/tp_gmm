@@ -16,6 +16,14 @@ float64 nullspace_stddev 0.08
 float64 max_joint_delta 0.6
 float64 linearization_tolerance 0.01
 bool visualize
+# Proposal selection is orthogonal to mapping; path proposals currently require cartesian_ik.
+string proposal "gmm"
+# Request-matched positions in exactly model.header.frame_id; orientations ignored.
+geometry_msgs/PoseArray reference_path
+float64 gmr_stddev 0.01
+float64 gmr_cutoff 2.0
+# Probability of choosing GMR rather than GMM in hybrid mode, after uniform fallback.
+float64 gmr_fraction 0.8
 ---
 bool success
 string message

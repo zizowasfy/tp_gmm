@@ -48,6 +48,17 @@ from TPGMM_GMR import TPGMM_GMR
 from copy import deepcopy,copy
 import torch
 
+def trajectory_message(data, frame):
+    message = PoseArray()
+    message.header.frame_id = frame
+    for point in data.T:
+        pose = Pose()
+        pose.position.x, pose.position.y, pose.position.z = map(float, point[1:4])
+        pose.orientation.w = 1.0
+        message.poses.append(pose)
+    return message
+
+
 class TPGMM(Node):
     def __init__(self):
         super().__init__('tp_gmm_node')
@@ -261,6 +272,7 @@ class TPGMM(Node):
         self.tpgmm_viz_pub.publish(original_gmm)
         self.get_logger().info("Original GMM is Published!")
         response.original_gmm = original_gmm
+        response.original_trajectory = trajectory_message(rnew.Data, request.frame_id)
 
         # Extract origianl means and covariances
         original_mu = torch.zeros((1, TPGMM_model.model.nbStates, 3), device=self.device, dtype=torch.float32)
@@ -332,6 +344,7 @@ class TPGMM(Node):
         self.get_logger().info("Deformed Regressed Trajectory is Published!")
 
         response.deformed_gmm = gmm
+        response.deformed_trajectory = trajectory_message(rnew.Data, request.frame_id)
         return response
 
 def main(args=None):

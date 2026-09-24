@@ -42,8 +42,28 @@ void GMMConstraintSamplerAllocator::prepare(const srv::PrepareSampling::Request&
       throw std::invalid_argument("Orientation must be a normalized quaternion in the GMM frame");
     if (req.model.gaussians.empty() || req.model.gaussians.size() > 64 || req.model.weights.size() != req.model.gaussians.size())
       throw std::invalid_argument("Expected 1..64 Gaussians and one weight per component");
+    if (req.proposal != "gmm" && req.proposal != "gmr_path" && req.proposal != "hybrid")
+      throw std::invalid_argument("Unknown proposal");
+    if (req.proposal != "gmm" && req.mode != "cartesian_ik")
+      throw std::invalid_argument("GMR path proposals currently require cartesian_ik mapping");
+    if (!range(req.gmr_stddev, 0., 0.5) || !range(req.gmr_cutoff, 1., 6.) || !range(req.gmr_fraction, 0., 1.))
+      throw std::invalid_argument("Invalid GMR proposal settings");
     auto session = std::make_shared<SamplingSession>();
     session->config = req;
+    const auto path_begin = Clock::now();
+    if (!req.reference_path.poses.empty())
+    {
+      if (req.reference_path.header.frame_id != req.model.header.frame_id)
+        throw std::invalid_argument("Reference path frame must match the GMM frame");
+      std::vector<Eigen::Vector3d> points;
+      for (const auto& p : req.reference_path.poses) points.emplace_back(p.position.x, p.position.y, p.position.z);
+      session->reference = std::make_shared<sampling::ReferencePath>(points);
+      session->metrics["reference_length_m"] = session->reference->length();
+      session->metrics["reference_points"] = session->reference->points().size();
+    }
+    if (req.proposal != "gmm" && !session->reference)
+      throw std::invalid_argument("GMR proposal requires a request-matched reference path");
+    session->metrics["reference_prepare_s"] = seconds(path_begin);
     for (const char* key : {"instances", "setup_s", "sampling_s", "draw_s", "online_ik_s", "anchor_ik_s",
          "jacobian_setup_s", "fk_mapping_s", "validity_s", "uniform_sampler_s", "sampler_calls", "failed_calls",
          "attempts", "valid_samples", "uniform_attempts", "uniform_valid", "cartesian_attempts", "cartesian_valid",
@@ -52,7 +72,7 @@ void GMMConstraintSamplerAllocator::prepare(const srv::PrepareSampling::Request&
          "trust_region_rejections", "projection_support_rejections", "bounds_rejections", "constraint_rejections",
          "collision_checks", "collision_rejections", "callback_rejections", "feasibility_rejections",
          "linearization_residual_sum_m", "linearization_checks", "proposal_mahalanobis_squared_sum",
-         "valid_mahalanobis_squared_sum"}) session->metrics[key] = 0;
+         "valid_mahalanobis_squared_sum", "gmr_attempts", "gmr_valid", "gmr_draws", "gmr_fraction_sum", "gmr_offset_squared_sum_m2"}) session->metrics[key] = 0;
     double total = 0;
     moveit_msgs::msg::PositionConstraint position;
     position.header = req.model.header; position.link_name = req.link_name; position.weight = 1;
@@ -133,7 +153,7 @@ void GMMConstraintSamplerAllocator::report(const srv::SamplingReport::Request& r
     json << std::setprecision(12) << "{\"request_id\":\"" << session->id << "\",\"mode\":\"" << session->config.mode << "\"";
     for (const auto& [key, value] : metrics)
     { json << ",\"" << key << "\":"; if (std::isfinite(value)) json << value; else json << "null"; }
-    json << "}";
+    json << ",\"proposal\":\"" << session->config.proposal << "\"}";
     publishMarkers();
     res.success = true; res.json = json.str(); res.message = "Runtime sampler counters";
     if (req.release) { std::lock_guard<std::mutex> lock(mutex_); sessions_.erase(req.request_id); }

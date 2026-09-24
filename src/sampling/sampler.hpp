@@ -21,6 +21,7 @@ private:
   bool valid(moveit::core::RobotState& state);
   bool ik(moveit::core::RobotState& state, const Eigen::Vector3d& x, bool anchor);
   bool cartesianSample(moveit::core::RobotState& state, size_t k);
+  bool gmrSample(moveit::core::RobotState& state);
   bool jointSample(moveit::core::RobotState& state, size_t k);
   void buildAnchors();
   void record(int stage, const Eigen::Vector3d& x);

@@ -1,14 +1,15 @@
 # GMM sampling runtime on gazebo_exps
 
-This branch contains the Cartesian + IK and local joint-projected samplers as reusable MoveIt constraint-sampler modules. The comparison/sweep runners, plotting/report-generation files and experimental model archives remain on `sampling-approaches-cod`.
+This branch contains GMM, GMR-path and hybrid proposals with Cartesian + IK and local joint-projected samplers as reusable MoveIt constraint-sampler modules. The comparison/sweep runners, plotting/report-generation files and experimental model archives remain on `sampling-approaches-cod`.
 
-The implementation uses a selective runtime port, not a full merge. Source: `tp_gmm` commit `6065612` on `sampling-approaches-cod`. The isolated MoveIt allocator fix is cherry-picked with provenance. Panda plugin activation and runtime RViz configuration are ported separately. The source branches are preserved.
+The implementation uses a selective runtime port, not a full merge. Source: `tp_gmm` commit `6065612` on `sampling-approaches-cod`. The isolated MoveIt allocator fix is cherry-picked with provenance. Panda plugin activation and runtime RViz configuration are ported separately. The source branches are preserved. GMR runtime support is selectively ported from `f7fcb5d`; its comparison, sweep and direct-reference evaluation code is excluded.
 
 ## Runtime modules
 
 | Module | Responsibility |
 |---|---|
 | `include/tp_gmm/sampling_math.hpp` | Covariance canonicalization, truncated Gaussian draws, SVD projection |
+| `include/tp_gmm/path_proposal.hpp`, `src/sampling/gmr_path.cpp` | Arc-length GMR reference sampling with bounded isotropic noise and IK |
 | `src/sampling/cartesian_ik.cpp` | Draw a Cartesian GMM target and solve randomized-seed IK |
 | `src/sampling/joint_projected.cpp` | Build diverse IK anchors, project task covariance through the Jacobian, reject nonlinear FK drift |
 | `src/sampling/sampler.cpp` | Shared frame transforms, validity checks, exploration, counters and sample buffering |
@@ -99,7 +100,18 @@ Service contract:
 2. `/gmm_sampling/report` returns lightweight sampler counters/timings. Set `release=false` to keep the request. It accepts no trajectory and computes no benchmark metrics.
 3. Release after planning completes, through `client.release(id)` or the context manager. Unknown/released IDs and mismatched constraints fail rather than silently reverting to another sampler. The registry has a capacity limit and expires abandoned inactive sessions.
 
-The existing deformation service keeps its original `gazebo_exps` schema: original and deformed GMM messages. Comparison-only timings, trajectory arrays and policy-provenance fields are not imported. The Gazebo runner uses that exact response for planning and no longer waits for a latest-model bounding-box topic. Model conversion during reproduction/deformation no longer rewrites visualization bags.
+The deformation service returns original/deformed GMMs and their request-matched `original_trajectory`/`deformed_trajectory` PoseArrays. Positions are in `frame_id`; these DSGMR references are proposals, not executable robot trajectories. Comparison-only timings and policy metadata are excluded. The runner passes the corresponding model and reference from the same response. Restart the provider and MoveIt after rebuilding these changed service interfaces.
+
+To use GMR proposals from an application, pass `mode="cartesian_ik", proposal="gmr_path", reference_path=deformation_response.deformed_trajectory` to `client.session`. `proposal="hybrid"` mixes GMR and GMM draws. References must contain at least two distinct finite points (at most 4096 input points) and have exactly the GMM frame; requests snapshot them immutably.
+
+```bash
+ros2 run tp_gmm run_experiments.py --sampling-mode cartesian_ik --sampling-proposal gmr_path
+ros2 run tp_gmm run_experiments.py --sampling-mode cartesian_ik \
+  --sampler-config /home/zizo/the_folder/ws_moveit/src/tp_gmm/config/sampling_gmr_hybrid.json
+```
+
+`--gmr-stddev` and `--gmr-fraction` override the JSON settings. The `sampling_gmr.json` and `sampling_gmr_hybrid.json` presets are reusable by other callers; both explicitly use 0.015 m noise and disable uniform fallback. GMR draws select a point uniformly along reference arc length, then add an isotropic Gaussian offset truncated at `gmr_cutoff * gmr_stddev` (defaults 2 × 0.01 m). `gmr_fraction=0.8` selects the GMR share of non-uniform hybrid attempts. Uniform exploration still runs first. GMR/hybrid currently require Cartesian IK; joint projection retains GMM proposals. Shared collision and hard GMM corridor checks still apply, so proposals outside that corridor are rejected. A deformed reference is guidance, not a collision-free guarantee.
+
 
 ## Sampling semantics and settings
 
@@ -119,9 +131,9 @@ To run a normal unconstrained OMPL planner in a future benchmark, omit GMM path 
 
 ## Visualization and checks
 
-`/gmm_sampling/markers` provides raw proposals, valid/rejected FK samples, uniform fallback samples and covariance support ellipsoids. Data are request-scoped, bounded, transient-local, and remain visible for up to 30 seconds after release. Match `gmm_cutoff` and `gmm_covariance_floor` on `lfd_launch.py` to custom sampler settings so original/deformed converter geometry agrees.
+`/gmm_sampling/markers` provides raw proposals, valid/rejected FK samples, uniform fallback samples and covariance support ellipsoids. GMR proposals also show a reference line, bounded neighborhoods and a separate raw proposal cloud. Data are request-scoped, bounded, transient-local, and remain visible for up to 30 seconds after release. Match `gmm_cutoff` and `gmm_covariance_floor` on `lfd_launch.py` to custom sampler settings so original/deformed converter geometry agrees.
 
-`/gmm_sampling/paths` restores the successful planned end-effector path display in `sampling.rviz`: green for `cartesian_ik`, blue for `joint_projected`. The runner publishes only after successful constrained planning/execution. It retains the latest path per mode while the runner is alive, including for late RViz subscribers; paths are not a history of trials and are not measured execution traces. Existing RViz sessions can add a MarkerArray display for this topic with Transient Local durability.
+`/gmm_sampling/paths` restores the successful planned end-effector path display in `sampling.rviz`: green for Cartesian GMM, blue for joint projection, magenta for GMR/hybrid. The runner publishes only after successful constrained planning/execution. It retains the latest path per mode/proposal while the runner is alive, including for late RViz subscribers; paths are not a history of trials and are not measured execution traces. Existing RViz sessions can add a MarkerArray display for this topic with Transient Local durability.
 
 Both displays default to enabled and have independent switches:
 
@@ -137,10 +149,10 @@ ros2 run tp_gmm run_experiments.py --no-sample-viz --no-path-viz
 Path visualization performs FK after the action succeeds, with joint interpolation at at most 0.02 radians in joint-vector distance (for Panda). Its additional wall time is outside MoveIt's planning time. Work is bounded to 2000 points and 10 seconds; visualization errors warn without changing the motion result. Applications can reuse `PathVisualizer(node, namespace='').publish(result.planned_trajectory, result.trajectory_start, link_name, frame_id, mode)` after a successful result. Keep the visualizer alive to retain its transient-local paths, and call it outside callbacks already spinning the node.
 
 ```bash
-ctest --test-dir build/tp_gmm -R sampling_math --output-on-failure
+ctest --test-dir build/tp_gmm -R "sampling_math|path_proposal" --output-on-failure
 # With the controller-free launch on the same ROS domain:
 python3 src/tp_gmm/tests/test_sampling_protocol.py
 python3 src/tp_gmm/tests/test_sampling_runtime.py
 ```
 
-These are functional regression checks, not comparison experiments. They verify malformed-model rejection, immutable request isolation/release, actual allocation of both methods, contained raw proposals and collision/corridor validity along returned path interpolation. No new battery assets or benchmark algorithms are assumed.
+These are functional regression checks, not comparison experiments. They verify malformed-model rejection, immutable request isolation/release, actual allocation of both mappings and all three proposals, contained raw proposals and collision/corridor validity along returned path interpolation. No new battery assets or benchmark algorithms are assumed.

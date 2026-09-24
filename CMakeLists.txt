@@ -74,6 +74,7 @@ rclcpp_components_register_node(gmm_moveit_lib PLUGIN "tp_gmm::GMMMoveIt" EXECUT
 # Runtime sampler modules: proposal algorithms, shared validity, request ownership and RViz.
 add_library(gmm_constraint_sampler SHARED
   src/sampling/sampler.cpp
+  src/sampling/gmr_path.cpp
   src/sampling/cartesian_ik.cpp
   src/sampling/joint_projected.cpp
   src/sampling/request_registry.cpp
@@ -137,6 +138,10 @@ if(BUILD_TESTING)
   target_compile_features(test_sampling_math PUBLIC cxx_std_17)
   target_compile_options(test_sampling_math PRIVATE -UNDEBUG)
   add_test(NAME sampling_math COMMAND test_sampling_math)
+  add_executable(test_path_proposal tests/test_path_proposal.cpp)
+  target_compile_features(test_path_proposal PRIVATE cxx_std_17)
+  target_compile_options(test_path_proposal PRIVATE -UNDEBUG)
+  add_test(NAME path_proposal COMMAND test_path_proposal)
 endif()
 
 ament_package()

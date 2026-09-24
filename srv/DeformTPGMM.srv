@@ -12,3 +12,6 @@ float32 desired_clearance
 ---
 tp_gmm/GaussianMixture original_gmm
 tp_gmm/GaussianMixture deformed_gmm
+# Request-matched DSGMR references; positions in frame_id, not execution trajectories.
+geometry_msgs/PoseArray original_trajectory
+geometry_msgs/PoseArray deformed_trajectory

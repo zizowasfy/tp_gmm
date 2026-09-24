@@ -7,10 +7,11 @@ import rclpy
 from tp_gmm.srv import PrepareSampling, SamplingReport
 
 MODES = ('cartesian_ik', 'joint_projected')
+PROPOSALS = ('gmm', 'gmr_path', 'hybrid')
 DEFAULTS = dict(cutoff=2.0, covariance_floor=1e-8, uniform_fraction=0.1,
                 cartesian_fraction=0.1, ik_timeout=0.005, branches=3,
                 anchor_attempts=16, nullspace_stddev=0.08, max_joint_delta=0.6,
-                linearization_tolerance=0.01)
+                linearization_tolerance=0.01, proposal='gmm', gmr_stddev=0.01, gmr_cutoff=2.0, gmr_fraction=0.8)
 
 class SamplingClient:
     def __init__(self, node, namespace=''):
@@ -31,7 +32,7 @@ class SamplingClient:
             raise RuntimeError(response.message if response else 'Empty service response')
         return response
 
-    def prepare(self, model, group, link, orientation, mode, seed=1, visualize=False, **options):
+    def prepare(self, model, group, link, orientation, mode, seed=1, visualize=False, reference_path=None, **options):
         if mode not in MODES:
             raise ValueError(f'Unknown sampler {mode}')
         req = PrepareSampling.Request()
@@ -39,9 +40,15 @@ class SamplingClient:
         req.group_name, req.link_name, req.mode = group, link, mode
         req.orientation = deepcopy(orientation)
         req.seed, req.visualize = int(seed), bool(visualize)
+        if reference_path is not None:
+            req.reference_path = deepcopy(reference_path)
         settings = DEFAULTS | options
         if settings.keys() != DEFAULTS.keys():
             raise ValueError(f'Unknown options: {settings.keys() - DEFAULTS.keys()}')
+        if settings['proposal'] not in PROPOSALS:
+            raise ValueError(f"Unknown proposal {settings['proposal']}")
+        if settings['proposal'] != 'gmm' and (mode != 'cartesian_ik' or not req.reference_path.poses):
+            raise ValueError('GMR proposals require cartesian_ik and a request-matched reference_path')
         for key, value in settings.items():
             setattr(req, key, value)
         return self.call(self.prepare_client, req)
