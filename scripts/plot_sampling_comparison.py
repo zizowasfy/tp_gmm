@@ -13,7 +13,7 @@ def plot(source):
     data = json.loads(source.read_text())
     modes = list(data['summary'])
     labels = {'cartesian_ik': 'Cartesian + IK', 'joint_projected': 'Joint projection', 'uniform': 'MoveIt uniform'}
-    colors = ['#0891b2', '#7c3aed', '#d97706']
+    colors = [plt.get_cmap('tab10')(i % 10) for i in range(len(modes))]
     fig, axes = plt.subplots(2, 3, figsize=(15, 8), constrained_layout=True)
     fig.suptitle('TP-GMM sampling comparison', fontsize=20, fontweight='bold')
     rows = [r for r in data['trials'] if not r.get('warmup')]
@@ -55,7 +55,7 @@ def plot(source):
     axes[1, 2].set(title='Instrumented sampler time · medians', ylabel='Seconds')
     axes[1, 2].legend(fontsize=7)
     for ax in axes.flat:
-        ax.set_xticks(x, [labels[m] for m in modes], rotation=15, fontsize=9)
+        ax.set_xticks(x, [labels.get(m, m.replace('/', '\n')) for m in modes], rotation=25, fontsize=7)
         ax.spines[['top', 'right']].set_visible(False)
         ax.grid(axis='y', alpha=.15)
         ax.set_axisbelow(True)

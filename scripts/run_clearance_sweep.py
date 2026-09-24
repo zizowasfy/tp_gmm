@@ -58,6 +58,7 @@ class ClearanceRunner(ComparisonRunner):
         if response.original_trajectory.header.frame_id != self.frame_id or response.deformed_trajectory.header.frame_id != self.frame_id:
             raise RuntimeError('Returned trajectory frame differs from the experiment frame')
         self.original_model, self.deformed_model = response.original_gmm, response.deformed_gmm
+        self.original_reference, self.deformed_reference = response.original_trajectory, response.deformed_trajectory
         return response, reference, elapsed
 
     def uniform_plan(self, start, goal, planning_time):

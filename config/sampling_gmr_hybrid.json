@@ -1,0 +1,10 @@
+{
+  "proposal": "hybrid",
+  "gmr_fraction": 0.8,
+  "gmr_stddev": 0.015,
+  "gmr_cutoff": 2.0,
+  "corridor_mode": "covariance",
+  "cutoff": 2.0,
+  "uniform_fraction": 0.0,
+  "cartesian_fraction": 0.0
+}

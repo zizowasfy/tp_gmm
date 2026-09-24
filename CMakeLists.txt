@@ -71,7 +71,10 @@ ament_target_dependencies(gmm_moveit_lib
 )
 rclcpp_components_register_node(gmm_moveit_lib PLUGIN "tp_gmm::GMMMoveIt" EXECUTABLE gmm_moveit_node)
 
-add_library(gmm_constraint_sampler SHARED src/gmm_constraint_sampler.cpp)
+add_library(gmm_constraint_sampler SHARED
+  src/sampling/request_registry.cpp src/sampling/sampler.cpp
+  src/sampling/cartesian_ik.cpp src/sampling/joint_projected.cpp
+  src/sampling/gmr_path.cpp src/sampling/visualization.cpp src/sampling/reporting.cpp)
 target_compile_features(gmm_constraint_sampler PUBLIC cxx_std_17)
 ament_target_dependencies(gmm_constraint_sampler rclcpp pluginlib moveit_core moveit_ros_planning
   moveit_msgs geometry_msgs visualization_msgs shape_msgs)
@@ -79,6 +82,7 @@ rosidl_target_interfaces(gmm_constraint_sampler ${PROJECT_NAME} "rosidl_typesupp
 pluginlib_export_plugin_description_file(moveit_core gmm_constraint_sampler_plugin_description.xml)
 
 # Install Python scripts and modules
+ament_python_install_package(tp_gmm_sampling PACKAGE_DIR python/tp_gmm_sampling)
 install(PROGRAMS
   scripts/tp_gmm_node.py
   scripts/collect_trajectories.py
@@ -88,10 +92,12 @@ install(PROGRAMS
   scripts/run_experiments.py
   scripts/sampling_client.py
   scripts/compare_sampling_approaches.py
+  scripts/compare_gmr_proposals.py
   scripts/run_clearance_sweep.py
   scripts/clearance_analysis.py
   scripts/plot_clearance_analysis.py
   scripts/plot_sampling_comparison.py
+  scripts/plot_gmr_comparison.py
   scripts/sampling_fidelity.py
   scripts/standalone_policy.py
   scripts/dir_paths.py
@@ -111,7 +117,7 @@ install(TARGETS
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
-install(FILES COMMANDS-cod.md SAMPLING.md CLEARANCE_ANALYSIS.md DESTINATION share/${PROJECT_NAME})
+install(FILES COMMANDS-cod.md SAMPLING.md CLEARANCE_ANALYSIS.md GMR_SAMPLING.md GMR_PILOT.md DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY tasks DESTINATION share/${PROJECT_NAME})
@@ -134,6 +140,10 @@ if(BUILD_TESTING)
   target_compile_features(test_sampling_math PRIVATE cxx_std_17)
   target_compile_options(test_sampling_math PRIVATE -UNDEBUG)
   add_test(NAME sampling_math COMMAND test_sampling_math)
+  add_executable(test_path_proposal tests/test_path_proposal.cpp)
+  target_compile_features(test_path_proposal PRIVATE cxx_std_17)
+  target_compile_options(test_path_proposal PRIVATE -UNDEBUG)
+  add_test(NAME path_proposal COMMAND test_path_proposal)
 endif()
 
 ament_package()

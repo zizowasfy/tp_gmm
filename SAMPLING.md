@@ -1,3 +1,5 @@
+> Additional modular GMR-path and hybrid proposals are documented in [GMR_SAMPLING.md](GMR_SAMPLING.md). Existing GMM proposals remain the default.
+
 # GMM sampling with Codex
 
 This implementation starts at `gazebo_exps` (`56c6a33`), on `sampling-approaches-cod`. The original `sampling-approaches-gem` commits are unchanged. `moveit2` and `moveit_resources` also use `sampling-approaches-cod`, based on their pre-sampling commits `c154f941c` and `683e406`. Other repositories need no changes.

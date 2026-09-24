@@ -19,6 +19,16 @@ float64 nullspace_stddev
 float64 max_joint_delta
 float64 linearization_tolerance
 bool visualize
+# Independent path visualization; no effect on proposal distribution or hard corridor.
+bool visualize_path
+# Proposal selection is orthogonal to mapping; path proposals currently require cartesian_ik.
+string proposal "gmm"
+# Request-matched positions in exactly model.header.frame_id; orientations ignored.
+geometry_msgs/PoseArray reference_path
+float64 gmr_stddev 0.01
+float64 gmr_cutoff 2.0
+# Probability of choosing GMR rather than GMM in hybrid mode, after uniform fallback.
+float64 gmr_fraction 0.8
 ---
 bool success
 string message

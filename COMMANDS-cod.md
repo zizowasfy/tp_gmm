@@ -692,3 +692,30 @@ python3 -m unittest discover -s src/tp_gmm/tests -p 'test_clearance*.py'
 ```
 
 These cover cylinder geometry, between-vertex crossings, normalized sweep levels, random-design reproducibility, training-reference metrics, missing/failed levels, and the plan-only unconstrained OMPL request contract.
+
+
+## GMR reference-path proposals (Cartesian IK)
+
+See [GMR_SAMPLING.md](GMR_SAMPLING.md) for the distribution, modular API and interpretation. Rebuild after switching branches because `PrepareSampling` gained reference/proposal fields.
+
+```bash
+# Existing Gazebo execution pipeline (executes motion):
+ros2 run tp_gmm run_experiments.py --sampling-mode cartesian_ik \
+  --sampler-config src/tp_gmm/config/sampling_gmr.json
+# 80% GMR / 20% GMM proposals, with the same hard corridor:
+ros2 run tp_gmm run_experiments.py --sampling-mode cartesian_ik \
+  --sampler-config src/tp_gmm/config/sampling_gmr_hybrid.json
+# Independent visualization switches: --no-sample-viz --no-path-viz
+
+# Separate controller-free environment, terminal 1 (no Gazebo required):
+export ROS_DOMAIN_ID=81
+ros2 launch tp_gmm sampling_demo.launch.py rviz:=true \
+  policy_ckpt_path:=/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-11_21-20-28_ppo_torch/checkpoints/best_agent.pt
+# Terminal 2, same sourced workspace and isolated domain:
+export ROS_DOMAIN_ID=81
+ros2 run tp_gmm compare_gmr_proposals.py \
+  --gmr-stddevs 0.005 0.015 0.03 --gmr-fraction 0.8 \
+  --repeats 5 --warmup 1 --planning-time 3 --output gmr_results/my_run
+```
+
+The paired comparison tests the same start/goal, deformed model and reference with GMM, GMR, hybrid and direct-reference IK. It changes its own MoveIt collision objects and restores them at exit, never executing motion. Reports and plots include reference deviation, latency, acceptance, path lengths and clearance. The clearance sweep also accepts these presets through `--sampler-config` with `--samplers cartesian_ik`. A nonzero `uniform_fraction` adds the existing constrained fallback; the presets and paired GMR comparison use zero.

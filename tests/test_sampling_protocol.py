@@ -7,7 +7,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy
-from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import Quaternion, PoseArray, Pose
+from copy import deepcopy
 from tp_gmm.msg import Gaussian, GaussianMixture
 from visualization_msgs.msg import MarkerArray
 from sampling_client import SamplingClient
@@ -42,6 +43,29 @@ def main():
         assert first.constraints.position_constraints == second.constraints.position_constraints
         assert client.report(first.request_id, release=False)['mode'] == 'cartesian_ik'
         assert client.report(second.request_id, release=False)['mode'] == 'joint_projected'
+        reference = PoseArray()
+        reference.header.frame_id = model.header.frame_id
+        for y in [-.03,.03]:
+            p = Pose(); p.position.x,p.position.y,p.position.z = .45,y,.55
+            reference.poses.append(p)
+        third = client.prepare(model,'panda_arm','panda_hand',orientation,'cartesian_ik',
+                               proposal='gmr_path',reference_path=reference,visualize=True)
+        ids.append(third.request_id)
+        assert first.constraints.position_constraints == third.constraints.position_constraints
+        reference.poses[0].position.x = 100.
+        assert abs(client.report(third.request_id,release=False)['reference_length_m']-.06) < 1e-6
+        reference.poses[0].position.x = .45
+        for alteration in ('frame','nan','duplicate','empty'):
+            bad = deepcopy(reference)
+            if alteration == 'frame': bad.header.frame_id = 'another_frame'
+            if alteration == 'nan': bad.poses[0].position.x = float('nan')
+            if alteration == 'duplicate': bad.poses = [bad.poses[0],bad.poses[0]]
+            if alteration == 'empty': bad.poses = []
+            try:
+                client.prepare(model,'panda_arm','panda_hand',orientation,'cartesian_ik',proposal='gmr_path',reference_path=bad)
+            except (ValueError,RuntimeError): pass
+            else: raise AssertionError('Invalid reference accepted: '+alteration)
+
         received = []
         node.create_subscription(MarkerArray, '/gmm_sampling/markers', received.append,
                                  QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL))

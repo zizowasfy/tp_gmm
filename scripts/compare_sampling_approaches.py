@@ -48,7 +48,7 @@ def wait(node, future, timeout):
 class ComparisonRunner(GazeboExperimentRunner):
     def __init__(self, args):
         super().__init__(task_name=args.task, ref_robot=args.ref_robot,
-                         desired_clearance=args.clearance, visualize_samples=args.visualize,
+                         desired_clearance=args.clearance, visualize_samples=args.visualize, visualize_paths=args.visualize,
                          sampler_options=json.loads(args.sampler_config.read_text()) if args.sampler_config else None)
         self.ik_client = self.create_client(GetPositionIK, '/compute_ik')
         self.scene_client = self.create_client(GetPlanningScene, '/get_planning_scene')
@@ -195,8 +195,10 @@ def summarize(rows, modes):
             item[f'{key}_median'] = float(np.median(values)) if values else None
         for key in ('joint_path_length', 'ee_path_length_m', 'min_world_clearance_m',
                     'sampling_s', 'setup_s', 'online_ik_s', 'anchor_ik_s', 'jacobian_setup_s',
-                    'fk_mapping_s', 'draw_s', 'validity_s', 'attempts', 'valid_samples'):
-            selection = successful if key in ('joint_path_length', 'ee_path_length_m', 'min_world_clearance_m') else trials
+                    'fk_mapping_s', 'draw_s', 'validity_s', 'attempts', 'valid_samples', 'reference_prepare_s',
+                    'reference_deviation_mean_m', 'reference_deviation_max_m', 'gmr_attempts', 'gmr_valid', 'ee_min_obstacle_clearance_m'):
+            selection = successful if key in ('joint_path_length', 'ee_path_length_m', 'min_world_clearance_m',
+                                                'reference_deviation_mean_m', 'reference_deviation_max_m', 'ee_min_obstacle_clearance_m') else trials
             values = [r['sampling'][key] for r in selection if r.get('sampling', {}).get(key) is not None]
             item[f'{key}_median'] = float(np.median(values)) if values else None
         attempted = sum(r.get('sampling', {}).get('attempts', 0) for r in trials)
@@ -217,11 +219,11 @@ def save_results(output, rows, metadata, modes):
     temporary.write_text(json.dumps(payload, indent=2, allow_nan=False))
     temporary.replace(output / 'results.json')
     fields = ['case', 'repeat', 'mode', 'seed', 'warmup', 'success', 'planner_success', 'path_audit_passed', 'failure_stage',
-              'action_wall_s', 'moveit_planning_s', 'end_to_end_wall_s', 'error_code']
+              'action_wall_s', 'moveit_planning_s', 'end_to_end_wall_s', 'error_code', 'reference_start_error_m', 'reference_goal_error_m']
     pipeline_keys = ['model_load_s', 'reproduction_s', 'rl_deformation_s', 'deformed_regression_s', 'deform_service_wall_s']
     stage_keys = ['setup_s', 'sampling_s', 'draw_s', 'online_ik_s', 'anchor_ik_s', 'jacobian_setup_s',
                   'fk_mapping_s', 'validity_s', 'attempts', 'valid_samples', 'joint_path_length',
-                  'ee_path_length_m', 'min_world_clearance_m', 'path_invalid_samples', 'path_collision_samples', 'path_constraint_violations']
+                  'ee_path_length_m', 'min_world_clearance_m', 'path_invalid_samples', 'path_collision_samples', 'path_constraint_violations', 'reference_prepare_s', 'reference_deviation_mean_m', 'reference_deviation_max_m', 'gmr_attempts', 'gmr_valid', 'ee_min_obstacle_clearance_m']
     with (output / 'trials.csv').open('w', newline='') as stream:
         writer = csv.DictWriter(stream, fieldnames=fields+pipeline_keys+stage_keys)
         writer.writeheader()
@@ -239,6 +241,14 @@ def save_results(output, rows, metadata, modes):
     for mode, values in summary.items():
         keys = ('reproduction_s', 'rl_deformation_s', 'setup_s', 'sampling_s', 'online_ik_s', 'anchor_ik_s', 'jacobian_setup_s', 'fk_mapping_s')
         lines.append('| '+mode+' | '+' | '.join(fmt(values.get(key+'_median')) for key in keys)+' |')
+    if any(r.get('reference_sha256') for r in rows):
+        lines += ['', 'GMR reference diagnostics (successful paths; missing values are unavailable):', '',
+                  '| Variant | Mean reference deviation (m) | Max reference deviation (m) | EE obstacle clearance (m) |',
+                  '|---|---:|---:|---:|']
+        for mode, values in summary.items():
+            keys = ('reference_deviation_mean_m', 'reference_deviation_max_m', 'ee_min_obstacle_clearance_m')
+            lines.append('| '+mode+' | '+' | '.join(fmt(values.get(key+'_median')) for key in keys)+' |')
+        lines += ['', 'Direct reference IK includes public-service validation/FK overhead and is a feasibility baseline, not an equal-overhead planner comparison.']
     lines += ['', 'Stage times overlap: draw/IK/FK/validity are inside sampling; anchor IK/Jacobian are inside setup. Do not add nested counters.',
               'Clearance is the whole robot to padded world geometry (ACM respected), sampled along joint interpolation; it is not a continuous safety certificate.',
               'The projected proposal is a local approximation. Valid targets and RRT tree vertices have different distributions.',
