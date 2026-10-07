@@ -1,0 +1,27 @@
+{
+  "file": "src/tp_gmm/tests/test_gmr_strict_runtime.py",
+  "before_sha256": "1dda14afafa91261ac1fdd99131c0a0d472e8bcf944e25444040087e1892dbc5",
+  "after_sha256": "98a976d10536c9a27170940e5e0768a969a411f2287529d9b57370f57691b7ae",
+  "change": "Wrap runtime test in main guard so ordinary test discovery does not launch ROS. Applied after completed measurements and frozen-source verification. Test operations unchanged.",
+  "note": "Manifest and provenance source snapshot remain immutable. A new run uses current code; strict resume of an old run requires its exact snapshot.",
+  "other_post_run_changes": [
+    {
+      "file": "src/tp_gmm/scripts/run_gmr_study.py",
+      "before_sha256": "c2474a776e83e5aa88de54d9c339a9e1adf866c882bbee6e8887134a05a0e80a",
+      "after_sha256": "a54aabcac6e6607ee81fc14f1916de6220973ad9cccf52ecb7562842c7361772",
+      "change": "Create COLCON_IGNORE in result directories so archived source cannot be rediscovered as a package. Planning and study settings unchanged."
+    },
+    {
+      "file": "src/tp_gmm/scripts/analyze_gmr_study.py",
+      "before_sha256": "0bd49e7841f1b1608c9ae885063748d293153e962dc9419ca72636e611e01e11",
+      "after_sha256": "fbbfb2227bcb0a87e08a06b12c1904a9172d9603debc420cc9a80bdb8dc08236",
+      "change": "Add descriptive method-summary CSV and path-median table; numerical inference unchanged."
+    },
+    {
+      "file": "src/tp_gmm/package.xml",
+      "before_sha256": null,
+      "after_sha256": "68be7ce27a9d02f872bdd1398244665edb618c6fb35b8174a995ae9e8eb046c9",
+      "change": "Declare the trajectory_msgs Python runtime dependency."
+    }
+  ]
+}

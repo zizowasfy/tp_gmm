@@ -65,7 +65,7 @@ def generate_launch_description():
             **gmm_geometry,
             'input_topic': '/gmm/deformed_cartesian_space',
             'output_topic': 'deformed_gmm_rviz_converter_output',
-            'cutoff': 2.0,
+            'cutoff': 3.0,
         }],
         output='screen'
     )

@@ -1,0 +1,926 @@
+{
+  "before_cutoff": 2.0,
+  "after_cutoff": 3.0,
+  "environments": 120,
+  "primary": [
+    {
+      "mode": "cartesian_ik",
+      "environments": 120,
+      "requests": 900,
+      "before_successes": 853,
+      "after_successes": 899,
+      "before_rate": 0.9474999999999999,
+      "after_rate": 0.9991666666666668,
+      "before_ci95": [
+        0.9066666666666666,
+        0.9816666666666667
+      ],
+      "after_ci95": [
+        0.9974999999999999,
+        1.0
+      ],
+      "difference": 0.051666666666666666,
+      "ci95": [
+        0.0175,
+        0.0925
+      ],
+      "p": 0.01171875,
+      "before_failures": {
+        "start_invalid_in_corridor": 45,
+        "path_audit": 2
+      },
+      "after_failures": {
+        "path_audit": 1
+      },
+      "recovered_pairs": 47,
+      "lost_pairs": 1,
+      "holm_p": 0.029296875
+    },
+    {
+      "mode": "joint_projected",
+      "environments": 120,
+      "requests": 900,
+      "before_successes": 850,
+      "after_successes": 897,
+      "before_rate": 0.9433333333333334,
+      "after_rate": 0.9958333333333333,
+      "before_ci95": [
+        0.9033333333333334,
+        0.9791666666666666
+      ],
+      "after_ci95": [
+        0.9908333333333333,
+        1.0
+      ],
+      "difference": 0.052500000000000005,
+      "ci95": [
+        0.0175,
+        0.09250000000000001
+      ],
+      "p": 0.009765625,
+      "before_failures": {
+        "start_invalid_in_corridor": 45,
+        "planning": 3,
+        "path_audit": 2
+      },
+      "after_failures": {
+        "path_audit": 2,
+        "planning": 1
+      },
+      "recovered_pairs": 49,
+      "lost_pairs": 2,
+      "holm_p": 0.029296875
+    },
+    {
+      "mode": "ompl_uniform",
+      "environments": 120,
+      "requests": 900,
+      "before_successes": 900,
+      "after_successes": 900,
+      "before_rate": 1.0,
+      "after_rate": 1.0,
+      "before_ci95": [
+        1.0,
+        1.0
+      ],
+      "after_ci95": [
+        1.0,
+        1.0
+      ],
+      "difference": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "p": 1.0,
+      "before_failures": {},
+      "after_failures": {},
+      "recovered_pairs": 0,
+      "lost_pairs": 0,
+      "holm_p": 1.0
+    }
+  ],
+  "secondary": [
+    {
+      "mode": "cartesian_ik",
+      "metric": "par2_s",
+      "difference": -0.2899733178748284,
+      "ci95": [
+        -0.5288652639541288,
+        -0.08802091182231636
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": false
+    },
+    {
+      "mode": "cartesian_ik",
+      "metric": "action_wall_s",
+      "difference": 0.019647871960235836,
+      "ci95": [
+        0.009585799229043915,
+        0.029390882040463712
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": false
+    },
+    {
+      "mode": "cartesian_ik",
+      "metric": "end_to_end_wall_s",
+      "difference": 0.027069848525764727,
+      "ci95": [
+        0.017263776524227677,
+        0.036470299887139845
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": false
+    },
+    {
+      "mode": "cartesian_ik",
+      "metric": "audit.joint_path_length",
+      "difference": 0.8805228153797778,
+      "ci95": [
+        0.4735482077390966,
+        1.2835002368391089
+      ],
+      "environments": 114,
+      "matched_requests": 852,
+      "success_only": true
+    },
+    {
+      "mode": "cartesian_ik",
+      "metric": "audit.ee_path_length_m",
+      "difference": 0.0884179645170651,
+      "ci95": [
+        0.06464401015628927,
+        0.11214945247880855
+      ],
+      "environments": 114,
+      "matched_requests": 852,
+      "success_only": true
+    },
+    {
+      "mode": "cartesian_ik",
+      "metric": "audit.min_world_clearance_m",
+      "difference": 0.002115829523780632,
+      "ci95": [
+        0.0008235085646855902,
+        0.003502093516145542
+      ],
+      "environments": 114,
+      "matched_requests": 852,
+      "success_only": true
+    },
+    {
+      "mode": "cartesian_ik",
+      "metric": "curve.min_clearance_m",
+      "difference": 0.002068388775733664,
+      "ci95": [
+        0.0006021783656291544,
+        0.0036349003875421194
+      ],
+      "environments": 114,
+      "matched_requests": 852,
+      "success_only": true
+    },
+    {
+      "mode": "joint_projected",
+      "metric": "par2_s",
+      "difference": -0.29254702168608976,
+      "ci95": [
+        -0.5310343641475144,
+        -0.0903917542930057
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": false
+    },
+    {
+      "mode": "joint_projected",
+      "metric": "action_wall_s",
+      "difference": 0.015021374994491151,
+      "ci95": [
+        0.0011605899605043911,
+        0.028048156356897364
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": false
+    },
+    {
+      "mode": "joint_projected",
+      "metric": "end_to_end_wall_s",
+      "difference": 0.02248612198270469,
+      "ci95": [
+        0.008884770866625327,
+        0.03569439252916709
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": false
+    },
+    {
+      "mode": "joint_projected",
+      "metric": "audit.joint_path_length",
+      "difference": 0.5750857848887982,
+      "ci95": [
+        0.1875162275832642,
+        0.9604275230598415
+      ],
+      "environments": 114,
+      "matched_requests": 848,
+      "success_only": true
+    },
+    {
+      "mode": "joint_projected",
+      "metric": "audit.ee_path_length_m",
+      "difference": 0.057015533601829635,
+      "ci95": [
+        0.03337962787756413,
+        0.08055298131963541
+      ],
+      "environments": 114,
+      "matched_requests": 848,
+      "success_only": true
+    },
+    {
+      "mode": "joint_projected",
+      "metric": "audit.min_world_clearance_m",
+      "difference": 0.002445159532515559,
+      "ci95": [
+        0.0013132849569516833,
+        0.003667464520555304
+      ],
+      "environments": 114,
+      "matched_requests": 848,
+      "success_only": true
+    },
+    {
+      "mode": "joint_projected",
+      "metric": "curve.min_clearance_m",
+      "difference": 0.0018014426553006856,
+      "ci95": [
+        0.00021597054341530964,
+        0.00338371761831524
+      ],
+      "environments": 114,
+      "matched_requests": 848,
+      "success_only": true
+    },
+    {
+      "mode": "ompl_uniform",
+      "metric": "par2_s",
+      "difference": 0.015016769774132022,
+      "ci95": [
+        0.010538455766748181,
+        0.019551455863825444
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": false
+    },
+    {
+      "mode": "ompl_uniform",
+      "metric": "action_wall_s",
+      "difference": 0.015016769774132022,
+      "ci95": [
+        0.010472065311307234,
+        0.019500974473533765
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": false
+    },
+    {
+      "mode": "ompl_uniform",
+      "metric": "end_to_end_wall_s",
+      "difference": 0.014813931344639663,
+      "ci95": [
+        0.010213788100386105,
+        0.01933244098866271
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": false
+    },
+    {
+      "mode": "ompl_uniform",
+      "metric": "audit.joint_path_length",
+      "difference": 0.11674087666066667,
+      "ci95": [
+        -0.09062959450608962,
+        0.3209341375794289
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": true
+    },
+    {
+      "mode": "ompl_uniform",
+      "metric": "audit.ee_path_length_m",
+      "difference": 0.02895663257434499,
+      "ci95": [
+        -0.054775640586459666,
+        0.11322726504721481
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": true
+    },
+    {
+      "mode": "ompl_uniform",
+      "metric": "audit.min_world_clearance_m",
+      "difference": -0.0004963335316520587,
+      "ci95": [
+        -0.0017905072957811472,
+        0.0008119093136277767
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": true
+    },
+    {
+      "mode": "ompl_uniform",
+      "metric": "curve.min_clearance_m",
+      "difference": 0.0005859001945445511,
+      "ci95": [
+        -0.001394072975407706,
+        0.002639194676344305
+      ],
+      "environments": 120,
+      "matched_requests": 900,
+      "success_only": true
+    }
+  ],
+  "purity": [
+    {
+      "phase": 0,
+      "arm": "before",
+      "mode": "cartesian_ik",
+      "cutoff": 2.0,
+      "requests": 600,
+      "action_requests": 570,
+      "attempts": 5731,
+      "valid_samples": 3233,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 5731
+    },
+    {
+      "phase": 0,
+      "arm": "before",
+      "mode": "joint_projected",
+      "cutoff": 2.0,
+      "requests": 600,
+      "action_requests": 570,
+      "attempts": 172108,
+      "valid_samples": 47471,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 0
+    },
+    {
+      "phase": 0,
+      "arm": "before",
+      "mode": "ompl_uniform",
+      "cutoff": 2.0,
+      "requests": 600,
+      "action_requests": 600,
+      "attempts": 0,
+      "valid_samples": 0,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 0
+    },
+    {
+      "phase": 0,
+      "arm": "after",
+      "mode": "cartesian_ik",
+      "cutoff": 3.0,
+      "requests": 600,
+      "action_requests": 600,
+      "attempts": 3951,
+      "valid_samples": 2124,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 3951
+    },
+    {
+      "phase": 0,
+      "arm": "after",
+      "mode": "joint_projected",
+      "cutoff": 3.0,
+      "requests": 600,
+      "action_requests": 600,
+      "attempts": 18634,
+      "valid_samples": 3539,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 0
+    },
+    {
+      "phase": 0,
+      "arm": "after",
+      "mode": "ompl_uniform",
+      "cutoff": 3.0,
+      "requests": 600,
+      "action_requests": 600,
+      "attempts": 0,
+      "valid_samples": 0,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 0
+    },
+    {
+      "phase": 1,
+      "arm": "before",
+      "mode": "cartesian_ik",
+      "cutoff": 2.0,
+      "requests": 300,
+      "action_requests": 285,
+      "attempts": 3607,
+      "valid_samples": 1820,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 3607
+    },
+    {
+      "phase": 1,
+      "arm": "before",
+      "mode": "joint_projected",
+      "cutoff": 2.0,
+      "requests": 300,
+      "action_requests": 285,
+      "attempts": 569544,
+      "valid_samples": 91607,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 0
+    },
+    {
+      "phase": 1,
+      "arm": "before",
+      "mode": "ompl_uniform",
+      "cutoff": 2.0,
+      "requests": 300,
+      "action_requests": 300,
+      "attempts": 0,
+      "valid_samples": 0,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 0
+    },
+    {
+      "phase": 1,
+      "arm": "after",
+      "mode": "cartesian_ik",
+      "cutoff": 3.0,
+      "requests": 300,
+      "action_requests": 300,
+      "attempts": 2064,
+      "valid_samples": 1092,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 2064
+    },
+    {
+      "phase": 1,
+      "arm": "after",
+      "mode": "joint_projected",
+      "cutoff": 3.0,
+      "requests": 300,
+      "action_requests": 300,
+      "attempts": 305580,
+      "valid_samples": 38553,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 0
+    },
+    {
+      "phase": 1,
+      "arm": "after",
+      "mode": "ompl_uniform",
+      "cutoff": 3.0,
+      "requests": 300,
+      "action_requests": 300,
+      "attempts": 0,
+      "valid_samples": 0,
+      "uniform_attempts": 0,
+      "missing_anchor_fallbacks": 0,
+      "online_ik_calls": 0
+    }
+  ],
+  "by_phase": {
+    "0": {
+      "cartesian_ik": {
+        "before": {
+          "requests": 600,
+          "successes": 569,
+          "failures": {
+            "start_invalid_in_corridor": 30,
+            "path_audit": 1
+          }
+        },
+        "after": {
+          "requests": 600,
+          "successes": 599,
+          "failures": {
+            "path_audit": 1
+          }
+        }
+      },
+      "joint_projected": {
+        "before": {
+          "requests": 600,
+          "successes": 568,
+          "failures": {
+            "start_invalid_in_corridor": 30,
+            "planning": 1,
+            "path_audit": 1
+          }
+        },
+        "after": {
+          "requests": 600,
+          "successes": 599,
+          "failures": {
+            "path_audit": 1
+          }
+        }
+      },
+      "ompl_uniform": {
+        "before": {
+          "requests": 600,
+          "successes": 600,
+          "failures": {}
+        },
+        "after": {
+          "requests": 600,
+          "successes": 600,
+          "failures": {}
+        }
+      }
+    },
+    "1": {
+      "cartesian_ik": {
+        "before": {
+          "requests": 300,
+          "successes": 284,
+          "failures": {
+            "start_invalid_in_corridor": 15,
+            "path_audit": 1
+          }
+        },
+        "after": {
+          "requests": 300,
+          "successes": 300,
+          "failures": {}
+        }
+      },
+      "joint_projected": {
+        "before": {
+          "requests": 300,
+          "successes": 282,
+          "failures": {
+            "start_invalid_in_corridor": 15,
+            "planning": 2,
+            "path_audit": 1
+          }
+        },
+        "after": {
+          "requests": 300,
+          "successes": 298,
+          "failures": {
+            "path_audit": 1,
+            "planning": 1
+          }
+        }
+      },
+      "ompl_uniform": {
+        "before": {
+          "requests": 300,
+          "successes": 300,
+          "failures": {}
+        },
+        "after": {
+          "requests": 300,
+          "successes": 300,
+          "failures": {}
+        }
+      }
+    }
+  },
+  "by_clearance": {
+    "0.2": {
+      "cartesian_ik": {
+        "before": {
+          "requests": 450,
+          "successes": 444,
+          "failures": {
+            "path_audit": 1,
+            "start_invalid_in_corridor": 5
+          }
+        },
+        "after": {
+          "requests": 450,
+          "successes": 449,
+          "failures": {
+            "path_audit": 1
+          }
+        }
+      },
+      "joint_projected": {
+        "before": {
+          "requests": 450,
+          "successes": 445,
+          "failures": {
+            "start_invalid_in_corridor": 5
+          }
+        },
+        "after": {
+          "requests": 450,
+          "successes": 449,
+          "failures": {
+            "path_audit": 1
+          }
+        }
+      },
+      "ompl_uniform": {
+        "before": {
+          "requests": 450,
+          "successes": 450,
+          "failures": {}
+        },
+        "after": {
+          "requests": 450,
+          "successes": 450,
+          "failures": {}
+        }
+      }
+    },
+    "0.8": {
+      "cartesian_ik": {
+        "before": {
+          "requests": 450,
+          "successes": 409,
+          "failures": {
+            "start_invalid_in_corridor": 40,
+            "path_audit": 1
+          }
+        },
+        "after": {
+          "requests": 450,
+          "successes": 450,
+          "failures": {}
+        }
+      },
+      "joint_projected": {
+        "before": {
+          "requests": 450,
+          "successes": 405,
+          "failures": {
+            "start_invalid_in_corridor": 40,
+            "planning": 3,
+            "path_audit": 2
+          }
+        },
+        "after": {
+          "requests": 450,
+          "successes": 448,
+          "failures": {
+            "path_audit": 1,
+            "planning": 1
+          }
+        }
+      },
+      "ompl_uniform": {
+        "before": {
+          "requests": 450,
+          "successes": 450,
+          "failures": {}
+        },
+        "after": {
+          "requests": 450,
+          "successes": 450,
+          "failures": {}
+        }
+      }
+    }
+  },
+  "failure_cases": [
+    {
+      "phase": 0,
+      "environment": 12,
+      "clearance": 0.8,
+      "mode": "cartesian_ik",
+      "before": {
+        "start_invalid_in_corridor": 10
+      },
+      "after": {}
+    },
+    {
+      "phase": 0,
+      "environment": 12,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {
+        "start_invalid_in_corridor": 10
+      },
+      "after": {}
+    },
+    {
+      "phase": 0,
+      "environment": 17,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {
+        "planning": 1
+      },
+      "after": {}
+    },
+    {
+      "phase": 0,
+      "environment": 19,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {},
+      "after": {
+        "path_audit": 1
+      }
+    },
+    {
+      "phase": 0,
+      "environment": 39,
+      "clearance": 0.8,
+      "mode": "cartesian_ik",
+      "before": {
+        "start_invalid_in_corridor": 10
+      },
+      "after": {}
+    },
+    {
+      "phase": 0,
+      "environment": 39,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {
+        "start_invalid_in_corridor": 10
+      },
+      "after": {}
+    },
+    {
+      "phase": 0,
+      "environment": 41,
+      "clearance": 0.2,
+      "mode": "cartesian_ik",
+      "before": {
+        "path_audit": 1
+      },
+      "after": {}
+    },
+    {
+      "phase": 0,
+      "environment": 48,
+      "clearance": 0.2,
+      "mode": "cartesian_ik",
+      "before": {},
+      "after": {
+        "path_audit": 1
+      }
+    },
+    {
+      "phase": 0,
+      "environment": 55,
+      "clearance": 0.8,
+      "mode": "cartesian_ik",
+      "before": {
+        "start_invalid_in_corridor": 10
+      },
+      "after": {}
+    },
+    {
+      "phase": 0,
+      "environment": 55,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {
+        "start_invalid_in_corridor": 10
+      },
+      "after": {}
+    },
+    {
+      "phase": 0,
+      "environment": 57,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {
+        "path_audit": 1
+      },
+      "after": {}
+    },
+    {
+      "phase": 1,
+      "environment": 4,
+      "clearance": 0.2,
+      "mode": "joint_projected",
+      "before": {},
+      "after": {
+        "path_audit": 1
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 10,
+      "clearance": 0.8,
+      "mode": "cartesian_ik",
+      "before": {
+        "start_invalid_in_corridor": 5
+      },
+      "after": {}
+    },
+    {
+      "phase": 1,
+      "environment": 10,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {
+        "start_invalid_in_corridor": 5
+      },
+      "after": {}
+    },
+    {
+      "phase": 1,
+      "environment": 22,
+      "clearance": 0.2,
+      "mode": "cartesian_ik",
+      "before": {
+        "start_invalid_in_corridor": 5
+      },
+      "after": {}
+    },
+    {
+      "phase": 1,
+      "environment": 22,
+      "clearance": 0.2,
+      "mode": "joint_projected",
+      "before": {
+        "start_invalid_in_corridor": 5
+      },
+      "after": {}
+    },
+    {
+      "phase": 1,
+      "environment": 32,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {
+        "planning": 2
+      },
+      "after": {
+        "planning": 1
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 52,
+      "clearance": 0.8,
+      "mode": "cartesian_ik",
+      "before": {
+        "start_invalid_in_corridor": 5
+      },
+      "after": {}
+    },
+    {
+      "phase": 1,
+      "environment": 52,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {
+        "start_invalid_in_corridor": 5
+      },
+      "after": {}
+    },
+    {
+      "phase": 1,
+      "environment": 53,
+      "clearance": 0.8,
+      "mode": "joint_projected",
+      "before": {
+        "path_audit": 1
+      },
+      "after": {}
+    },
+    {
+      "phase": 1,
+      "environment": 59,
+      "clearance": 0.8,
+      "mode": "cartesian_ik",
+      "before": {
+        "path_audit": 1
+      },
+      "after": {}
+    }
+  ],
+  "note": "Cutoff-only sensitivity; same original-height scenes, endpoints, clearances and GMM payloads. Reused environments, not independent confirmation."
+}

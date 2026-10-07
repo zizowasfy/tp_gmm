@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Research archives and reports are checksummed; preserve their exact bytes.
+case_studies/** -text

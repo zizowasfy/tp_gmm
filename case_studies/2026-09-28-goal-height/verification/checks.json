@@ -1,0 +1,14 @@
+{
+  "unit_tests": {
+    "goal_height_geometry_and_analysis": 4,
+    "sampling_study_replay_and_statistics": 8,
+    "clearance_replay_analysis": 2,
+    "all_passed": true
+  },
+  "build": "colcon build --packages-select tp_gmm --executor sequential --cmake-args -DCMAKE_BUILD_TYPE=Release",
+  "build_passed": true,
+  "installed_cli_help_passed": true,
+  "runtime_model_hashes_unchanged_after_build": true,
+  "live_scene_verifications": 240,
+  "scene_and_outcome_audit": "../comparison/validation.json"
+}

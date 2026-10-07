@@ -1,0 +1,18 @@
+[
+  {
+    "cohort": "cohort_1",
+    "directory": "/home/zizo/the_folder/ws_moveit/sampling_results/2026-09-29-cutoff3-primary",
+    "manifest_sha256": "de4f63b1121f0bdceeeff6ad492e6cba5d3b260dc0f26659fa47fce3383c71d3",
+    "results_sha256": "e544f168ae98e0df89e6022c029b8e343075a884c6d75ee063a4dd0240803304",
+    "environments": 60,
+    "repeats": 10
+  },
+  {
+    "cohort": "cohort_2",
+    "directory": "/home/zizo/the_folder/ws_moveit/sampling_results/2026-09-29-cutoff3-confirmation",
+    "manifest_sha256": "0883ce70752d57048fb3e164c101b828dd3e2e3aab6a9bf802b52307cbc3aa6f",
+    "results_sha256": "b5064fd69bfcf273c2eb95d066b7eed5758ab813dfc56818bd6a2f5a08c3be20",
+    "environments": 60,
+    "repeats": 5
+  }
+]

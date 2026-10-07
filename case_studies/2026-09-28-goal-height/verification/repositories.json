@@ -1,0 +1,14 @@
+{
+  "tp_gmm": {
+    "branch": "sampling-approaches-cod",
+    "head": "f7fcb5df519a7430efd6849cd13ba3b5a5e2e565"
+  },
+  "moveit2": {
+    "branch": "sampling-approaches-cod",
+    "head": "0f61f537bb96512e9a8649433e453c64db1a4b4f"
+  },
+  "moveit_resources": {
+    "branch": "sampling-approaches-cod",
+    "head": "b5dd62ba6f70c099e7c80bc59f7c405f4a82357d"
+  }
+}

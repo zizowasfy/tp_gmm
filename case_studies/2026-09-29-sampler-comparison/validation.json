@@ -1,0 +1,18 @@
+{
+  "requests": 2700,
+  "environments": 120,
+  "environment_method_rows": 360,
+  "pairwise_tests": 24,
+  "per_cohort_success_and_timing_summaries_match_source": true,
+  "raw_input_hashes_match": true,
+  "no_uniform_fallback": true,
+  "no_projected_online_ik": true,
+  "prior_diagnostic_files_unchanged": 184,
+  "targeted_unit_tests_passed": 8,
+  "build_passed": true,
+  "installed_cli_help_passed": true,
+  "latex": "Pandoc-generated source fragment; not compiled",
+  "figures": "All six PNG figures visually inspected; corresponding vector PDFs exported",
+  "document_links_passed": true,
+  "latex_source_structure_and_figure_links_passed": true
+}

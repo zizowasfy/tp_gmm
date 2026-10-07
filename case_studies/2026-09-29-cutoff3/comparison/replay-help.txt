@@ -1,0 +1,18 @@
+usage: replay_sampling_study.py [-h] --source SOURCE --output OUTPUT
+                                [--clearances CLEARANCES [CLEARANCES ...]]
+                                [--cutoff CUTOFF] [--resume] [--design-only]
+
+Replay frozen cases and joint endpoints with explicit clearance/covariance
+cutoff.
+
+options:
+  -h, --help            show this help message and exit
+  --source SOURCE       Completed source study directory
+  --output OUTPUT
+  --clearances CLEARANCES [CLEARANCES ...]
+                        Targets for sorted old levels, or one value for every
+                        case
+  --cutoff CUTOFF       Override covariance cutoff only; defaults to the
+                        source cutoff
+  --resume
+  --design-only

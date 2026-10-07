@@ -15,7 +15,12 @@ def generate_launch_description():
               .planning_pipelines(pipelines=['ompl'])
               .planning_scene_monitor(publish_robot_description=True, publish_robot_description_semantic=True)
               .to_moveit_configs())
+    # Applies only to nonempty path constraints; an unconstrained request still
+    # allocates OMPL's ordinary joint-space sampler. Keep the laboratory fail-closed.
+    config.planning_pipelines['ompl']['panda_arm']['allow_constraint_sampler_fallback'] = False
     return LaunchDescription([
+        Node(package='tp_gmm', executable='sampling_auditor', output='screen',
+             parameters=[config.to_dict()]),
         DeclareLaunchArgument('rviz', default_value='true'),
         DeclareLaunchArgument('lfd', default_value='true'),
         DeclareLaunchArgument('policy_ckpt_path', default_value='', description='RL checkpoint; required for deformed comparison'),

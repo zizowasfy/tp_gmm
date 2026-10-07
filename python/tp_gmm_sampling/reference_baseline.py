@@ -10,6 +10,9 @@ import numpy as np
 import rclpy
 from geometry_msgs.msg import PoseStamped
 from moveit_msgs.srv import GetPositionIK, GetPositionFK, GetStateValidity
+from moveit_msgs.msg import RobotTrajectory
+from trajectory_msgs.msg import JointTrajectoryPoint
+from rosidl_runtime_py.convert import message_to_ordereddict as asdict
 
 
 def resample_reference(reference, step=.01):
@@ -90,8 +93,15 @@ class ReferenceIKBaseline:
                         raise RuntimeError('Reference baseline FK failed')
                     p=response.pose_stamped[0].pose.position
                     ee.append([p.x,p.y,p.z])
+            # Return the geometric joint path for an independent, common audit.
+            # This adds no search, smoothing, fallback or time parameterization.
+            trajectory = RobotTrajectory()
+            trajectory.joint_trajectory.header.frame_id = reference.header.frame_id
+            trajectory.joint_trajectory.joint_names = list(joint_names)
+            trajectory.joint_trajectory.points = [JointTrajectoryPoint(positions=list(map(float,q))) for q in configurations]
             return dict(success=True, planner_success=True, path_audit_passed=True, failure_stage=None,
                         action_wall_s=time.monotonic()-begin, ee_points=ee,
+                        trajectory=asdict(trajectory), trajectory_start=asdict(start),
                         sampling=dict(joint_path_length=length, ee_path_length_m=float(np.linalg.norm(np.diff(ee,axis=0),axis=1).sum()),
                                       path_validation_samples=checked, path_invalid_samples=0))
         except TimeoutError:

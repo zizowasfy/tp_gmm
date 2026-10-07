@@ -1,0 +1,14 @@
+{
+  "primary": {
+    "directory": "/home/zizo/the_folder/ws_moveit/sampling_results/2026-09-28-clearance-primary-invalidated-scene-update",
+    "manifest_sha256": "be3a5ec95115aba1ec98a8bd0c4952edc127ff388c9b8b8b663ad861562c9710",
+    "results_sha256": "9689804038090def7ae5673e4a7aff996ec5137064d2da359128710299b68ff7",
+    "reason": "Reproduced full-scene ApplyPlanningScene success with stale monitored obstacle geometry. All outcomes quarantined, irrespective of success."
+  },
+  "confirmation": {
+    "directory": "/home/zizo/the_folder/ws_moveit/sampling_results/2026-09-28-clearance-confirmation-invalidated-scene-update",
+    "manifest_sha256": "bf157a80f63982bde7df60465d7dc2ae55a7e4c79d25c3e33f62e9f0a5770fcb",
+    "results_sha256": "8fad3463f98e26534b4e7c603b7d0d203f563d4e9f80581f717e267ca7ec933b",
+    "reason": "Reproduced full-scene ApplyPlanningScene success with stale monitored obstacle geometry. All outcomes quarantined, irrespective of success."
+  }
+}

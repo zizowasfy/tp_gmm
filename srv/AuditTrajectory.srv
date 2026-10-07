@@ -1,0 +1,12 @@
+# Identical offline audit for constrained and unrestricted plans, using a frozen scene.
+moveit_msgs/PlanningScene scene
+moveit_msgs/RobotState trajectory_start
+moveit_msgs/RobotTrajectory trajectory
+moveit_msgs/Constraints constraints
+string group_name
+string link_name
+float64 joint_step 0.01
+---
+bool success
+string message
+string json

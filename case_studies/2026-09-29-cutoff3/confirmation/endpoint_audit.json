@@ -1,0 +1,6288 @@
+[
+  {
+    "environment": 0,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0004924068935214798
+  },
+  {
+    "environment": 0,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008010769705286691
+  },
+  {
+    "environment": 0,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008300629588775255
+  },
+  {
+    "environment": 0,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009628913663327632
+  },
+  {
+    "environment": 0,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009599012704567256
+  },
+  {
+    "environment": 0,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006011122856288686
+  },
+  {
+    "environment": 0,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006343163093551762
+  },
+  {
+    "environment": 0,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009070595898665462
+  },
+  {
+    "environment": 0,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009956349306739776
+  },
+  {
+    "environment": 0,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008770139222031847
+  },
+  {
+    "environment": 0,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009089097292160897
+  },
+  {
+    "environment": 0,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000975571796298022
+  },
+  {
+    "environment": 0,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008159936624578812
+  },
+  {
+    "environment": 0,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006861610887572145
+  },
+  {
+    "environment": 0,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008967249849811121
+  },
+  {
+    "environment": 1,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006046614665538019
+  },
+  {
+    "environment": 1,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008751254398375874
+  },
+  {
+    "environment": 1,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000877690415829413
+  },
+  {
+    "environment": 1,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000996014195028705
+  },
+  {
+    "environment": 1,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006981473541818328
+  },
+  {
+    "environment": 1,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009974062247201793
+  },
+  {
+    "environment": 1,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009123074575325685
+  },
+  {
+    "environment": 1,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009334968547337064
+  },
+  {
+    "environment": 1,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008275397708639165
+  },
+  {
+    "environment": 1,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009870108216999962
+  },
+  {
+    "environment": 1,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007897791336288762
+  },
+  {
+    "environment": 1,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006283609946258345
+  },
+  {
+    "environment": 1,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009856627970002418
+  },
+  {
+    "environment": 1,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008402022900991235
+  },
+  {
+    "environment": 1,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000992193934042207
+  },
+  {
+    "environment": 2,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006099858134986091
+  },
+  {
+    "environment": 2,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009230574127287033
+  },
+  {
+    "environment": 2,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009915137155913217
+  },
+  {
+    "environment": 2,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008485414427705862
+  },
+  {
+    "environment": 2,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009638684382660134
+  },
+  {
+    "environment": 2,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008653919659553644
+  },
+  {
+    "environment": 2,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009607292730362538
+  },
+  {
+    "environment": 2,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008881072481161656
+  },
+  {
+    "environment": 2,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000770907160825951
+  },
+  {
+    "environment": 2,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007994230343028874
+  },
+  {
+    "environment": 2,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008543535470962524
+  },
+  {
+    "environment": 2,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007822249983435725
+  },
+  {
+    "environment": 2,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007316828593611716
+  },
+  {
+    "environment": 2,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009617151105776323
+  },
+  {
+    "environment": 2,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009747261786833272
+  },
+  {
+    "environment": 3,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008925166833214475
+  },
+  {
+    "environment": 3,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006954889427870509
+  },
+  {
+    "environment": 3,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005517029445618604
+  },
+  {
+    "environment": 3,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009386192993260933
+  },
+  {
+    "environment": 3,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009603898320347075
+  },
+  {
+    "environment": 3,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009810868641360049
+  },
+  {
+    "environment": 3,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000795152004808175
+  },
+  {
+    "environment": 3,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007477033664472464
+  },
+  {
+    "environment": 3,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007698549828492017
+  },
+  {
+    "environment": 3,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008807736686430867
+  },
+  {
+    "environment": 3,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009972467604092428
+  },
+  {
+    "environment": 3,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007608175859785751
+  },
+  {
+    "environment": 3,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009493039636872813
+  },
+  {
+    "environment": 3,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008968398617580364
+  },
+  {
+    "environment": 3,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009096020911820712
+  },
+  {
+    "environment": 4,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009494322109967479
+  },
+  {
+    "environment": 4,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000820058694575021
+  },
+  {
+    "environment": 4,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009013596544973565
+  },
+  {
+    "environment": 4,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008877536859363336
+  },
+  {
+    "environment": 4,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009116366971284283
+  },
+  {
+    "environment": 4,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009681289223952838
+  },
+  {
+    "environment": 4,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009750558482481964
+  },
+  {
+    "environment": 4,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000834612112492323
+  },
+  {
+    "environment": 4,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008062854069285095
+  },
+  {
+    "environment": 4,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007289502033963804
+  },
+  {
+    "environment": 4,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008700593849642058
+  },
+  {
+    "environment": 4,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008432663097046322
+  },
+  {
+    "environment": 4,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000694251919630906
+  },
+  {
+    "environment": 4,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000613548723515045
+  },
+  {
+    "environment": 5,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009919111840426958
+  },
+  {
+    "environment": 5,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008701357725076075
+  },
+  {
+    "environment": 5,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005711744609289138
+  },
+  {
+    "environment": 5,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009143610969185589
+  },
+  {
+    "environment": 5,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009534950708039169
+  },
+  {
+    "environment": 5,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009939992851577817
+  },
+  {
+    "environment": 5,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008099345988594048
+  },
+  {
+    "environment": 5,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009867643504402335
+  },
+  {
+    "environment": 5,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008276315303518689
+  },
+  {
+    "environment": 5,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009199402602389495
+  },
+  {
+    "environment": 5,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000859771364368489
+  },
+  {
+    "environment": 5,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007808745084330604
+  },
+  {
+    "environment": 5,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009451613300479611
+  },
+  {
+    "environment": 5,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008429512237198844
+  },
+  {
+    "environment": 5,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008153240666724515
+  },
+  {
+    "environment": 6,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006945587550289956
+  },
+  {
+    "environment": 6,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009088841797783992
+  },
+  {
+    "environment": 6,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000903191061690338
+  },
+  {
+    "environment": 6,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005622990918347295
+  },
+  {
+    "environment": 6,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008159181419761033
+  },
+  {
+    "environment": 6,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009994485550559595
+  },
+  {
+    "environment": 6,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007766082142479647
+  },
+  {
+    "environment": 6,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009869830785318445
+  },
+  {
+    "environment": 6,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000811593412887307
+  },
+  {
+    "environment": 6,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007029723664745691
+  },
+  {
+    "environment": 6,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007700968282293719
+  },
+  {
+    "environment": 6,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008667493914254025
+  },
+  {
+    "environment": 6,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008627989636733613
+  },
+  {
+    "environment": 6,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009719571867026402
+  },
+  {
+    "environment": 6,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00095455554360524
+  },
+  {
+    "environment": 7,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009373862305654956
+  },
+  {
+    "environment": 7,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008155564158223161
+  },
+  {
+    "environment": 7,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009826121111400424
+  },
+  {
+    "environment": 7,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005744626633822913
+  },
+  {
+    "environment": 7,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0004588897651992725
+  },
+  {
+    "environment": 7,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000921127188485138
+  },
+  {
+    "environment": 7,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009214478316715707
+  },
+  {
+    "environment": 7,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008445269335060068
+  },
+  {
+    "environment": 7,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000693713527172797
+  },
+  {
+    "environment": 7,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008935358319428488
+  },
+  {
+    "environment": 7,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009757722332142671
+  },
+  {
+    "environment": 7,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008517082473262771
+  },
+  {
+    "environment": 7,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008819097182712898
+  },
+  {
+    "environment": 7,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009802689179778598
+  },
+  {
+    "environment": 7,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008237637067212145
+  },
+  {
+    "environment": 8,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008461724696680051
+  },
+  {
+    "environment": 8,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000943913170602384
+  },
+  {
+    "environment": 8,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008985679028554738
+  },
+  {
+    "environment": 8,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00086650603217997
+  },
+  {
+    "environment": 8,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009170300289986777
+  },
+  {
+    "environment": 8,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009541313922962757
+  },
+  {
+    "environment": 8,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009792361184952636
+  },
+  {
+    "environment": 8,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007905786456539055
+  },
+  {
+    "environment": 8,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000995241793803725
+  },
+  {
+    "environment": 8,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008963356530298228
+  },
+  {
+    "environment": 8,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008708531726151492
+  },
+  {
+    "environment": 8,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009627437535673078
+  },
+  {
+    "environment": 8,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009487881339154125
+  },
+  {
+    "environment": 8,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009470209926365492
+  },
+  {
+    "environment": 8,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009452833351677459
+  },
+  {
+    "environment": 9,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006843546922318637
+  },
+  {
+    "environment": 9,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008297914075665296
+  },
+  {
+    "environment": 9,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008188012689352014
+  },
+  {
+    "environment": 9,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008540615024974496
+  },
+  {
+    "environment": 9,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009941695341840592
+  },
+  {
+    "environment": 9,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009987854394131399
+  },
+  {
+    "environment": 9,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008483882448635516
+  },
+  {
+    "environment": 9,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008364218147471547
+  },
+  {
+    "environment": 9,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009711702810600402
+  },
+  {
+    "environment": 9,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008403874374926859
+  },
+  {
+    "environment": 9,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009042819868771979
+  },
+  {
+    "environment": 9,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009296806887721942
+  },
+  {
+    "environment": 9,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009890433652326464
+  },
+  {
+    "environment": 9,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009473272454925269
+  },
+  {
+    "environment": 9,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000997800306417048
+  },
+  {
+    "environment": 10,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008171249884180729
+  },
+  {
+    "environment": 10,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009600062314418789
+  },
+  {
+    "environment": 10,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007773130876012058
+  },
+  {
+    "environment": 10,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009317934075370737
+  },
+  {
+    "environment": 10,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009625361817888756
+  },
+  {
+    "environment": 10,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006013210555538551
+  },
+  {
+    "environment": 10,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008255934109913099
+  },
+  {
+    "environment": 10,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009055382842198013
+  },
+  {
+    "environment": 10,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006120678540319016
+  },
+  {
+    "environment": 10,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000946816700976294
+  },
+  {
+    "environment": 10,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009120108555072115
+  },
+  {
+    "environment": 10,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005742637170478709
+  },
+  {
+    "environment": 10,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008468657592310969
+  },
+  {
+    "environment": 10,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000802433740813388
+  },
+  {
+    "environment": 10,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000652365355286566
+  },
+  {
+    "environment": 11,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009735991982744441
+  },
+  {
+    "environment": 11,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006798748658038666
+  },
+  {
+    "environment": 11,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007303744284436094
+  },
+  {
+    "environment": 11,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009697533641009892
+  },
+  {
+    "environment": 11,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0004875061442144446
+  },
+  {
+    "environment": 11,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008685657880265207
+  },
+  {
+    "environment": 11,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007072989428416054
+  },
+  {
+    "environment": 11,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008929831651039444
+  },
+  {
+    "environment": 11,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00099731579748924
+  },
+  {
+    "environment": 11,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009096561865881078
+  },
+  {
+    "environment": 11,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008088039304132884
+  },
+  {
+    "environment": 11,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009460557326672614
+  },
+  {
+    "environment": 11,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007868441953325089
+  },
+  {
+    "environment": 11,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009774690470656378
+  },
+  {
+    "environment": 11,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008617465798741453
+  },
+  {
+    "environment": 12,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009210368082857023
+  },
+  {
+    "environment": 12,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009639598173087904
+  },
+  {
+    "environment": 12,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007985941744409197
+  },
+  {
+    "environment": 12,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000874806439969511
+  },
+  {
+    "environment": 12,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009798144428059263
+  },
+  {
+    "environment": 12,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009989186711607534
+  },
+  {
+    "environment": 12,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009895160067823205
+  },
+  {
+    "environment": 12,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000996032824740034
+  },
+  {
+    "environment": 12,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008356059012003259
+  },
+  {
+    "environment": 12,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008105196696706063
+  },
+  {
+    "environment": 12,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009173689670860519
+  },
+  {
+    "environment": 12,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009589844052682039
+  },
+  {
+    "environment": 12,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009430745346470371
+  },
+  {
+    "environment": 12,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009560028160922052
+  },
+  {
+    "environment": 12,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009660893715918717
+  },
+  {
+    "environment": 13,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008257209565490364
+  },
+  {
+    "environment": 13,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007749883178620465
+  },
+  {
+    "environment": 13,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007131504970602498
+  },
+  {
+    "environment": 13,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009906871798448236
+  },
+  {
+    "environment": 13,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000947525179013628
+  },
+  {
+    "environment": 13,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000704003302846104
+  },
+  {
+    "environment": 13,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009351912126875916
+  },
+  {
+    "environment": 13,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006878398298284516
+  },
+  {
+    "environment": 13,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007599136289209163
+  },
+  {
+    "environment": 13,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009952535233460347
+  },
+  {
+    "environment": 13,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009792548776604293
+  },
+  {
+    "environment": 13,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009632193413562362
+  },
+  {
+    "environment": 13,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007801896110175566
+  },
+  {
+    "environment": 13,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005237873587757291
+  },
+  {
+    "environment": 13,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009652182147834587
+  },
+  {
+    "environment": 14,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009695315216666778
+  },
+  {
+    "environment": 14,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009629952670075284
+  },
+  {
+    "environment": 14,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000787487933412212
+  },
+  {
+    "environment": 14,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009218257833272236
+  },
+  {
+    "environment": 14,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009965415638870656
+  },
+  {
+    "environment": 14,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008714068238621087
+  },
+  {
+    "environment": 14,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009592216652818397
+  },
+  {
+    "environment": 14,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009636037442831702
+  },
+  {
+    "environment": 14,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009623706950806499
+  },
+  {
+    "environment": 14,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00046602073404933275
+  },
+  {
+    "environment": 14,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000988089606631548
+  },
+  {
+    "environment": 14,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007174877854994044
+  },
+  {
+    "environment": 14,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008422986874356865
+  },
+  {
+    "environment": 14,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009827214442190702
+  },
+  {
+    "environment": 14,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009445436517707684
+  },
+  {
+    "environment": 15,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005886261370031676
+  },
+  {
+    "environment": 15,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008925410108642229
+  },
+  {
+    "environment": 15,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000999669584911267
+  },
+  {
+    "environment": 15,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009396426547318981
+  },
+  {
+    "environment": 15,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009081172957083883
+  },
+  {
+    "environment": 15,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009482083385807805
+  },
+  {
+    "environment": 15,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000859184859320572
+  },
+  {
+    "environment": 15,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008791309837251626
+  },
+  {
+    "environment": 15,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009964051507412863
+  },
+  {
+    "environment": 15,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009820978818460002
+  },
+  {
+    "environment": 15,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007195262992754081
+  },
+  {
+    "environment": 15,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009857147517613463
+  },
+  {
+    "environment": 15,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009592830035833888
+  },
+  {
+    "environment": 15,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008504329789429388
+  },
+  {
+    "environment": 15,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008391740173105955
+  },
+  {
+    "environment": 16,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009402289455756607
+  },
+  {
+    "environment": 16,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007642724779434729
+  },
+  {
+    "environment": 16,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005010943571105569
+  },
+  {
+    "environment": 16,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009274798925034897
+  },
+  {
+    "environment": 16,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007913599000310967
+  },
+  {
+    "environment": 16,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008257895340211263
+  },
+  {
+    "environment": 16,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009200553391128519
+  },
+  {
+    "environment": 16,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000856753583997491
+  },
+  {
+    "environment": 16,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009775871420278914
+  },
+  {
+    "environment": 16,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007970528118312337
+  },
+  {
+    "environment": 16,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009780151327138942
+  },
+  {
+    "environment": 16,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008226062967440217
+  },
+  {
+    "environment": 16,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009797094026582354
+  },
+  {
+    "environment": 16,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009252287093549985
+  },
+  {
+    "environment": 16,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009335787426680356
+  },
+  {
+    "environment": 17,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008920126911251547
+  },
+  {
+    "environment": 17,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009685420454479399
+  },
+  {
+    "environment": 17,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008321883459574408
+  },
+  {
+    "environment": 17,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00099548436282193
+  },
+  {
+    "environment": 17,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009997138441539821
+  },
+  {
+    "environment": 17,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009350945064798
+  },
+  {
+    "environment": 17,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008937022951429618
+  },
+  {
+    "environment": 17,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009805370778774858
+  },
+  {
+    "environment": 17,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000985750042833189
+  },
+  {
+    "environment": 17,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0003965692152268496
+  },
+  {
+    "environment": 17,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006815799996255922
+  },
+  {
+    "environment": 17,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009041664004326953
+  },
+  {
+    "environment": 17,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007710885233245812
+  },
+  {
+    "environment": 17,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007964158905666707
+  },
+  {
+    "environment": 17,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009913817932827307
+  },
+  {
+    "environment": 18,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000834785960614759
+  },
+  {
+    "environment": 18,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008064007153734121
+  },
+  {
+    "environment": 18,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009702541562728317
+  },
+  {
+    "environment": 18,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009433730258605749
+  },
+  {
+    "environment": 18,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008730844501405877
+  },
+  {
+    "environment": 18,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00045933469291781215
+  },
+  {
+    "environment": 18,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0004001858276314607
+  },
+  {
+    "environment": 18,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006971427621318971
+  },
+  {
+    "environment": 18,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009290592675096909
+  },
+  {
+    "environment": 18,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008920572022909079
+  },
+  {
+    "environment": 18,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009888033992611067
+  },
+  {
+    "environment": 18,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009184925449080839
+  },
+  {
+    "environment": 18,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008080319087021004
+  },
+  {
+    "environment": 18,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000985447718296062
+  },
+  {
+    "environment": 18,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008841589940711825
+  },
+  {
+    "environment": 19,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009381951559332968
+  },
+  {
+    "environment": 19,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000992012364324113
+  },
+  {
+    "environment": 19,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008872617636807786
+  },
+  {
+    "environment": 19,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009862202382646679
+  },
+  {
+    "environment": 19,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009756116908976598
+  },
+  {
+    "environment": 19,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009414709080008965
+  },
+  {
+    "environment": 19,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007792318766005335
+  },
+  {
+    "environment": 19,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00046714241942380497
+  },
+  {
+    "environment": 19,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009908251869494011
+  },
+  {
+    "environment": 19,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008774713529273725
+  },
+  {
+    "environment": 19,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007746910485437741
+  },
+  {
+    "environment": 19,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009644345645791752
+  },
+  {
+    "environment": 19,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009329192042346612
+  },
+  {
+    "environment": 19,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000987843399867419
+  },
+  {
+    "environment": 19,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008464180082083939
+  },
+  {
+    "environment": 20,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009999363268726746
+  },
+  {
+    "environment": 20,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000915183305274736
+  },
+  {
+    "environment": 20,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007342855031602369
+  },
+  {
+    "environment": 20,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008466514162719374
+  },
+  {
+    "environment": 20,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008532585729844611
+  },
+  {
+    "environment": 20,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008396554817442503
+  },
+  {
+    "environment": 20,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009211730598471801
+  },
+  {
+    "environment": 20,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008228739555922182
+  },
+  {
+    "environment": 20,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009415769670158003
+  },
+  {
+    "environment": 20,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009133117757735842
+  },
+  {
+    "environment": 20,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009955565202982575
+  },
+  {
+    "environment": 20,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008745061694643841
+  },
+  {
+    "environment": 20,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008553026122970486
+  },
+  {
+    "environment": 20,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007019781609995945
+  },
+  {
+    "environment": 20,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006819050754420797
+  },
+  {
+    "environment": 21,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008909310516901359
+  },
+  {
+    "environment": 21,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000982156937476053
+  },
+  {
+    "environment": 21,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006507326252758183
+  },
+  {
+    "environment": 21,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008645478864197642
+  },
+  {
+    "environment": 21,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009782980745659184
+  },
+  {
+    "environment": 21,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007843219144267888
+  },
+  {
+    "environment": 21,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007605774472467797
+  },
+  {
+    "environment": 21,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009940170948392613
+  },
+  {
+    "environment": 21,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009599258168600522
+  },
+  {
+    "environment": 21,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009283948047085419
+  },
+  {
+    "environment": 21,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000822580334730455
+  },
+  {
+    "environment": 21,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009620897849090815
+  },
+  {
+    "environment": 21,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007559984284453147
+  },
+  {
+    "environment": 21,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008136204052716367
+  },
+  {
+    "environment": 21,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009712344650179283
+  },
+  {
+    "environment": 22,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007668784940614848
+  },
+  {
+    "environment": 22,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006537259593605849
+  },
+  {
+    "environment": 22,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008900262522511596
+  },
+  {
+    "environment": 22,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007148135434836139
+  },
+  {
+    "environment": 22,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000922908713109738
+  },
+  {
+    "environment": 22,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009616492781788083
+  },
+  {
+    "environment": 22,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007942283768206798
+  },
+  {
+    "environment": 22,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009737266805023015
+  },
+  {
+    "environment": 22,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006884882361627986
+  },
+  {
+    "environment": 22,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008404978280887043
+  },
+  {
+    "environment": 22,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007438532160595063
+  },
+  {
+    "environment": 22,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007559096631595263
+  },
+  {
+    "environment": 22,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006166318431496398
+  },
+  {
+    "environment": 22,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000842035849113007
+  },
+  {
+    "environment": 22,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009363957210443974
+  },
+  {
+    "environment": 23,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009525848254562895
+  },
+  {
+    "environment": 23,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009604245214722695
+  },
+  {
+    "environment": 23,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009815190802328288
+  },
+  {
+    "environment": 23,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009572015334852191
+  },
+  {
+    "environment": 23,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009258980914017556
+  },
+  {
+    "environment": 23,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009123293673619637
+  },
+  {
+    "environment": 23,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008455438986418873
+  },
+  {
+    "environment": 23,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008682851959019855
+  },
+  {
+    "environment": 23,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000869675720110541
+  },
+  {
+    "environment": 23,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007941365875303585
+  },
+  {
+    "environment": 23,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009963979497552393
+  },
+  {
+    "environment": 23,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009911236758343876
+  },
+  {
+    "environment": 23,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009658952550961608
+  },
+  {
+    "environment": 23,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009433867507613325
+  },
+  {
+    "environment": 23,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008534009545110854
+  },
+  {
+    "environment": 24,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009336263132280198
+  },
+  {
+    "environment": 24,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009642610875889579
+  },
+  {
+    "environment": 24,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008294730796478689
+  },
+  {
+    "environment": 24,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009595877369866779
+  },
+  {
+    "environment": 24,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009618937494233273
+  },
+  {
+    "environment": 24,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009705952168443943
+  },
+  {
+    "environment": 24,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009914468834176793
+  },
+  {
+    "environment": 24,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009178805607371054
+  },
+  {
+    "environment": 24,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008820379702374481
+  },
+  {
+    "environment": 24,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006503562866708723
+  },
+  {
+    "environment": 24,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009613368907011588
+  },
+  {
+    "environment": 24,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000944263247307231
+  },
+  {
+    "environment": 24,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009137061703950178
+  },
+  {
+    "environment": 24,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009708171440288016
+  },
+  {
+    "environment": 24,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005289752818644043
+  },
+  {
+    "environment": 25,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008218761817552211
+  },
+  {
+    "environment": 25,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009100363887847573
+  },
+  {
+    "environment": 25,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008208004799671598
+  },
+  {
+    "environment": 25,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009526097686031187
+  },
+  {
+    "environment": 25,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009746314468793704
+  },
+  {
+    "environment": 25,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009531426024622994
+  },
+  {
+    "environment": 25,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009312299569137483
+  },
+  {
+    "environment": 25,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009864576822146767
+  },
+  {
+    "environment": 25,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009094733577221722
+  },
+  {
+    "environment": 25,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009434629883616763
+  },
+  {
+    "environment": 25,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008388114129191937
+  },
+  {
+    "environment": 25,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009177655484527356
+  },
+  {
+    "environment": 25,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009382825312204413
+  },
+  {
+    "environment": 25,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000977695462759609
+  },
+  {
+    "environment": 25,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008773355260491833
+  },
+  {
+    "environment": 26,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009711855617351439
+  },
+  {
+    "environment": 26,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009648610390722845
+  },
+  {
+    "environment": 26,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006297667366452764
+  },
+  {
+    "environment": 26,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006625194726510575
+  },
+  {
+    "environment": 26,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008090207818894635
+  },
+  {
+    "environment": 26,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009000448444858172
+  },
+  {
+    "environment": 26,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009812962333670683
+  },
+  {
+    "environment": 26,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009821016113273837
+  },
+  {
+    "environment": 26,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000990530669689016
+  },
+  {
+    "environment": 26,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000920288159046212
+  },
+  {
+    "environment": 26,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009947878979146008
+  },
+  {
+    "environment": 26,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008672207179480917
+  },
+  {
+    "environment": 26,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009421394919045256
+  },
+  {
+    "environment": 26,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009974535019138253
+  },
+  {
+    "environment": 26,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009421059647574948
+  },
+  {
+    "environment": 27,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009888999066315352
+  },
+  {
+    "environment": 27,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008956047808751505
+  },
+  {
+    "environment": 27,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0003618026189506074
+  },
+  {
+    "environment": 27,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009674453693442053
+  },
+  {
+    "environment": 27,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000990257594268587
+  },
+  {
+    "environment": 27,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009648584304378857
+  },
+  {
+    "environment": 27,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000881912344601013
+  },
+  {
+    "environment": 27,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008858227222227413
+  },
+  {
+    "environment": 27,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000890017149038469
+  },
+  {
+    "environment": 27,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008329442976973966
+  },
+  {
+    "environment": 27,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005198611314408408
+  },
+  {
+    "environment": 27,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009692981047555865
+  },
+  {
+    "environment": 27,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007032310115172233
+  },
+  {
+    "environment": 27,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008650313527323039
+  },
+  {
+    "environment": 27,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000988335609901636
+  },
+  {
+    "environment": 28,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008154713199473918
+  },
+  {
+    "environment": 28,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008277147929183215
+  },
+  {
+    "environment": 28,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000851990495808419
+  },
+  {
+    "environment": 28,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007743661277927472
+  },
+  {
+    "environment": 28,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007059087082743609
+  },
+  {
+    "environment": 28,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007397760073650783
+  },
+  {
+    "environment": 28,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009678043434397932
+  },
+  {
+    "environment": 28,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008994678244924337
+  },
+  {
+    "environment": 28,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009616248505190939
+  },
+  {
+    "environment": 28,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000999610736034811
+  },
+  {
+    "environment": 28,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009828923000021472
+  },
+  {
+    "environment": 28,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005402375026606024
+  },
+  {
+    "environment": 28,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007553724111057925
+  },
+  {
+    "environment": 28,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006886403854005074
+  },
+  {
+    "environment": 28,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006634774385018971
+  },
+  {
+    "environment": 29,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009218461387790755
+  },
+  {
+    "environment": 29,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009104856946505618
+  },
+  {
+    "environment": 29,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009937538136726154
+  },
+  {
+    "environment": 29,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000820104452781377
+  },
+  {
+    "environment": 29,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009828487173654116
+  },
+  {
+    "environment": 29,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008515032292342184
+  },
+  {
+    "environment": 29,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009512521359136272
+  },
+  {
+    "environment": 29,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000939517745747992
+  },
+  {
+    "environment": 29,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000919657784514083
+  },
+  {
+    "environment": 29,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008522012657485867
+  },
+  {
+    "environment": 29,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008327049710787834
+  },
+  {
+    "environment": 29,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009990768558345992
+  },
+  {
+    "environment": 29,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005426048119552274
+  },
+  {
+    "environment": 29,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008989013507960664
+  },
+  {
+    "environment": 29,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007669003894551565
+  },
+  {
+    "environment": 30,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008304906371048304
+  },
+  {
+    "environment": 30,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008798162126912867
+  },
+  {
+    "environment": 30,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007069218717514758
+  },
+  {
+    "environment": 30,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007741760336791824
+  },
+  {
+    "environment": 30,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007854906781576965
+  },
+  {
+    "environment": 30,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008830994432792068
+  },
+  {
+    "environment": 30,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008799124462530018
+  },
+  {
+    "environment": 30,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008342469297348831
+  },
+  {
+    "environment": 30,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006974255610257385
+  },
+  {
+    "environment": 30,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008125810418277979
+  },
+  {
+    "environment": 30,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008590769516304136
+  },
+  {
+    "environment": 30,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009157188092359658
+  },
+  {
+    "environment": 30,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009243478598074152
+  },
+  {
+    "environment": 30,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009974986934102592
+  },
+  {
+    "environment": 30,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009484905772841141
+  },
+  {
+    "environment": 31,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007818921827710129
+  },
+  {
+    "environment": 31,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009294825363904691
+  },
+  {
+    "environment": 31,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009658155315555028
+  },
+  {
+    "environment": 31,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009648719751276236
+  },
+  {
+    "environment": 31,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000954284068662492
+  },
+  {
+    "environment": 31,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009900672929361587
+  },
+  {
+    "environment": 31,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005872092018835429
+  },
+  {
+    "environment": 31,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006806663605384514
+  },
+  {
+    "environment": 31,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008757544867693395
+  },
+  {
+    "environment": 31,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000771881439257438
+  },
+  {
+    "environment": 31,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009522279123774791
+  },
+  {
+    "environment": 31,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000816709106788039
+  },
+  {
+    "environment": 31,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008429417568258935
+  },
+  {
+    "environment": 31,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000920149218291047
+  },
+  {
+    "environment": 31,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009608286740256933
+  },
+  {
+    "environment": 32,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009245214927942058
+  },
+  {
+    "environment": 32,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009408987071366504
+  },
+  {
+    "environment": 32,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008635709644293499
+  },
+  {
+    "environment": 32,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008514733263289553
+  },
+  {
+    "environment": 32,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009554692483506599
+  },
+  {
+    "environment": 32,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009941777163184895
+  },
+  {
+    "environment": 32,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009458564557132121
+  },
+  {
+    "environment": 32,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009574335869402262
+  },
+  {
+    "environment": 32,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006693873382173088
+  },
+  {
+    "environment": 32,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009608227326534102
+  },
+  {
+    "environment": 32,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000545196373946677
+  },
+  {
+    "environment": 32,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007678520656189125
+  },
+  {
+    "environment": 32,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009516124706714368
+  },
+  {
+    "environment": 32,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008888078127056165
+  },
+  {
+    "environment": 33,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009485456114630697
+  },
+  {
+    "environment": 33,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000939428858924618
+  },
+  {
+    "environment": 33,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009818763905202754
+  },
+  {
+    "environment": 33,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008394597028382189
+  },
+  {
+    "environment": 33,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009269925346597763
+  },
+  {
+    "environment": 33,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008624419202096778
+  },
+  {
+    "environment": 33,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009866804350167069
+  },
+  {
+    "environment": 33,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000944555174093642
+  },
+  {
+    "environment": 33,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006241955673320643
+  },
+  {
+    "environment": 33,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009863564581609197
+  },
+  {
+    "environment": 33,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000843457599636166
+  },
+  {
+    "environment": 33,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009842379391191702
+  },
+  {
+    "environment": 33,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009048367892392495
+  },
+  {
+    "environment": 33,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009080112972295051
+  },
+  {
+    "environment": 33,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007405355814844583
+  },
+  {
+    "environment": 34,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009707092670725448
+  },
+  {
+    "environment": 34,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008580409418790236
+  },
+  {
+    "environment": 34,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009658734234981314
+  },
+  {
+    "environment": 34,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008282003891653678
+  },
+  {
+    "environment": 34,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009880950748920592
+  },
+  {
+    "environment": 34,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009874063623135643
+  },
+  {
+    "environment": 34,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008782222298904241
+  },
+  {
+    "environment": 34,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008265591445377751
+  },
+  {
+    "environment": 34,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009628919092938282
+  },
+  {
+    "environment": 34,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009538362668827238
+  },
+  {
+    "environment": 34,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007809112807735108
+  },
+  {
+    "environment": 34,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007891956935636713
+  },
+  {
+    "environment": 34,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009428783701732613
+  },
+  {
+    "environment": 34,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008284193929284922
+  },
+  {
+    "environment": 34,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009928122949784957
+  },
+  {
+    "environment": 35,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008821413149125851
+  },
+  {
+    "environment": 35,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007616764279082255
+  },
+  {
+    "environment": 35,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000992076942231357
+  },
+  {
+    "environment": 35,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008462006547487189
+  },
+  {
+    "environment": 35,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008496188037097063
+  },
+  {
+    "environment": 35,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009942922997288398
+  },
+  {
+    "environment": 35,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009635893781670193
+  },
+  {
+    "environment": 35,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009744789977558233
+  },
+  {
+    "environment": 35,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008236851878464235
+  },
+  {
+    "environment": 35,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000980238921940324
+  },
+  {
+    "environment": 35,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009434608817100454
+  },
+  {
+    "environment": 35,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006002661571836432
+  },
+  {
+    "environment": 35,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008934179455973058
+  },
+  {
+    "environment": 35,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009003540514968336
+  },
+  {
+    "environment": 35,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000909040959551799
+  },
+  {
+    "environment": 36,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009471196155064199
+  },
+  {
+    "environment": 36,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000861534935887906
+  },
+  {
+    "environment": 36,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000922278982587163
+  },
+  {
+    "environment": 36,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009111075703985838
+  },
+  {
+    "environment": 36,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009144827942363931
+  },
+  {
+    "environment": 36,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006072370964102444
+  },
+  {
+    "environment": 36,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007813433050177991
+  },
+  {
+    "environment": 36,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009256948642431245
+  },
+  {
+    "environment": 36,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008121345001272928
+  },
+  {
+    "environment": 36,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008059172173962015
+  },
+  {
+    "environment": 36,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009956845189444258
+  },
+  {
+    "environment": 36,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008611764339723216
+  },
+  {
+    "environment": 36,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008192548942749234
+  },
+  {
+    "environment": 36,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008781158383934784
+  },
+  {
+    "environment": 36,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009851372679695602
+  },
+  {
+    "environment": 37,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000651914004702121
+  },
+  {
+    "environment": 37,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008502965918742063
+  },
+  {
+    "environment": 37,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008519280101172422
+  },
+  {
+    "environment": 37,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009147916967049419
+  },
+  {
+    "environment": 37,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000988936335313939
+  },
+  {
+    "environment": 37,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009872523876839345
+  },
+  {
+    "environment": 37,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009999367687850702
+  },
+  {
+    "environment": 37,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009878215435892039
+  },
+  {
+    "environment": 37,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000847930999472668
+  },
+  {
+    "environment": 37,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009384570070540832
+  },
+  {
+    "environment": 37,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009237375194206948
+  },
+  {
+    "environment": 37,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000767646667547528
+  },
+  {
+    "environment": 37,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000708505930378963
+  },
+  {
+    "environment": 37,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000825262078084088
+  },
+  {
+    "environment": 37,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007719703651964671
+  },
+  {
+    "environment": 38,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007868287279269026
+  },
+  {
+    "environment": 38,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008970657689496564
+  },
+  {
+    "environment": 38,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009503419264220714
+  },
+  {
+    "environment": 38,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009360787309704577
+  },
+  {
+    "environment": 38,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009483239273540001
+  },
+  {
+    "environment": 38,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000942361575551276
+  },
+  {
+    "environment": 38,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000905337592586708
+  },
+  {
+    "environment": 38,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009702788484280411
+  },
+  {
+    "environment": 38,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009884063275529265
+  },
+  {
+    "environment": 38,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009726227587087966
+  },
+  {
+    "environment": 38,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009026854215190561
+  },
+  {
+    "environment": 38,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008423959282224391
+  },
+  {
+    "environment": 38,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009682242022825971
+  },
+  {
+    "environment": 38,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009839187161995167
+  },
+  {
+    "environment": 38,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009375604726373776
+  },
+  {
+    "environment": 39,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006813433337956587
+  },
+  {
+    "environment": 39,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009084406578911963
+  },
+  {
+    "environment": 39,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008404901726171143
+  },
+  {
+    "environment": 39,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009677841835654954
+  },
+  {
+    "environment": 39,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000817527552600783
+  },
+  {
+    "environment": 39,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008718698793090951
+  },
+  {
+    "environment": 39,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008311991873193314
+  },
+  {
+    "environment": 39,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007009157240389641
+  },
+  {
+    "environment": 39,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008880743212065223
+  },
+  {
+    "environment": 39,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009927089018746393
+  },
+  {
+    "environment": 39,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007427812367677422
+  },
+  {
+    "environment": 39,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008174218214117707
+  },
+  {
+    "environment": 39,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009171314677222098
+  },
+  {
+    "environment": 39,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000975026009604335
+  },
+  {
+    "environment": 39,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007783492049200369
+  },
+  {
+    "environment": 40,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006585052986631595
+  },
+  {
+    "environment": 40,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008140953108668886
+  },
+  {
+    "environment": 40,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009436421319842375
+  },
+  {
+    "environment": 40,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009140799981541931
+  },
+  {
+    "environment": 40,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007413125312887292
+  },
+  {
+    "environment": 40,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008864562199449103
+  },
+  {
+    "environment": 40,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007893848451785736
+  },
+  {
+    "environment": 40,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000995133466087289
+  },
+  {
+    "environment": 40,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007967384317886239
+  },
+  {
+    "environment": 40,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009607941638676287
+  },
+  {
+    "environment": 40,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008644650578498864
+  },
+  {
+    "environment": 40,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009429224869236348
+  },
+  {
+    "environment": 40,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008162621166557076
+  },
+  {
+    "environment": 40,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006352276639081111
+  },
+  {
+    "environment": 40,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006632906827142501
+  },
+  {
+    "environment": 41,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000617527695838227
+  },
+  {
+    "environment": 41,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008672318104655727
+  },
+  {
+    "environment": 41,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009941779263317463
+  },
+  {
+    "environment": 41,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007004081266929543
+  },
+  {
+    "environment": 41,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007535149394533036
+  },
+  {
+    "environment": 41,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009972632084973287
+  },
+  {
+    "environment": 41,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008914145971646859
+  },
+  {
+    "environment": 41,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008871435504406722
+  },
+  {
+    "environment": 41,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009926486555486835
+  },
+  {
+    "environment": 41,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007650052402168317
+  },
+  {
+    "environment": 41,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008339962936005918
+  },
+  {
+    "environment": 41,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007000067639165129
+  },
+  {
+    "environment": 41,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000515734858345232
+  },
+  {
+    "environment": 41,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008204381251709011
+  },
+  {
+    "environment": 41,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000873750722967026
+  },
+  {
+    "environment": 42,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009320727726442879
+  },
+  {
+    "environment": 42,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009456527684812421
+  },
+  {
+    "environment": 42,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009045407422816343
+  },
+  {
+    "environment": 42,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006933894422836429
+  },
+  {
+    "environment": 42,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008509187293237463
+  },
+  {
+    "environment": 42,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008035981534049441
+  },
+  {
+    "environment": 42,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008233421002514646
+  },
+  {
+    "environment": 42,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009272019397465539
+  },
+  {
+    "environment": 42,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000991954430471953
+  },
+  {
+    "environment": 42,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008120420319030208
+  },
+  {
+    "environment": 42,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008821895979344851
+  },
+  {
+    "environment": 42,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008114593471400949
+  },
+  {
+    "environment": 42,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008135653203351634
+  },
+  {
+    "environment": 42,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009452816722912427
+  },
+  {
+    "environment": 42,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00086033484525979
+  },
+  {
+    "environment": 43,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007830084827726846
+  },
+  {
+    "environment": 43,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006814113510772435
+  },
+  {
+    "environment": 43,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009869769779033977
+  },
+  {
+    "environment": 43,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00088147989520794
+  },
+  {
+    "environment": 43,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008779767705127117
+  },
+  {
+    "environment": 43,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009671741407366319
+  },
+  {
+    "environment": 43,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007886996404270763
+  },
+  {
+    "environment": 43,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000834956252016128
+  },
+  {
+    "environment": 43,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009411289771086712
+  },
+  {
+    "environment": 43,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005370070305652508
+  },
+  {
+    "environment": 43,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000962339289020564
+  },
+  {
+    "environment": 43,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007822428010402227
+  },
+  {
+    "environment": 43,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009953629369847672
+  },
+  {
+    "environment": 43,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000971629323903489
+  },
+  {
+    "environment": 43,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009551510117016271
+  },
+  {
+    "environment": 44,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009773338083176597
+  },
+  {
+    "environment": 44,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008383149793371597
+  },
+  {
+    "environment": 44,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008465908789074827
+  },
+  {
+    "environment": 44,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007690326990559271
+  },
+  {
+    "environment": 44,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009035287965089012
+  },
+  {
+    "environment": 44,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009756810828110106
+  },
+  {
+    "environment": 44,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007238421388901795
+  },
+  {
+    "environment": 44,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009107070658356253
+  },
+  {
+    "environment": 44,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000981568039860603
+  },
+  {
+    "environment": 44,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009497932805677678
+  },
+  {
+    "environment": 44,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000822219250723677
+  },
+  {
+    "environment": 44,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009512641164474197
+  },
+  {
+    "environment": 44,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007266613226384333
+  },
+  {
+    "environment": 44,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009161947164684527
+  },
+  {
+    "environment": 44,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009315543500707513
+  },
+  {
+    "environment": 45,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008506354284473217
+  },
+  {
+    "environment": 45,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00098540423624216
+  },
+  {
+    "environment": 45,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009867019024677572
+  },
+  {
+    "environment": 45,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008709835768677373
+  },
+  {
+    "environment": 45,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000874414069578
+  },
+  {
+    "environment": 45,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006813319427891873
+  },
+  {
+    "environment": 45,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005481184683739926
+  },
+  {
+    "environment": 45,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009964631795882917
+  },
+  {
+    "environment": 45,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009406109880656377
+  },
+  {
+    "environment": 45,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006533489911815238
+  },
+  {
+    "environment": 45,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006455286969428986
+  },
+  {
+    "environment": 45,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009119100747628783
+  },
+  {
+    "environment": 45,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009226456242614756
+  },
+  {
+    "environment": 45,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009709652955642856
+  },
+  {
+    "environment": 45,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009983334098942614
+  },
+  {
+    "environment": 46,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009397483598441968
+  },
+  {
+    "environment": 46,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009959529559128363
+  },
+  {
+    "environment": 46,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008201465429737986
+  },
+  {
+    "environment": 46,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009152865340001926
+  },
+  {
+    "environment": 46,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009024071134626152
+  },
+  {
+    "environment": 46,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009591305828651198
+  },
+  {
+    "environment": 46,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008378119571134449
+  },
+  {
+    "environment": 46,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008295855992472845
+  },
+  {
+    "environment": 46,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009146998133508985
+  },
+  {
+    "environment": 46,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009699447727762184
+  },
+  {
+    "environment": 46,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0001589617407878191
+  },
+  {
+    "environment": 46,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000925427731592301
+  },
+  {
+    "environment": 46,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009849901227280498
+  },
+  {
+    "environment": 46,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009156814711166472
+  },
+  {
+    "environment": 46,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007475460795685653
+  },
+  {
+    "environment": 47,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009893785021269919
+  },
+  {
+    "environment": 47,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009026669315063129
+  },
+  {
+    "environment": 47,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009354536212047293
+  },
+  {
+    "environment": 47,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009811308137139818
+  },
+  {
+    "environment": 47,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000946111780125658
+  },
+  {
+    "environment": 47,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007546870955266183
+  },
+  {
+    "environment": 47,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009929780969396215
+  },
+  {
+    "environment": 47,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009731078115291897
+  },
+  {
+    "environment": 47,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009657928394153359
+  },
+  {
+    "environment": 47,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009694725214503819
+  },
+  {
+    "environment": 47,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008688302491791362
+  },
+  {
+    "environment": 47,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007658488606102909
+  },
+  {
+    "environment": 47,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007844656705856337
+  },
+  {
+    "environment": 47,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000914526251144708
+  },
+  {
+    "environment": 47,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008877246999181715
+  },
+  {
+    "environment": 48,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009728709501214405
+  },
+  {
+    "environment": 48,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008282980280928109
+  },
+  {
+    "environment": 48,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000989628842566162
+  },
+  {
+    "environment": 48,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009683823906816436
+  },
+  {
+    "environment": 48,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008081738483158851
+  },
+  {
+    "environment": 48,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008006631182506246
+  },
+  {
+    "environment": 48,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007589744646102625
+  },
+  {
+    "environment": 48,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008083629668689252
+  },
+  {
+    "environment": 48,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009086453537457129
+  },
+  {
+    "environment": 48,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007923500705510483
+  },
+  {
+    "environment": 48,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009470344330184122
+  },
+  {
+    "environment": 48,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009650825676508212
+  },
+  {
+    "environment": 48,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007413582503796035
+  },
+  {
+    "environment": 48,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009694157657213487
+  },
+  {
+    "environment": 48,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008584334217009992
+  },
+  {
+    "environment": 49,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009453654936515954
+  },
+  {
+    "environment": 49,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008508909563533784
+  },
+  {
+    "environment": 49,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007852818449027854
+  },
+  {
+    "environment": 49,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009844416738487016
+  },
+  {
+    "environment": 49,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008677044142968993
+  },
+  {
+    "environment": 49,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000969422333408132
+  },
+  {
+    "environment": 49,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008926858943887062
+  },
+  {
+    "environment": 49,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007162837553769119
+  },
+  {
+    "environment": 49,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007713804030791138
+  },
+  {
+    "environment": 49,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008395743113942533
+  },
+  {
+    "environment": 49,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009092930611220851
+  },
+  {
+    "environment": 49,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000980595718137911
+  },
+  {
+    "environment": 49,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007199183050541347
+  },
+  {
+    "environment": 49,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009763125847093157
+  },
+  {
+    "environment": 49,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00039348267670710757
+  },
+  {
+    "environment": 50,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009410862526855884
+  },
+  {
+    "environment": 50,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009616585494950369
+  },
+  {
+    "environment": 50,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009440712491048942
+  },
+  {
+    "environment": 50,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009335356326773715
+  },
+  {
+    "environment": 50,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008579175537452091
+  },
+  {
+    "environment": 50,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009246793566271665
+  },
+  {
+    "environment": 50,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000977002025581708
+  },
+  {
+    "environment": 50,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008047912740148169
+  },
+  {
+    "environment": 50,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008143697502090985
+  },
+  {
+    "environment": 50,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009711041911505125
+  },
+  {
+    "environment": 50,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008190935258751697
+  },
+  {
+    "environment": 50,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008013871461152178
+  },
+  {
+    "environment": 50,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008629086590372093
+  },
+  {
+    "environment": 50,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007721356633117737
+  },
+  {
+    "environment": 50,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007056748759932882
+  },
+  {
+    "environment": 51,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008760070051066077
+  },
+  {
+    "environment": 51,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009248730801045824
+  },
+  {
+    "environment": 51,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009873668537474511
+  },
+  {
+    "environment": 51,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009861842361279516
+  },
+  {
+    "environment": 51,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007562583512625842
+  },
+  {
+    "environment": 51,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008664492988027656
+  },
+  {
+    "environment": 51,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008632654789835284
+  },
+  {
+    "environment": 51,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009129227208904897
+  },
+  {
+    "environment": 51,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006743750511668603
+  },
+  {
+    "environment": 51,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008136044521814823
+  },
+  {
+    "environment": 51,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008005785229615869
+  },
+  {
+    "environment": 51,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007034716652705164
+  },
+  {
+    "environment": 51,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006959017342886842
+  },
+  {
+    "environment": 51,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009316257359459623
+  },
+  {
+    "environment": 51,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008921740604564687
+  },
+  {
+    "environment": 52,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009889328368008375
+  },
+  {
+    "environment": 52,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009712154618464197
+  },
+  {
+    "environment": 52,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009071787353605032
+  },
+  {
+    "environment": 52,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009645208809525019
+  },
+  {
+    "environment": 52,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008021612791346278
+  },
+  {
+    "environment": 52,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008202714291400959
+  },
+  {
+    "environment": 52,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007382286470383409
+  },
+  {
+    "environment": 52,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009943487904965874
+  },
+  {
+    "environment": 52,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009984452137723476
+  },
+  {
+    "environment": 52,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009463566299528318
+  },
+  {
+    "environment": 52,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00095737701840699
+  },
+  {
+    "environment": 52,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009096756307409234
+  },
+  {
+    "environment": 52,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009634086168370803
+  },
+  {
+    "environment": 52,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000943753003608435
+  },
+  {
+    "environment": 52,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008976996149867578
+  },
+  {
+    "environment": 53,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007811637013220851
+  },
+  {
+    "environment": 53,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008513687863014319
+  },
+  {
+    "environment": 53,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007051538354718723
+  },
+  {
+    "environment": 53,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009059368353336872
+  },
+  {
+    "environment": 53,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009137663608416169
+  },
+  {
+    "environment": 53,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008600872447712682
+  },
+  {
+    "environment": 53,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007993984329514175
+  },
+  {
+    "environment": 53,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009501661285757773
+  },
+  {
+    "environment": 53,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009808662557044268
+  },
+  {
+    "environment": 53,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009585632039232905
+  },
+  {
+    "environment": 53,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009758754326030239
+  },
+  {
+    "environment": 53,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009095816165207715
+  },
+  {
+    "environment": 53,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009802980734965328
+  },
+  {
+    "environment": 53,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007677221619523944
+  },
+  {
+    "environment": 53,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009638039809651833
+  },
+  {
+    "environment": 54,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000924088642466625
+  },
+  {
+    "environment": 54,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009005853836424665
+  },
+  {
+    "environment": 54,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008000014852731496
+  },
+  {
+    "environment": 54,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00043542425194731393
+  },
+  {
+    "environment": 54,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009204042335040352
+  },
+  {
+    "environment": 54,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009787320308387304
+  },
+  {
+    "environment": 54,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008245786423795032
+  },
+  {
+    "environment": 54,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007477660174481492
+  },
+  {
+    "environment": 54,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008517276681960064
+  },
+  {
+    "environment": 54,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00095481364475547
+  },
+  {
+    "environment": 54,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008984584724530606
+  },
+  {
+    "environment": 54,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008548537604511283
+  },
+  {
+    "environment": 54,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00097689324244854
+  },
+  {
+    "environment": 54,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008832303448575995
+  },
+  {
+    "environment": 54,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008161006420850754
+  },
+  {
+    "environment": 55,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006542454170994638
+  },
+  {
+    "environment": 55,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000869788235053421
+  },
+  {
+    "environment": 55,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008929952508772432
+  },
+  {
+    "environment": 55,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008589052595198154
+  },
+  {
+    "environment": 55,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009469885639845632
+  },
+  {
+    "environment": 55,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006497507332825503
+  },
+  {
+    "environment": 55,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007872267072088768
+  },
+  {
+    "environment": 55,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009249006188474587
+  },
+  {
+    "environment": 55,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009362859684042615
+  },
+  {
+    "environment": 55,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008041961300186834
+  },
+  {
+    "environment": 55,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009959318479524776
+  },
+  {
+    "environment": 55,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008253845260478565
+  },
+  {
+    "environment": 55,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007899676384404142
+  },
+  {
+    "environment": 55,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008384893424808748
+  },
+  {
+    "environment": 55,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009308095737360425
+  },
+  {
+    "environment": 56,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000907959606032821
+  },
+  {
+    "environment": 56,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009990102471782447
+  },
+  {
+    "environment": 56,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007432802226394405
+  },
+  {
+    "environment": 56,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008906768304295862
+  },
+  {
+    "environment": 56,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009458668320438957
+  },
+  {
+    "environment": 56,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009231715071946062
+  },
+  {
+    "environment": 56,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009141178517602377
+  },
+  {
+    "environment": 56,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000933738145977081
+  },
+  {
+    "environment": 56,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009333743094463998
+  },
+  {
+    "environment": 56,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009590320042334455
+  },
+  {
+    "environment": 56,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009789448548108842
+  },
+  {
+    "environment": 56,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000965242905076602
+  },
+  {
+    "environment": 56,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000978062092326584
+  },
+  {
+    "environment": 56,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0005028128256090447
+  },
+  {
+    "environment": 56,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008016642266884949
+  },
+  {
+    "environment": 57,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009723837766796445
+  },
+  {
+    "environment": 57,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009430433250963571
+  },
+  {
+    "environment": 57,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007267043627798841
+  },
+  {
+    "environment": 57,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007659930828958772
+  },
+  {
+    "environment": 57,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007364175729454095
+  },
+  {
+    "environment": 57,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008248888454400333
+  },
+  {
+    "environment": 57,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008401622697711275
+  },
+  {
+    "environment": 57,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009476697547361329
+  },
+  {
+    "environment": 57,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009722190545871229
+  },
+  {
+    "environment": 57,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0006489635431207175
+  },
+  {
+    "environment": 57,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007902659950777893
+  },
+  {
+    "environment": 57,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009024117984808289
+  },
+  {
+    "environment": 57,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007537635671906236
+  },
+  {
+    "environment": 57,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007591015305369962
+  },
+  {
+    "environment": 57,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000961510272696614
+  },
+  {
+    "environment": 58,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009722594036720711
+  },
+  {
+    "environment": 58,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009883507182821827
+  },
+  {
+    "environment": 58,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008669989188201388
+  },
+  {
+    "environment": 58,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007846049424260343
+  },
+  {
+    "environment": 58,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000899148979689901
+  },
+  {
+    "environment": 58,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009223196250385257
+  },
+  {
+    "environment": 58,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009608869948424387
+  },
+  {
+    "environment": 58,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000975133352447255
+  },
+  {
+    "environment": 58,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009833689080551277
+  },
+  {
+    "environment": 58,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009469465967267832
+  },
+  {
+    "environment": 58,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008624780345707871
+  },
+  {
+    "environment": 58,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000963268034160138
+  },
+  {
+    "environment": 58,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008565800539217516
+  },
+  {
+    "environment": 58,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009755279789678273
+  },
+  {
+    "environment": 58,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009254206879996396
+  },
+  {
+    "environment": 59,
+    "repeat": 0,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009238854157738383
+  },
+  {
+    "environment": 59,
+    "repeat": 0,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009820567271672104
+  },
+  {
+    "environment": 59,
+    "repeat": 0,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008712095990777019
+  },
+  {
+    "environment": 59,
+    "repeat": 1,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009629045561887276
+  },
+  {
+    "environment": 59,
+    "repeat": 1,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008375403843819962
+  },
+  {
+    "environment": 59,
+    "repeat": 1,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007173492969014816
+  },
+  {
+    "environment": 59,
+    "repeat": 2,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0008617205335758604
+  },
+  {
+    "environment": 59,
+    "repeat": 2,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009384671617298501
+  },
+  {
+    "environment": 59,
+    "repeat": 2,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009225664534604494
+  },
+  {
+    "environment": 59,
+    "repeat": 3,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000842052715830377
+  },
+  {
+    "environment": 59,
+    "repeat": 3,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0007525854427367501
+  },
+  {
+    "environment": 59,
+    "repeat": 3,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009151290226727671
+  },
+  {
+    "environment": 59,
+    "repeat": 4,
+    "mode": "cartesian_ik",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.00092160303657874
+  },
+  {
+    "environment": 59,
+    "repeat": 4,
+    "mode": "joint_projected",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.0009660743260756291
+  },
+  {
+    "environment": 59,
+    "repeat": 4,
+    "mode": "ompl_uniform",
+    "start_max_joint_error": 0.0,
+    "goal_max_joint_error": 0.000827949011698248
+  }
+]

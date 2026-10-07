@@ -1,0 +1,206 @@
+diff --git a/moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/detail/constrained_sampler.hpp b/moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/detail/constrained_sampler.hpp
+index c23babe0a..886e91487 100644
+--- a/moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/detail/constrained_sampler.hpp
++++ b/moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/detail/constrained_sampler.hpp
+@@ -37,11 +37,18 @@
+ #pragma once
+ 
+ #include <ompl/base/StateSampler.h>
++#include <stdexcept>
+ #include <moveit/constraint_samplers/constraint_sampler.hpp>
+ 
+ namespace ompl_interface
+ {
+ class ModelBasedPlanningContext;
++// A strict sampler must never manufacture a default-distribution sample on failure.
++class ConstraintSamplingTimeout : public std::runtime_error
++{
++public:
++  ConstraintSamplingTimeout() : std::runtime_error("Strict constraint sampling exhausted the planning budget") {}
++};
+ 
+ /** @class ConstrainedSampler
+  *  This class defines a sampler that tries to find a sample that satisfies the constraints*/
+@@ -67,6 +74,7 @@ public:
+ 
+ private:
+   bool sampleC(ompl::base::State* state);
++  bool sampleConstrained(ompl::base::State* state);
+ 
+   const ModelBasedPlanningContext* planning_context_;
+   ompl::base::StateSamplerPtr default_;
+diff --git a/moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/model_based_planning_context.hpp b/moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/model_based_planning_context.hpp
+index ee0444ec4..a37f8f6cf 100644
+--- a/moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/model_based_planning_context.hpp
++++ b/moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/model_based_planning_context.hpp
+@@ -99,6 +99,9 @@ public:
+   void clear() override;
+   bool terminate() override;
+ 
++  // Used by strict samplers to stop retries on timeout or cancellation.
++  bool isSamplingTerminated() const;
++
+   const ModelBasedPlanningContextSpecification& getSpecification() const
+   {
+     return spec_;
+@@ -410,7 +413,7 @@ protected:
+   std::vector<kinematic_constraints::KinematicConstraintSetPtr> goal_constraints_;
+ 
+   const ob::PlannerTerminationCondition* ptc_;
+-  std::mutex ptc_lock_;
++  mutable std::mutex ptc_lock_;
+ 
+   /// the time spent computing the last plan
+   double last_plan_time_;
+diff --git a/moveit_planners/ompl/ompl_interface/src/detail/constrained_sampler.cpp b/moveit_planners/ompl/ompl_interface/src/detail/constrained_sampler.cpp
+index cd06ec5c9..7d315386d 100644
+--- a/moveit_planners/ompl/ompl_interface/src/detail/constrained_sampler.cpp
++++ b/moveit_planners/ompl/ompl_interface/src/detail/constrained_sampler.cpp
+@@ -80,16 +80,30 @@ bool ompl_interface::ConstrainedSampler::sampleC(ob::State* state)
+   return false;
+ }
+ 
++bool ompl_interface::ConstrainedSampler::sampleConstrained(ob::State* state)
++{
++  const auto& config = planning_context_->getSpecificationConfig();
++  const auto strict = config.find("allow_constraint_sampler_fallback");
++  const bool allow_fallback = strict == config.end() || (strict->second != "false" && strict->second != "0");
++  if (allow_fallback)
++    return sampleC(state) || sampleC(state) || sampleC(state);
++  // The void OMPL StateSampler API cannot return "no sample". Retry only the
++  // configured sampler, then propagate a controlled timeout; never draw default_.
++  while (!planning_context_->isSamplingTerminated())
++    if (sampleC(state)) return true;
++  throw ConstraintSamplingTimeout();
++}
++
+ void ompl_interface::ConstrainedSampler::sampleUniform(ob::State* state)
+ {
+-  if (!sampleC(state) && !sampleC(state) && !sampleC(state))
++  if (!sampleConstrained(state))
+     default_->sampleUniform(state);
+ }
+ 
+ void ompl_interface::ConstrainedSampler::sampleUniformNear(ob::State* state, const ob::State* near,
+                                                            const double distance)
+ {
+-  if (sampleC(state) || sampleC(state) || sampleC(state))
++  if (sampleConstrained(state))
+   {
+     double total_d = space_->distance(state, near);
+     if (total_d > distance)
+@@ -104,7 +118,7 @@ void ompl_interface::ConstrainedSampler::sampleUniformNear(ob::State* state, con
+ 
+ void ompl_interface::ConstrainedSampler::sampleGaussian(ob::State* state, const ob::State* mean, const double stdDev)
+ {
+-  if (sampleC(state) || sampleC(state) || sampleC(state))
++  if (sampleConstrained(state))
+   {
+     double total_d = space_->distance(state, mean);
+     double distance = rng_.gaussian(0.0, stdDev);
+diff --git a/moveit_planners/ompl/ompl_interface/src/model_based_planning_context.cpp b/moveit_planners/ompl/ompl_interface/src/model_based_planning_context.cpp
+index ab356ac3a..2923aa0e0 100644
+--- a/moveit_planners/ompl/ompl_interface/src/model_based_planning_context.cpp
++++ b/moveit_planners/ompl/ompl_interface/src/model_based_planning_context.cpp
+@@ -242,9 +242,11 @@ ModelBasedPlanningContext::allocPathConstrainedSampler(const ompl::base::StateSp
+ 
+   RCLCPP_DEBUG(getLogger(), "%s: Allocating a new state sampler (attempts to use path constraints)", name_.c_str());
+ 
+-  if (path_constraints_)
++  const auto fallback = spec_.config_.find("allow_constraint_sampler_fallback");
++  const bool strict = fallback != spec_.config_.end() && (fallback->second == "false" || fallback->second == "0");
++  if (path_constraints_ && !path_constraints_->empty())
+   {
+-    if (constraints_library_)
++    if (constraints_library_ && !strict)
+     {
+       const ConstraintApproximationPtr& constraint_approx =
+           constraints_library_->getConstraintApproximation(path_constraints_msg_);
+@@ -278,6 +280,8 @@ ModelBasedPlanningContext::allocPathConstrainedSampler(const ompl::base::StateSp
+       RCLCPP_INFO(getLogger(), "%s: Allocating specialized state sampler for state space", name_.c_str());
+       return std::make_shared<ConstrainedSampler>(this, constraint_sampler);
+     }
++    if (strict)
++      throw ConstraintSamplingTimeout();  // Fail closed when no specialized sampler is available.
+   }
+   RCLCPP_DEBUG(getLogger(), "%s: Allocating default state sampler for state space", name_.c_str());
+   return state_space->allocDefaultStateSampler();
+@@ -289,6 +293,7 @@ void ModelBasedPlanningContext::useConfig()
+   if (config.empty())
+     return;
+   std::map<std::string, std::string> cfg = config;
++  cfg.erase("allow_constraint_sampler_fallback");
+ 
+   // set the distance between waypoints when interpolating and collision checking.
+   auto it = cfg.find("longest_valid_segment_fraction");
+@@ -454,7 +459,8 @@ void ModelBasedPlanningContext::simplifySolution(double timeout)
+   ompl::time::point start = ompl::time::now();
+   ob::PlannerTerminationCondition ptc = constructPlannerTerminationCondition(timeout, start);
+   registerTerminationCondition(ptc);
+-  ompl_simple_setup_->simplifySolution(ptc);
++  try { ompl_simple_setup_->simplifySolution(ptc); }
++  catch (const ConstraintSamplingTimeout&) { /* Keep the already valid solution. */ }
+   last_simplify_time_ = ompl_simple_setup_->getLastSimplificationTime();
+   unregisterTerminationCondition();
+ }
+@@ -847,6 +853,14 @@ void ModelBasedPlanningContext::solve(planning_interface::MotionPlanDetailedResp
+ 
+ const moveit_msgs::msg::MoveItErrorCodes ModelBasedPlanningContext::solve(double timeout, unsigned int count)
+ {
++  const auto strict = spec_.config_.find("allow_constraint_sampler_fallback");
++  if (count > 1 && strict != spec_.config_.end() && (strict->second == "false" || strict->second == "0"))
++  {
++    moveit_msgs::msg::MoveItErrorCodes unsupported;
++    unsupported.val = moveit_msgs::msg::MoveItErrorCodes::INVALID_MOTION_PLAN;
++    RCLCPP_ERROR(getLogger(), "Strict constraint sampling requires one planning attempt");
++    return unsupported;
++  }
+   ompl::time::point start = ompl::time::now();
+   preSolve();
+ 
+@@ -857,7 +871,19 @@ const moveit_msgs::msg::MoveItErrorCodes ModelBasedPlanningContext::solve(double
+     RCLCPP_DEBUG(getLogger(), "%s: Solving the planning problem once...", name_.c_str());
+     ob::PlannerTerminationCondition ptc = constructPlannerTerminationCondition(timeout, start);
+     registerTerminationCondition(ptc);
+-    std::ignore = ompl_simple_setup_->solve(ptc);
++    try
++    {
++      std::ignore = ompl_simple_setup_->solve(ptc);
++    }
++    catch (const ConstraintSamplingTimeout&)
++    {
++      last_plan_time_ = ompl::time::seconds(ompl::time::now() - start);
++      unregisterTerminationCondition();
++      RCLCPP_WARN(getLogger(), "Strict constraint sampling timed out without using the default sampler");
++      result.val = moveit_msgs::msg::MoveItErrorCodes::TIMED_OUT;
++      postSolve();
++      return result;
++    }
+     last_plan_time_ = ompl_simple_setup_->getLastPlanComputationTime();
+     unregisterTerminationCondition();
+     // fill the result status code
+@@ -1030,6 +1056,12 @@ int32_t ModelBasedPlanningContext::logPlannerStatus(const og::SimpleSetupPtr& om
+   return result;
+ }
+ 
++bool ModelBasedPlanningContext::isSamplingTerminated() const
++{
++  std::unique_lock<std::mutex> lock(ptc_lock_);
++  return !ptc_ || (*ptc_)();
++}
++
+ bool ModelBasedPlanningContext::terminate()
+ {
+   std::unique_lock<std::mutex> slock(ptc_lock_);
+diff --git a/moveit_planners/ompl/ompl_interface/src/ompl_interface.cpp b/moveit_planners/ompl/ompl_interface/src/ompl_interface.cpp
+index a52e38108..fa5acb52d 100644
+--- a/moveit_planners/ompl/ompl_interface/src/ompl_interface.cpp
++++ b/moveit_planners/ompl/ompl_interface/src/ompl_interface.cpp
+@@ -169,6 +169,7 @@ void OMPLInterface::loadPlannerConfigurations()
+       { "projection_evaluator", rclcpp::ParameterType::PARAMETER_STRING },
+       { "longest_valid_segment_fraction", rclcpp::ParameterType::PARAMETER_DOUBLE },
+       { "enforce_joint_model_state_space", rclcpp::ParameterType::PARAMETER_BOOL },
++      { "allow_constraint_sampler_fallback", rclcpp::ParameterType::PARAMETER_BOOL },
+       { "enforce_constrained_state_space", rclcpp::ParameterType::PARAMETER_BOOL }
+     };
+ 

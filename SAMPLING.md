@@ -64,7 +64,9 @@ Pass `--sampler-config src/tp_gmm/config/sampling.json` to either runner to over
 | `max_joint_delta` | 0.6 | Maximum Euclidean joint displacement from an anchor |
 | `linearization_tolerance` | 0.01 m | Maximum measured nonlinear FK residual |
 
-The optional `config/sampling_pure.json` profile disables the two explicit exploration fractions. To isolate the custom proposals, set `uniform_fraction` and `cartesian_fraction` to zero. Unanchored components still use Cartesian IK rescue and are counted in `missing_anchor_fallbacks`; confirm that this and `online_ik_calls` are zero before describing a projected trial as having no online IK. OMPL also has its own uniform state-space fallback after repeated complete sampler failures; `failed_calls` exposes those failures. Successful-but-narrow proposals therefore still benefit from the explicit exploration fraction.
+The `config/sampling_pure.json` profile sets both explicit exploration fractions to zero. In projected-only mode, components without anchors are rejected; they do not trigger online Cartesian IK. Confirm `uniform_attempts`, `missing_anchor_fallbacks` and projected `online_ik_calls` are zero. The Panda configuration and sampling laboratory also set `allow_constraint_sampler_fallback: false`: the patched MoveIt OMPL wrapper retries the configured sampler until timeout instead of drawing from its default sampler after three failures. Rebuild `moveit_planners_ompl` and restart MoveIt for this to take effect. Strict constrained planning supports one planning attempt; unconstrained baseline requests retain ordinary joint-space sampling.
+
+For the research case study, use [SAMPLING_STUDY.md](SAMPLING_STUDY.md) and `run_sampling_study.py`. Its baseline is unrestricted OMPL (`ompl_uniform`), unlike the legacy quick comparison's corridor-constrained `uniform` mode. Older comparisons cannot demonstrate absence of MoveIt's hidden fallback.
 
 ## Quick paired comparison
 

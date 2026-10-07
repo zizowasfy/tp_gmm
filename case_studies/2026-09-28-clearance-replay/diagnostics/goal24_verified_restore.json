@@ -1,0 +1,546 @@
+{
+  "validity": [
+    {
+      "valid": true,
+      "contacts": [],
+      "cost_sources": [],
+      "constraint_result": []
+    },
+    {
+      "valid": true,
+      "contacts": [],
+      "cost_sources": [],
+      "constraint_result": []
+    },
+    {
+      "valid": true,
+      "contacts": [],
+      "cost_sources": [],
+      "constraint_result": []
+    }
+  ],
+  "actual_scene": {
+    "name": "(noname)+",
+    "robot_state": {
+      "joint_state": {
+        "header": {
+          "stamp": {
+            "sec": 0,
+            "nanosec": 0
+          },
+          "frame_id": "world"
+        },
+        "name": [
+          "panda_joint1",
+          "panda_joint2",
+          "panda_joint3",
+          "panda_joint4",
+          "panda_joint5",
+          "panda_joint6",
+          "panda_joint7",
+          "panda_finger_joint1",
+          "panda_finger_joint2"
+        ],
+        "position": [
+          0.0,
+          -0.785,
+          0.0,
+          -2.356,
+          0.0,
+          1.571,
+          0.785,
+          0.04,
+          0.04
+        ],
+        "velocity": [],
+        "effort": []
+      },
+      "multi_dof_joint_state": {
+        "header": {
+          "stamp": {
+            "sec": 0,
+            "nanosec": 0
+          },
+          "frame_id": "world"
+        },
+        "joint_names": [],
+        "transforms": [],
+        "twist": [],
+        "wrench": []
+      },
+      "attached_collision_objects": [],
+      "is_diff": false
+    },
+    "robot_model_name": "panda",
+    "fixed_frame_transforms": [
+      {
+        "header": {
+          "stamp": {
+            "sec": 0,
+            "nanosec": 0
+          },
+          "frame_id": "world"
+        },
+        "child_frame_id": "world",
+        "transform": {
+          "translation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          }
+        }
+      }
+    ],
+    "allowed_collision_matrix": {
+      "entry_names": [
+        "panda_hand",
+        "panda_leftfinger",
+        "panda_link0",
+        "panda_link1",
+        "panda_link2",
+        "panda_link3",
+        "panda_link4",
+        "panda_link5",
+        "panda_link6",
+        "panda_link7",
+        "panda_rightfinger"
+      ],
+      "entry_values": [
+        {
+          "enabled": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            false,
+            false,
+            false,
+            true,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "enabled": [
+            false,
+            false,
+            true,
+            false,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "enabled": [
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            false,
+            false
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            false,
+            false
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            false,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      ],
+      "default_entry_names": [],
+      "default_entry_values": []
+    },
+    "link_padding": [
+      {
+        "link_name": "panda_hand",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_leftfinger",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_link0",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_link1",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_link2",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_link3",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_link4",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_link5",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_link6",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_link7",
+        "padding": 0.0
+      },
+      {
+        "link_name": "panda_rightfinger",
+        "padding": 0.0
+      }
+    ],
+    "link_scale": [
+      {
+        "link_name": "panda_hand",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_leftfinger",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_link0",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_link1",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_link2",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_link3",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_link4",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_link5",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_link6",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_link7",
+        "scale": 1.0
+      },
+      {
+        "link_name": "panda_rightfinger",
+        "scale": 1.0
+      }
+    ],
+    "object_colors": [],
+    "world": {
+      "collision_objects": [
+        {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "pose": {
+            "position": {
+              "x": 0.45981164634572563,
+              "y": 0.1441765953142623,
+              "z": 0.3709893988452883
+            },
+            "orientation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            }
+          },
+          "id": "tpgmm_benchmark_obstacle",
+          "type": {
+            "key": "",
+            "db": ""
+          },
+          "primitives": [
+            {
+              "type": 3,
+              "dimensions": [
+                0.3170195369888188,
+                0.03004282744400948
+              ],
+              "polygon": {
+                "points": []
+              }
+            }
+          ],
+          "primitive_poses": [
+            {
+              "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "orientation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            }
+          ],
+          "meshes": [],
+          "mesh_poses": [],
+          "planes": [],
+          "plane_poses": [],
+          "subframe_names": [],
+          "subframe_poses": [],
+          "operation": "\u0000"
+        },
+        {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "pose": {
+            "position": {
+              "x": 0.6,
+              "y": 0.0,
+              "z": 0.125
+            },
+            "orientation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            }
+          },
+          "id": "tpgmm_benchmark_table",
+          "type": {
+            "key": "",
+            "db": ""
+          },
+          "primitives": [
+            {
+              "type": 1,
+              "dimensions": [
+                0.75,
+                1.0,
+                0.25
+              ],
+              "polygon": {
+                "points": []
+              }
+            }
+          ],
+          "primitive_poses": [
+            {
+              "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "orientation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              }
+            }
+          ],
+          "meshes": [],
+          "mesh_poses": [],
+          "planes": [],
+          "plane_poses": [],
+          "subframe_names": [],
+          "subframe_poses": [],
+          "operation": "\u0000"
+        }
+      ],
+      "octomap": {
+        "header": {
+          "stamp": {
+            "sec": 0,
+            "nanosec": 0
+          },
+          "frame_id": "world"
+        },
+        "origin": {
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          }
+        },
+        "octomap": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": ""
+          },
+          "binary": false,
+          "id": "",
+          "resolution": 0.0,
+          "data": []
+        }
+      }
+    },
+    "is_diff": false
+  },
+  "audit": {
+    "success": true,
+    "message": "",
+    "json": "{\"audit_samples\":2,\"audit_invalid_samples\":0,\"collision_samples\":0,\"constraint_violations\":0,\"joint_path_length\":0,\"ee_path_length_m\":0,\"min_world_clearance_m\":0.0552949989704,\"trajectory_duration_s\":0,\"ee_path\":[[0.633461563611,-0.0533958822588,0.457839655715],[0.633461563611,-0.0533958822588,0.457839655715]]}"
+  }
+}

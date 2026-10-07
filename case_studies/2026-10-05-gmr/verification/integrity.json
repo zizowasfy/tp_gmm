@@ -1,0 +1,30 @@
+{
+  "status": "complete",
+  "measured_outcomes": 2520,
+  "excluded_warmups": 12,
+  "unique_trial_keys": 2532,
+  "endpoint_checks": 2210,
+  "audited_successes": 2210,
+  "audit_invalid_samples": 0,
+  "scene_mismatches": 0,
+  "forbidden_counters": {
+    "uniform_attempts": 0,
+    "projected_attempts": 0,
+    "missing_anchor_fallbacks": 0
+  },
+  "gmm_attempts_in_pure_gmr": 0,
+  "gmr_attempts_in_gmm": 0,
+  "numerical_statistics_unchanged_after_export_update": true,
+  "archived_source_hashes_match": true,
+  "loaded_binary_hashes_unchanged": true,
+  "model_checkpoint_sha256": "d9ec51ff464b93f8ad87e4d5dc2b3bb649f89dbb5fa4155b5df46ed788d2e5ba",
+  "tests": {
+    "python": 9,
+    "cpp": 2,
+    "live_strict_exhaustion": 2
+  },
+  "elapsed_utc": {
+    "start": "2026-10-05T12:10:26Z",
+    "completed": "2026-10-05T12:27:44Z"
+  }
+}

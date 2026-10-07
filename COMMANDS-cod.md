@@ -17,6 +17,12 @@ The changed repositories are `tp_gmm`, `moveit2`, and `moveit_resources`. The va
 9. [Automated Tests](#9-automated-tests)
 10. [ROS Diagnostics & Troubleshooting](#10-ros-diagnostics--troubleshooting)
 11. [RL Clearance Generalization Sweeps](#11-rl-clearance-generalization-sweeps)
+12. [GMR Reference-Path Proposals](#gmr-reference-path-proposals-cartesian-ik)
+13. [Strict Pure-Sampler Case Study](#strict-pure-sampler-statistical-case-study)
+14. [Clearance-Only Replay](#clearance-only-replay-05--07)
+15. [Training Goal Height and Lower Table](#training-goal-height-range-with-a-separate-lower-table-scene)
+16. [Covariance Cutoff 3.0 on the Original Scene](#covariance-cutoff-30-on-the-original-scene)
+17. [Journal Sampler Comparison](#journal-sampler-comparison-at-fixed-cutoff-30)
 
 ---
 
@@ -208,7 +214,7 @@ ros2 run tp_gmm compare_sampling_approaches.py \
   --repeats 3 --warmup 1 \
   --output sampling_results/cod-configured
 
-# Disable the two explicit exploration fractions; see the fallback caveat in Section 5.
+# Disable explicit exploration fractions; strict MoveIt wrapper requires the rebuilt library.
 ros2 run tp_gmm compare_sampling_approaches.py \
   --modes cartesian_ik joint_projected \
   --sampler-config src/tp_gmm/config/sampling_pure.json \
@@ -301,7 +307,7 @@ Edit a copy of `src/tp_gmm/config/sampling.json` and pass it using `--sampler-co
 | `max_joint_delta` | `0.6` | Maximum joint displacement from an anchor |
 | `linearization_tolerance` | `0.01` | Maximum FK linearization residual, metres |
 
-`sampling_pure.json` sets `uniform_fraction` and `cartesian_fraction` to zero. Unanchored components can still use Cartesian IK rescue, and OMPL can fall back after repeated sampler failures. Inspect `online_ik_calls`, `missing_anchor_fallbacks`, `projected_valid`, and `failed_calls` before attributing a successful plan entirely to projection. A successful plan with zero accepted projected targets is not evidence of a successful projection-only search.
+`sampling_pure.json` sets `uniform_fraction` and `cartesian_fraction` to zero. Projected-only sampling rejects unanchored components without Cartesian rescue. The rebuilt MoveIt wrapper honors `allow_constraint_sampler_fallback: false` and times out without default uniform draws. Verify the installed behavior with `test_strict_sampling_runtime.py`; parameters and plugin counters alone cannot prove that the wrapper patch is loaded. See the strict statistical study commands below.
 
 ---
 
@@ -719,3 +725,197 @@ ros2 run tp_gmm compare_gmr_proposals.py \
 ```
 
 The paired comparison tests the same start/goal, deformed model and reference with GMM, GMR, hybrid and direct-reference IK. It changes its own MoveIt collision objects and restores them at exit, never executing motion. Reports and plots include reference deviation, latency, acceptance, path lengths and clearance. The clearance sweep also accepts these presets through `--sampler-config` with `--samplers cartesian_ik`. A nonzero `uniform_fraction` adds the existing constrained fallback; the presets and paired GMR comparison use zero.
+
+
+## Strict pure-sampler statistical case study
+
+Protocol and interpretation: [SAMPLING_STUDY.md](SAMPLING_STUDY.md). All three repositories must be on `sampling-approaches-cod`. Rebuild and restart; the installed MoveIt library must include the strict wrapper patch.
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+CMAKE_BUILD_PARALLEL_LEVEL=2 MAKEFLAGS=-j2 colcon build \
+  --packages-select moveit_planners_ompl tp_gmm moveit_resources_panda_moveit_config \
+  --executor sequential --cmake-args -DCMAKE_BUILD_TYPE=Release
+source install/setup.bash
+export ROS_DOMAIN_ID=81
+ros2 launch tp_gmm sampling_demo.launch.py rviz:=false \
+  policy_ckpt_path:=/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-11_21-20-28_ppo_torch/checkpoints/best_agent.pt
+```
+
+In another sourced terminal, using the same isolated domain:
+
+```bash
+export ROS_DOMAIN_ID=81
+python3 src/tp_gmm/tests/test_strict_sampling_runtime.py
+ros2 run tp_gmm run_sampling_study.py \
+  --environments-per-stratum 10 --repeats 10 --planning-time 3 \
+  --seed 20260926 --output sampling_results/my-pure-study
+ros2 run tp_gmm analyze_sampling_study.py sampling_results/my-pure-study
+```
+
+This runs 60 environments × 10 repeats × three methods (1,800 plans), with cutoff 2.0, zero explicit mixture fractions and strict no-default-fallback behavior. It never executes trajectories. `--design-only` saves all environments/models before planning; `--resume` requires the same design arguments and resumes only missing trials. Use a new directory for a new independent study. Do not pool interrupted/restarted duplicate trials or keep adding runs until a p-value crosses a threshold.
+
+Output includes frozen inputs, append-only `results.jsonl`, `trials.csv`, paired cluster statistics, PDF/PNG figures and `summary.md`. Unrestricted OMPL has empty GMM path constraints and samples joint coordinates; it is not uniform in Cartesian volume. The automated runner refuses a server that does not advertise strict sampling and joint-state-space configuration. The synthetic regression checks that the installed implementation actually enforces the advertised flag.
+
+The completed case study also uses an independent path-quality confirmation phase. Its directional hypotheses are specified in `SAMPLING_STUDY.md`; report its results separately from the initial success/PAR2 family:
+
+```bash
+ros2 run tp_gmm run_sampling_study.py \
+  --study-phase path_quality_confirmation \
+  --environments-per-stratum 10 --repeats 5 --planning-time 3 \
+  --seed 20260927 --output sampling_results/my-path-confirmation
+ros2 run tp_gmm analyze_sampling_study.py sampling_results/my-path-confirmation
+```
+
+
+## Clearance-only replay (0.5 / 0.7)
+
+See [CLEARANCE_REPLAY.md](CLEARANCE_REPLAY.md). This reuses the original saved environments and exact joint endpoints; it changes only requested RL clearance. The original 0.2 group maps to 0.5 and the 0.8 group maps to 0.7, so only the latter is a reduction. Keep the original goal-height range, checkpoint, cutoff 2.0, pure samplers and strict wrapper. Run from the workspace root against the same isolated planning laboratory:
+
+```bash
+export ROS_DOMAIN_ID=81
+python3 src/tp_gmm/tests/test_strict_sampling_runtime.py
+python3 src/tp_gmm/scripts/replay_sampling_study.py \
+  --source sampling_results/2026-09-26-pure-study \
+  --output sampling_results/2026-09-28-clearance-primary --clearances 0.5 0.7
+python3 src/tp_gmm/scripts/replay_sampling_study.py \
+  --source sampling_results/2026-09-26-path-confirmation \
+  --output sampling_results/2026-09-28-clearance-confirmation --clearances 0.5 0.7
+python3 src/tp_gmm/scripts/analyze_sampling_study.py sampling_results/2026-09-28-clearance-primary
+python3 src/tp_gmm/scripts/analyze_sampling_study.py sampling_results/2026-09-28-clearance-confirmation
+python3 src/tp_gmm/scripts/compare_clearance_replays.py \
+  --before sampling_results/2026-09-26-pure-study sampling_results/2026-09-26-path-confirmation \
+  --after sampling_results/2026-09-28-clearance-primary sampling_results/2026-09-28-clearance-confirmation \
+  --output sampling_results/2026-09-28-clearance-comparison
+```
+
+Use `--resume` only with identical source and clearance settings. A single `--clearances 0.6` applies 0.6 to every source case. Separate runs at additional levels must retain source-environment identities; they do not create new independent environments.
+
+The replay verifies MoveIt's live collision geometry against every frozen scene before planning. A successful scene-update service response alone is insufficient on this MoveIt build. The first attempt was invalidated and preserved separately after this discrepancy was reproduced; use only the verified restart described in [the protocol amendment](CLEARANCE_REPLAY.md#scene-restoration-amendment-before-the-retained-replay).
+
+Completed run: [clearance replay report, plots and data](case_studies/2026-09-28-clearance-replay/README.md).
+
+## Training goal-height range with a separate lower-table scene
+
+See [GOAL_HEIGHT_STUDY.md](GOAL_HEIGHT_STUDY.md). The control retains the exact original scene, table surface at z=0.25 m and goals at z=0.45–0.54 m. A separate cloned scene maps goal heights to the checkpoint's saved z=0.10–0.30 m training range and lowers the identical table to a surface at z=−0.02 m. Table dimensions, horizontal position, cylinder poses, starts, goal x/y, policy, clearances 0.5/0.7 and strict cutoff-2.0 sampling stay fixed. These are plan-only MoveIt scenes; Gazebo entities are not moved.
+
+Use the isolated controller-free launch from the pure-study instructions above. Run cohorts sequentially because they share the active planning scene:
+
+```bash
+export ROS_DOMAIN_ID=81
+python3 src/tp_gmm/scripts/run_goal_height_study.py \
+  --source sampling_results/2026-09-28-clearance-primary \
+  --output sampling_results/2026-09-28-height-primary \
+  --goal-z-range 0.1 0.3 --table-top-z -0.02
+python3 src/tp_gmm/scripts/run_goal_height_study.py \
+  --source sampling_results/2026-09-28-clearance-confirmation \
+  --output sampling_results/2026-09-28-height-confirmation \
+  --goal-z-range 0.1 0.3 --table-top-z -0.02
+
+# Analyze after all timed measurements have finished.
+for cohort in primary confirmation; do
+  for arm in control training; do
+    python3 src/tp_gmm/scripts/analyze_sampling_study.py \
+      "sampling_results/2026-09-28-height-${cohort}/${arm}"
+  done
+done
+python3 src/tp_gmm/scripts/analyze_goal_height_study.py \
+  sampling_results/2026-09-28-height-primary \
+  sampling_results/2026-09-28-height-confirmation \
+  --output sampling_results/2026-09-28-height-comparison
+```
+
+`--table-top-z` affects only the training scene. `--design-only` freezes scenes/models/endpoints without measured plans; `--resume` continues an identical frozen design. Keep separate output directories; source results are never overwritten. The total is 5,400 request outcomes, including endpoint-solve failures recorded without invoking planning. No uniform fallback or missing-anchor Cartesian rescue is allowed in either custom sampler.
+
+The paired report retains all endpoint failures and also reports the endpoint-feasible subset. Its primary inference weights source environments equally, preserves repeat clusters and corrects the three sampler comparisons. Because both goal height and table height change, this checks the requested scene arrangement and cannot isolate goal-height mismatch as the sole cause. Reused cohorts are sensitivity evidence, not fresh independent confirmation.
+
+Completed run: [goal-height and lower-table report, figures and raw data](case_studies/2026-09-28-goal-height/README.md).
+
+## Covariance cutoff 3.0 on the original scene
+
+See [CUTOFF_STUDY.md](CUTOFF_STUDY.md). Reuse the original 120 environments, exact joint endpoints, table surface at z=0.25 m, goal heights z=0.45–0.54 m and requested RL clearances **0.2 / 0.8**. Only the covariance cutoff changes from 2.0 to 3.0. This widens both truncated proposals and the hard covariance-derived corridor; it does not change the covariance matrices. The unrestricted OMPL baseline has no GMM path constraints.
+
+In a separate terminal, launch the plan-only laboratory with the original checkpoint:
+
+```bash
+export ROS_DOMAIN_ID=81
+ros2 launch tp_gmm sampling_demo.launch.py rviz:=false lfd:=true \
+  policy_ckpt_path:="$TPGMM_POLICY_CKPT"
+```
+
+Run the two cohorts sequentially from a sourced workspace terminal in the same domain. Use fresh output paths when repeating this completed run:
+
+```bash
+export ROS_DOMAIN_ID=81
+python3 src/tp_gmm/tests/test_strict_sampling_runtime.py --cutoff 3.0
+python3 src/tp_gmm/scripts/replay_sampling_study.py \
+  --source sampling_results/2026-09-26-pure-study \
+  --output sampling_results/2026-09-29-cutoff3-primary \
+  --clearances 0.2 0.8 --cutoff 3.0
+python3 src/tp_gmm/scripts/replay_sampling_study.py \
+  --source sampling_results/2026-09-26-path-confirmation \
+  --output sampling_results/2026-09-29-cutoff3-confirmation \
+  --clearances 0.2 0.8 --cutoff 3.0
+
+# Analyze after both timed runs finish.
+python3 src/tp_gmm/scripts/analyze_sampling_study.py sampling_results/2026-09-29-cutoff3-primary
+python3 src/tp_gmm/scripts/analyze_sampling_study.py sampling_results/2026-09-29-cutoff3-confirmation
+python3 src/tp_gmm/scripts/compare_cutoff_replays.py \
+  --before sampling_results/2026-09-26-pure-study sampling_results/2026-09-26-path-confirmation \
+  --after sampling_results/2026-09-29-cutoff3-primary sampling_results/2026-09-29-cutoff3-confirmation \
+  --output sampling_results/2026-09-29-cutoff3-comparison
+```
+
+`--design-only` freezes the environments before planning; `--resume` requires identical controls. Omitting `--cutoff` inherits the source value. Purity checks require the recorded cutoff and forbid uniform fallback, missing-anchor rescue and online IK in joint projection. The cutoff comparison verifies unchanged scenes, endpoints, both GMMs and both reference trajectories, then reports paired environment-cluster intervals and Holm-corrected success tests. Reused environments provide sensitivity evidence, not another independent confirmation.
+
+Results: [cutoff-3.0 report, plots and data](case_studies/2026-09-29-cutoff3/README.md).
+
+## Journal sampler comparison at fixed cutoff 3.0
+
+The [standalone sampler report](case_studies/2026-09-29-sampler-comparison/README.md) and [manuscript section](case_studies/2026-09-29-sampler-comparison/manuscript.md) compare **Cartesian + IK, joint projection and unrestricted OMPL** using only the completed cutoff-3.0 cohorts. The earlier cutoff investigation remains a separate diagnostic study. This step analyzes saved outcomes; it does not run ROS planning or modify scenes.
+
+```bash
+python3 src/tp_gmm/scripts/summarize_sampler_case_study.py \
+  sampling_results/2026-09-29-cutoff3-primary \
+  sampling_results/2026-09-29-cutoff3-confirmation \
+  --output sampling_results/my-sampler-comparison
+```
+
+Use a fresh output directory. The analyzer rejects inconsistent configurations, duplicate environments, changed input hashes, failed scene checks and impure sampling. It gives each environment equal weight despite different repeat counts, retains failed outcomes, and compares path quality on matched successful requests. All 24 two-sided method/outcome tests share one Holm correction; this combined analysis is retrospective. Exported CSV tables, JSON statistics and PDF/PNG figures cover success, PAR2, planning action and attributed pipeline time, path quality, clearance, sampler costs and model preparation. Pipeline time attributes the shared per-environment deformation measurement to each GMM request; it excludes common endpoint IK and the offline dense path audit. Stage medians and raw counts are separately labelled descriptive summaries.
+
+## Extensive strict GMR comparison (30 mm only)
+
+[Protocol and design](GMR_STUDY.md). Four methods: **GMM**, **GMR 30 mm**, **Hybrid 30 mm** (80% GMR / 20% GMM), and **reference_ik**. This experiment fixes GMM and GMR cutoffs to **3.0**, clearance to **0.7**, and both uniform and cross-mapping fallback fractions to zero. It also verifies MoveIt's outer fallback parameter is disabled. The three sampling proposals use Cartesian + IK mapping; reference IK follows the reproduced path directly. No unrestricted OMPL arm is included in this experiment.
+
+Launch in a dedicated terminal from the workspace root:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+export ROS_DOMAIN_ID=81
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+ros2 launch tp_gmm sampling_demo.launch.py rviz:=false \
+  policy_ckpt_path:=/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-11_21-20-28_ppo_torch/checkpoints/best_agent.pt
+```
+
+In a second sourced terminal with the same ROS domain and thread limits:
+
+```bash
+python3 src/tp_gmm/tests/test_strict_sampling_runtime.py --cutoff 3.0
+python3 src/tp_gmm/tests/test_gmr_strict_runtime.py
+python3 src/tp_gmm/scripts/run_gmr_study.py \
+  --output gmr_results/my-extensive-gmr-study \
+  --environments-per-layout 40 --repeats 5 --legacy-repeats 10 \
+  --planning-time 3 --seed 20261005
+
+# Run analysis after all timed measurements finish.
+python3 src/tp_gmm/scripts/analyze_gmr_study.py gmr_results/my-extensive-gmr-study
+```
+
+The design has 120 new randomized environments × 5 repeats × 4 methods, plus the 3 original pilot scenes × 10 repeats × 4 methods: **2,520 measured outcomes**, with 12 excluded warmups. New randomized scenes and original scenes are analyzed separately. All methods share frozen exact endpoints, scene, deformation and reference in each environment. Endpoint failures remain in every method's denominator. The reference baseline now exports its geometric joint path for the same dense offline auditor used for RRT outputs.
+
+`--design-only` freezes inputs without running measured plans. `--resume` requires the same output path, arguments, runtime configuration and source/binary hashes. Use a fresh output path for a new study. Infrastructure/purity failures stop the run rather than being hidden as planning failures. The analyzer produces environment-cluster confidence intervals, Holm-adjusted paired comparisons, CSV tables and PDF/PNG figures. Results are stored in `gmr_results/2026-10-05-extensive`; start with `analysis/report.md`. The historical `2026-09-24-pilot` remains separate.
+
+Completed findings: [strict GMR comparison](case_studies/2026-10-05-gmr/FINDINGS.md). Each RRT proposal succeeded on all 565 randomized requests with solved endpoints (565/600 overall); reference IK succeeded on 405/600. GMR improved reference adherence by 17.2 mm versus GMM (95% CI 13.4–21.0 mm), without a demonstrated speed, path-length or clearance advantage. The [repository archive](case_studies/2026-10-05-gmr/README.md) includes compressed raw outcomes and frozen inputs, paired statistics, vector figures and integrity checks, plus the separate historical pilot.

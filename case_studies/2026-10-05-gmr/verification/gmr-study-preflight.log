@@ -1,0 +1,46 @@
+[INFO] [1791201968.915234038] [gazebo_experiment_runner]: Using native orientation frame for task 'franka_pick_cube'.
+[INFO] [1791201968.915426207] [gazebo_experiment_runner]: Initializing Gazebo Experiment Runner for franka_panda...
+[INFO] [1791201968.926961910] [gazebo_experiment_runner]: Connecting to MoveGroup Action Server...
+[INFO] [1791201970.179510998] [gazebo_experiment_runner]: Experiment Runner Node Ready!
+DESIGN 1/6 open endpoint_error=None
+DESIGN 2/6 central_obstacle endpoint_error=None
+DESIGN 3/6 offset_obstacle endpoint_error=None
+DESIGN 4/6 central_000 endpoint_error=None
+DESIGN 5/6 offset_000 endpoint_error=None
+DESIGN 6/6 distant_000 endpoint_error=Benchmark endpoint IK failed (-31)
+PLAN 1/36 env=0 repeat=-1 gmr_30mm success=True stage=None wall=0.071
+PLAN 2/36 env=0 repeat=-1 gmm success=True stage=None wall=0.077
+PLAN 3/36 env=0 repeat=-1 hybrid_30mm success=True stage=None wall=0.075
+PLAN 4/36 env=0 repeat=-1 reference_ik success=True stage=None wall=0.143
+PLAN 5/36 env=1 repeat=-1 hybrid_30mm success=True stage=None wall=0.078
+PLAN 6/36 env=1 repeat=-1 gmr_30mm success=True stage=None wall=0.149
+PLAN 7/36 env=1 repeat=-1 reference_ik success=False stage=reference_edge_invalid wall=0.123
+PLAN 8/36 env=1 repeat=-1 gmm success=True stage=None wall=0.317
+PLAN 9/36 env=2 repeat=-1 gmm success=True stage=None wall=0.142
+PLAN 10/36 env=2 repeat=-1 hybrid_30mm success=True stage=None wall=0.105
+PLAN 11/36 env=2 repeat=-1 reference_ik success=False stage=reference_ik wall=0.065
+PLAN 12/36 env=2 repeat=-1 gmr_30mm success=True stage=None wall=0.283
+PLAN 13/36 env=1 repeat=0 hybrid_30mm success=True stage=None wall=0.150
+PLAN 14/36 env=1 repeat=0 reference_ik success=False stage=reference_edge_invalid wall=0.207
+PLAN 15/36 env=1 repeat=0 gmm success=True stage=None wall=0.171
+PLAN 16/36 env=1 repeat=0 gmr_30mm success=True stage=None wall=0.243
+PLAN 17/36 env=2 repeat=0 hybrid_30mm success=True stage=None wall=0.152
+PLAN 18/36 env=2 repeat=0 gmm success=True stage=None wall=0.152
+PLAN 19/36 env=2 repeat=0 reference_ik success=False stage=reference_ik wall=0.065
+PLAN 20/36 env=2 repeat=0 gmr_30mm success=True stage=None wall=0.230
+PLAN 21/36 env=4 repeat=0 hybrid_30mm success=True stage=None wall=0.193
+PLAN 22/36 env=4 repeat=0 gmm success=True stage=None wall=0.117
+PLAN 23/36 env=4 repeat=0 gmr_30mm success=True stage=None wall=0.080
+PLAN 24/36 env=4 repeat=0 reference_ik success=False stage=reference_ik wall=0.057
+PLAN 25/36 env=3 repeat=0 hybrid_30mm success=True stage=None wall=0.152
+PLAN 26/36 env=3 repeat=0 gmm success=True stage=None wall=0.158
+PLAN 27/36 env=3 repeat=0 gmr_30mm success=True stage=None wall=0.061
+PLAN 28/36 env=3 repeat=0 reference_ik success=True stage=None wall=0.135
+PLAN 29/36 env=5 repeat=0 reference_ik success=False stage=endpoint_ik wall=0.000
+PLAN 30/36 env=5 repeat=0 gmr_30mm success=False stage=endpoint_ik wall=0.000
+PLAN 31/36 env=5 repeat=0 hybrid_30mm success=False stage=endpoint_ik wall=0.000
+PLAN 32/36 env=5 repeat=0 gmm success=False stage=endpoint_ik wall=0.000
+PLAN 33/36 env=0 repeat=0 gmm success=True stage=None wall=0.172
+PLAN 34/36 env=0 repeat=0 gmr_30mm success=True stage=None wall=0.123
+PLAN 35/36 env=0 repeat=0 reference_ik success=True stage=None wall=0.149
+PLAN 36/36 env=0 repeat=0 hybrid_30mm success=True stage=None wall=0.151

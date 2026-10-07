@@ -1,3 +1,7 @@
+> A larger strict replication with cutoffs 3.0, clearance 0.7 and only 30 mm GMR/hybrid proposals is documented in [GMR_STUDY.md](GMR_STUDY.md). Its randomized cohort and repeated original scenes are analyzed separately from this historical pilot.
+
+> Historical-run note (26 September 2026): this pilot predates the strict MoveIt sampler-wrapper patch. Zero plugin-level uniform counters do not exclude the wrapper's hidden default draws after repeated failures. These results are not pooled with the strict pure-sampler case study in [SAMPLING_STUDY.md](SAMPLING_STUDY.md).
+
 # GMR proposal pilot — 24 September 2026
 
 The first paired experiment supports keeping the GMR sampler as an **optional proposal**, with hybrid mixing as the initial practical choice. It does not justify replacing ordinary GMM sampling or claiming a general speedup.
@@ -39,7 +43,7 @@ Median action latencies include unsuccessful attempts. Reference deviation and E
 
 ## Artifacts and reproduction
 
-Full raw data, model/reference snapshots, trajectories, summary, CSV and PNG/PDF figures are in the workspace directory `gmr_results/2026-09-24-pilot/` (outside the source Git repositories).
+Full raw data, model/reference snapshots, trajectories, summary, CSV and PNG/PDF figures remain in the workspace directory `gmr_results/2026-09-24-pilot/`. A byte-verified copy is preserved in the [repository archive](case_studies/2026-10-05-gmr/README.md) as `raw-historical-pilot.tar.xz`, separately from the later extensive study.
 
 ```bash
 # With the isolated sampling_demo launch and the checkpoint above:

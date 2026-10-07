@@ -1,0 +1,21 @@
+{
+  "cohorts": [
+    {
+      "phase": "primary",
+      "plans": 1800,
+      "verified_scenes": 60,
+      "purity_passed": true
+    },
+    {
+      "phase": "confirmation",
+      "plans": 900,
+      "verified_scenes": 60,
+      "purity_passed": true
+    }
+  ],
+  "python_tests_passed": 10,
+  "build": "tp_gmm Release: passed",
+  "installed_cli_help": "both replay scripts passed",
+  "post_build_runtime_hashes": "unchanged",
+  "archive_verification": "All 301 archived files matched source SHA-256"
+}

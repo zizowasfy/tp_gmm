@@ -1,0 +1,1053 @@
+{
+  "environments": 120,
+  "comparisons": [
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "environments": 60,
+      "plans": 450,
+      "old_successes": 444,
+      "new_successes": 430,
+      "old_failure_stages": {
+        "path_audit": 1,
+        "start_invalid_in_corridor": 5
+      },
+      "new_failure_stages": {
+        "start_invalid_in_corridor": 20
+      },
+      "recovered_pairs": 1,
+      "lost_pairs": 15,
+      "success_difference": -0.03166666666666666,
+      "ci95": [
+        -0.08166666666666668,
+        0.0033333333333333327
+      ],
+      "p": 0.5,
+      "uniform_attempts": 0,
+      "online_ik_calls": null,
+      "holm_p": 1.0
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "environments": 60,
+      "plans": 450,
+      "old_successes": 445,
+      "new_successes": 430,
+      "old_failure_stages": {
+        "start_invalid_in_corridor": 5
+      },
+      "new_failure_stages": {
+        "start_invalid_in_corridor": 20
+      },
+      "recovered_pairs": 0,
+      "lost_pairs": 15,
+      "success_difference": -0.03333333333333333,
+      "ci95": [
+        -0.08333333333333333,
+        0.0
+      ],
+      "p": 0.5,
+      "uniform_attempts": 0,
+      "online_ik_calls": 0,
+      "holm_p": 1.0
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "environments": 60,
+      "plans": 450,
+      "old_successes": 450,
+      "new_successes": 450,
+      "old_failure_stages": {},
+      "new_failure_stages": {},
+      "recovered_pairs": 0,
+      "lost_pairs": 0,
+      "success_difference": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "p": 1.0,
+      "uniform_attempts": null,
+      "online_ik_calls": null,
+      "holm_p": 1.0
+    },
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "environments": 60,
+      "plans": 450,
+      "old_successes": 409,
+      "new_successes": 430,
+      "old_failure_stages": {
+        "start_invalid_in_corridor": 40,
+        "path_audit": 1
+      },
+      "new_failure_stages": {
+        "start_invalid_in_corridor": 20
+      },
+      "recovered_pairs": 21,
+      "lost_pairs": 0,
+      "success_difference": 0.03666666666666667,
+      "ci95": [
+        0.0,
+        0.08666666666666667
+      ],
+      "p": 0.25,
+      "uniform_attempts": 0,
+      "online_ik_calls": null,
+      "holm_p": 0.5
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "environments": 60,
+      "plans": 450,
+      "old_successes": 405,
+      "new_successes": 428,
+      "old_failure_stages": {
+        "start_invalid_in_corridor": 40,
+        "planning": 3,
+        "path_audit": 2
+      },
+      "new_failure_stages": {
+        "start_invalid_in_corridor": 20,
+        "path_audit": 2
+      },
+      "recovered_pairs": 25,
+      "lost_pairs": 2,
+      "success_difference": 0.041666666666666664,
+      "ci95": [
+        0.0016666666666666663,
+        0.09166666666666669
+      ],
+      "p": 0.125,
+      "uniform_attempts": 0,
+      "online_ik_calls": 0,
+      "holm_p": 0.375
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "environments": 60,
+      "plans": 450,
+      "old_successes": 450,
+      "new_successes": 450,
+      "old_failure_stages": {},
+      "new_failure_stages": {},
+      "recovered_pairs": 0,
+      "lost_pairs": 0,
+      "success_difference": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "p": 1.0,
+      "uniform_attempts": null,
+      "online_ik_calls": null,
+      "holm_p": 1.0
+    }
+  ],
+  "secondary": [
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "audit.joint_path_length",
+      "difference": 0.7346231659722652,
+      "ci95": [
+        0.15280378566290206,
+        1.3129102725485433
+      ],
+      "environments": 57,
+      "matched_pairs": 429
+    },
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "audit.ee_path_length_m",
+      "difference": 0.04950363696515616,
+      "ci95": [
+        0.016317794258385053,
+        0.08190087747829021
+      ],
+      "environments": 57,
+      "matched_pairs": 429
+    },
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "audit.min_world_clearance_m",
+      "difference": -0.0007179667157883344,
+      "ci95": [
+        -0.0027275009855725505,
+        0.0011909615923834506
+      ],
+      "environments": 57,
+      "matched_pairs": 429
+    },
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "curve.min_clearance_m",
+      "difference": 0.0009279384468207148,
+      "ci95": [
+        -0.0015695296545793409,
+        0.0036208750674699545
+      ],
+      "environments": 57,
+      "matched_pairs": 429
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "audit.joint_path_length",
+      "difference": -0.31270782414207016,
+      "ci95": [
+        -0.8919513016738093,
+        0.25220650493883046
+      ],
+      "environments": 57,
+      "matched_pairs": 430
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "audit.ee_path_length_m",
+      "difference": 0.006431784649243861,
+      "ci95": [
+        -0.02430162835226671,
+        0.03644304475940002
+      ],
+      "environments": 57,
+      "matched_pairs": 430
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "audit.min_world_clearance_m",
+      "difference": 0.0005289397035793777,
+      "ci95": [
+        -0.0011835099701501884,
+        0.00224586607147992
+      ],
+      "environments": 57,
+      "matched_pairs": 430
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "curve.min_clearance_m",
+      "difference": 0.000351474289356168,
+      "ci95": [
+        -0.0018401808765166699,
+        0.00256544295059215
+      ],
+      "environments": 57,
+      "matched_pairs": 430
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "audit.joint_path_length",
+      "difference": -0.06336483495705005,
+      "ci95": [
+        -0.3345928139950863,
+        0.2092675925660587
+      ],
+      "environments": 60,
+      "matched_pairs": 450
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "audit.ee_path_length_m",
+      "difference": -0.08916893213595332,
+      "ci95": [
+        -0.21945852666247803,
+        0.0444225092323259
+      ],
+      "environments": 60,
+      "matched_pairs": 450
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "audit.min_world_clearance_m",
+      "difference": -0.0011278337894756216,
+      "ci95": [
+        -0.002593706701260046,
+        0.0003305064835381384
+      ],
+      "environments": 60,
+      "matched_pairs": 450
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "metric": "curve.min_clearance_m",
+      "difference": 0.00032225654311509677,
+      "ci95": [
+        -0.0021448428429610977,
+        0.0026936630924979136
+      ],
+      "environments": 60,
+      "matched_pairs": 450
+    },
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "audit.joint_path_length",
+      "difference": -0.465519505729809,
+      "ci95": [
+        -0.9960925053900737,
+        0.09286663052900598
+      ],
+      "environments": 55,
+      "matched_pairs": 409
+    },
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "audit.ee_path_length_m",
+      "difference": -0.030605915205751823,
+      "ci95": [
+        -0.062249853433899445,
+        0.0007667898335671332
+      ],
+      "environments": 55,
+      "matched_pairs": 409
+    },
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "audit.min_world_clearance_m",
+      "difference": 0.00041376169617906,
+      "ci95": [
+        -0.0010975367478543525,
+        0.0018709637665270896
+      ],
+      "environments": 55,
+      "matched_pairs": 409
+    },
+    {
+      "mode": "cartesian_ik",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "curve.min_clearance_m",
+      "difference": -0.0006744822810421867,
+      "ci95": [
+        -0.0021570420767262352,
+        0.0007267084258449076
+      ],
+      "environments": 55,
+      "matched_pairs": 409
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "audit.joint_path_length",
+      "difference": -0.2393219396309465,
+      "ci95": [
+        -0.7737813426820627,
+        0.2849745013924687
+      ],
+      "environments": 55,
+      "matched_pairs": 403
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "audit.ee_path_length_m",
+      "difference": -0.03628513821662253,
+      "ci95": [
+        -0.06941101928662617,
+        -0.0026585822826115492
+      ],
+      "environments": 55,
+      "matched_pairs": 403
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "audit.min_world_clearance_m",
+      "difference": 0.0007522298500935328,
+      "ci95": [
+        -0.0005052196913264788,
+        0.002054826621360996
+      ],
+      "environments": 55,
+      "matched_pairs": 403
+    },
+    {
+      "mode": "joint_projected",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "curve.min_clearance_m",
+      "difference": -0.0004495485944046231,
+      "ci95": [
+        -0.00210993587176596,
+        0.0011934097341173427
+      ],
+      "environments": 55,
+      "matched_pairs": 403
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "audit.joint_path_length",
+      "difference": 0.20934906439773338,
+      "ci95": [
+        -0.09874928616550173,
+        0.540589261949999
+      ],
+      "environments": 60,
+      "matched_pairs": 450
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "audit.ee_path_length_m",
+      "difference": 0.1082019633797583,
+      "ci95": [
+        -0.018657113825806915,
+        0.23823278814255944
+      ],
+      "environments": 60,
+      "matched_pairs": 450
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "audit.min_world_clearance_m",
+      "difference": -0.0006153013732116748,
+      "ci95": [
+        -0.0028108236372666176,
+        0.0013944461704419675
+      ],
+      "environments": 60,
+      "matched_pairs": 450
+    },
+    {
+      "mode": "ompl_uniform",
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "metric": "curve.min_clearance_m",
+      "difference": -0.0009029427513009225,
+      "ci95": [
+        -0.003118481736841909,
+        0.001225751728467497
+      ],
+      "environments": 60,
+      "matched_pairs": 450
+    }
+  ],
+  "failure_cases": [
+    {
+      "phase": 0,
+      "environment": 4,
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "mode": "cartesian_ik",
+      "old_failures": {},
+      "new_failures": {
+        "start_invalid_in_corridor": 10
+      }
+    },
+    {
+      "phase": 0,
+      "environment": 4,
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "mode": "joint_projected",
+      "old_failures": {},
+      "new_failures": {
+        "start_invalid_in_corridor": 10
+      }
+    },
+    {
+      "phase": 0,
+      "environment": 12,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "cartesian_ik",
+      "old_failures": {
+        "start_invalid_in_corridor": 10
+      },
+      "new_failures": {}
+    },
+    {
+      "phase": 0,
+      "environment": 12,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {
+        "start_invalid_in_corridor": 10
+      },
+      "new_failures": {}
+    },
+    {
+      "phase": 0,
+      "environment": 17,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {
+        "planning": 1
+      },
+      "new_failures": {}
+    },
+    {
+      "phase": 0,
+      "environment": 39,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "cartesian_ik",
+      "old_failures": {
+        "start_invalid_in_corridor": 10
+      },
+      "new_failures": {}
+    },
+    {
+      "phase": 0,
+      "environment": 39,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {
+        "start_invalid_in_corridor": 10
+      },
+      "new_failures": {}
+    },
+    {
+      "phase": 0,
+      "environment": 41,
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "mode": "cartesian_ik",
+      "old_failures": {
+        "path_audit": 1
+      },
+      "new_failures": {}
+    },
+    {
+      "phase": 0,
+      "environment": 55,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "cartesian_ik",
+      "old_failures": {
+        "start_invalid_in_corridor": 10
+      },
+      "new_failures": {
+        "start_invalid_in_corridor": 10
+      }
+    },
+    {
+      "phase": 0,
+      "environment": 55,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {
+        "start_invalid_in_corridor": 10
+      },
+      "new_failures": {
+        "start_invalid_in_corridor": 10
+      }
+    },
+    {
+      "phase": 0,
+      "environment": 57,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {
+        "path_audit": 1
+      },
+      "new_failures": {
+        "path_audit": 1
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 0,
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "mode": "cartesian_ik",
+      "old_failures": {},
+      "new_failures": {
+        "start_invalid_in_corridor": 5
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 0,
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "mode": "joint_projected",
+      "old_failures": {},
+      "new_failures": {
+        "start_invalid_in_corridor": 5
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 10,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "cartesian_ik",
+      "old_failures": {
+        "start_invalid_in_corridor": 5
+      },
+      "new_failures": {
+        "start_invalid_in_corridor": 5
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 10,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {
+        "start_invalid_in_corridor": 5
+      },
+      "new_failures": {
+        "start_invalid_in_corridor": 5
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 15,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {},
+      "new_failures": {
+        "path_audit": 1
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 22,
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "mode": "cartesian_ik",
+      "old_failures": {
+        "start_invalid_in_corridor": 5
+      },
+      "new_failures": {
+        "start_invalid_in_corridor": 5
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 22,
+      "old_clearance": 0.2,
+      "new_clearance": 0.5,
+      "mode": "joint_projected",
+      "old_failures": {
+        "start_invalid_in_corridor": 5
+      },
+      "new_failures": {
+        "start_invalid_in_corridor": 5
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 32,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {
+        "planning": 2
+      },
+      "new_failures": {}
+    },
+    {
+      "phase": 1,
+      "environment": 52,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "cartesian_ik",
+      "old_failures": {
+        "start_invalid_in_corridor": 5
+      },
+      "new_failures": {
+        "start_invalid_in_corridor": 5
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 52,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {
+        "start_invalid_in_corridor": 5
+      },
+      "new_failures": {
+        "start_invalid_in_corridor": 5
+      }
+    },
+    {
+      "phase": 1,
+      "environment": 53,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "joint_projected",
+      "old_failures": {
+        "path_audit": 1
+      },
+      "new_failures": {}
+    },
+    {
+      "phase": 1,
+      "environment": 59,
+      "old_clearance": 0.8,
+      "new_clearance": 0.7,
+      "mode": "cartesian_ik",
+      "old_failures": {
+        "path_audit": 1
+      },
+      "new_failures": {}
+    }
+  ],
+  "by_phase": {
+    "0": [
+      {
+        "mode": "cartesian_ik",
+        "old_clearance": 0.2,
+        "new_clearance": 0.5,
+        "environments": 30,
+        "plans": 300,
+        "old_successes": 299,
+        "new_successes": 290,
+        "old_failure_stages": {
+          "path_audit": 1
+        },
+        "new_failure_stages": {
+          "start_invalid_in_corridor": 10
+        },
+        "recovered_pairs": 1,
+        "lost_pairs": 10,
+        "success_difference": -0.030000000000000002,
+        "ci95": [
+          -0.1,
+          0.006666666666666665
+        ],
+        "p": 1.0,
+        "uniform_attempts": 0,
+        "online_ik_calls": null,
+        "holm_p": 1.0
+      },
+      {
+        "mode": "joint_projected",
+        "old_clearance": 0.2,
+        "new_clearance": 0.5,
+        "environments": 30,
+        "plans": 300,
+        "old_successes": 300,
+        "new_successes": 290,
+        "old_failure_stages": {},
+        "new_failure_stages": {
+          "start_invalid_in_corridor": 10
+        },
+        "recovered_pairs": 0,
+        "lost_pairs": 10,
+        "success_difference": -0.03333333333333333,
+        "ci95": [
+          -0.1,
+          0.0
+        ],
+        "p": 1.0,
+        "uniform_attempts": 0,
+        "online_ik_calls": 0,
+        "holm_p": 1.0
+      },
+      {
+        "mode": "ompl_uniform",
+        "old_clearance": 0.2,
+        "new_clearance": 0.5,
+        "environments": 30,
+        "plans": 300,
+        "old_successes": 300,
+        "new_successes": 300,
+        "old_failure_stages": {},
+        "new_failure_stages": {},
+        "recovered_pairs": 0,
+        "lost_pairs": 0,
+        "success_difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "uniform_attempts": null,
+        "online_ik_calls": null,
+        "holm_p": 1.0
+      },
+      {
+        "mode": "cartesian_ik",
+        "old_clearance": 0.8,
+        "new_clearance": 0.7,
+        "environments": 30,
+        "plans": 300,
+        "old_successes": 270,
+        "new_successes": 290,
+        "old_failure_stages": {
+          "start_invalid_in_corridor": 30
+        },
+        "new_failure_stages": {
+          "start_invalid_in_corridor": 10
+        },
+        "recovered_pairs": 20,
+        "lost_pairs": 0,
+        "success_difference": 0.06666666666666667,
+        "ci95": [
+          0.0,
+          0.16666666666666666
+        ],
+        "p": 0.5,
+        "uniform_attempts": 0,
+        "online_ik_calls": null,
+        "holm_p": 1.0
+      },
+      {
+        "mode": "joint_projected",
+        "old_clearance": 0.8,
+        "new_clearance": 0.7,
+        "environments": 30,
+        "plans": 300,
+        "old_successes": 268,
+        "new_successes": 289,
+        "old_failure_stages": {
+          "start_invalid_in_corridor": 30,
+          "planning": 1,
+          "path_audit": 1
+        },
+        "new_failure_stages": {
+          "start_invalid_in_corridor": 10,
+          "path_audit": 1
+        },
+        "recovered_pairs": 22,
+        "lost_pairs": 1,
+        "success_difference": 0.07,
+        "ci95": [
+          0.0,
+          0.16999999999999998
+        ],
+        "p": 0.25,
+        "uniform_attempts": 0,
+        "online_ik_calls": 0,
+        "holm_p": 0.75
+      },
+      {
+        "mode": "ompl_uniform",
+        "old_clearance": 0.8,
+        "new_clearance": 0.7,
+        "environments": 30,
+        "plans": 300,
+        "old_successes": 300,
+        "new_successes": 300,
+        "old_failure_stages": {},
+        "new_failure_stages": {},
+        "recovered_pairs": 0,
+        "lost_pairs": 0,
+        "success_difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "uniform_attempts": null,
+        "online_ik_calls": null,
+        "holm_p": 1.0
+      }
+    ],
+    "1": [
+      {
+        "mode": "cartesian_ik",
+        "old_clearance": 0.2,
+        "new_clearance": 0.5,
+        "environments": 30,
+        "plans": 150,
+        "old_successes": 145,
+        "new_successes": 140,
+        "old_failure_stages": {
+          "start_invalid_in_corridor": 5
+        },
+        "new_failure_stages": {
+          "start_invalid_in_corridor": 10
+        },
+        "recovered_pairs": 0,
+        "lost_pairs": 5,
+        "success_difference": -0.03333333333333333,
+        "ci95": [
+          -0.1,
+          0.0
+        ],
+        "p": 1.0,
+        "uniform_attempts": 0,
+        "online_ik_calls": null,
+        "holm_p": 1.0
+      },
+      {
+        "mode": "joint_projected",
+        "old_clearance": 0.2,
+        "new_clearance": 0.5,
+        "environments": 30,
+        "plans": 150,
+        "old_successes": 145,
+        "new_successes": 140,
+        "old_failure_stages": {
+          "start_invalid_in_corridor": 5
+        },
+        "new_failure_stages": {
+          "start_invalid_in_corridor": 10
+        },
+        "recovered_pairs": 0,
+        "lost_pairs": 5,
+        "success_difference": -0.03333333333333333,
+        "ci95": [
+          -0.1,
+          0.0
+        ],
+        "p": 1.0,
+        "uniform_attempts": 0,
+        "online_ik_calls": 0,
+        "holm_p": 1.0
+      },
+      {
+        "mode": "ompl_uniform",
+        "old_clearance": 0.2,
+        "new_clearance": 0.5,
+        "environments": 30,
+        "plans": 150,
+        "old_successes": 150,
+        "new_successes": 150,
+        "old_failure_stages": {},
+        "new_failure_stages": {},
+        "recovered_pairs": 0,
+        "lost_pairs": 0,
+        "success_difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "uniform_attempts": null,
+        "online_ik_calls": null,
+        "holm_p": 1.0
+      },
+      {
+        "mode": "cartesian_ik",
+        "old_clearance": 0.8,
+        "new_clearance": 0.7,
+        "environments": 30,
+        "plans": 150,
+        "old_successes": 139,
+        "new_successes": 140,
+        "old_failure_stages": {
+          "start_invalid_in_corridor": 10,
+          "path_audit": 1
+        },
+        "new_failure_stages": {
+          "start_invalid_in_corridor": 10
+        },
+        "recovered_pairs": 1,
+        "lost_pairs": 0,
+        "success_difference": 0.006666666666666665,
+        "ci95": [
+          0.0,
+          0.019999999999999997
+        ],
+        "p": 1.0,
+        "uniform_attempts": 0,
+        "online_ik_calls": null,
+        "holm_p": 1.0
+      },
+      {
+        "mode": "joint_projected",
+        "old_clearance": 0.8,
+        "new_clearance": 0.7,
+        "environments": 30,
+        "plans": 150,
+        "old_successes": 137,
+        "new_successes": 139,
+        "old_failure_stages": {
+          "start_invalid_in_corridor": 10,
+          "planning": 2,
+          "path_audit": 1
+        },
+        "new_failure_stages": {
+          "start_invalid_in_corridor": 10,
+          "path_audit": 1
+        },
+        "recovered_pairs": 3,
+        "lost_pairs": 1,
+        "success_difference": 0.013333333333333334,
+        "ci95": [
+          -0.01333333333333333,
+          0.04666666666666666
+        ],
+        "p": 0.75,
+        "uniform_attempts": 0,
+        "online_ik_calls": 0,
+        "holm_p": 1.0
+      },
+      {
+        "mode": "ompl_uniform",
+        "old_clearance": 0.8,
+        "new_clearance": 0.7,
+        "environments": 30,
+        "plans": 150,
+        "old_successes": 150,
+        "new_successes": 150,
+        "old_failure_stages": {},
+        "new_failure_stages": {},
+        "recovered_pairs": 0,
+        "lost_pairs": 0,
+        "success_difference": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "p": 1.0,
+        "uniform_attempts": null,
+        "online_ik_calls": null,
+        "holm_p": 1.0
+      }
+    ]
+  },
+  "note": "New minus old; environment-weighted inference, raw pooled counts descriptive. Reused environments; not independent replication."
+}

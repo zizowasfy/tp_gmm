@@ -1,0 +1,551 @@
+{
+  "status": "complete",
+  "intervention": {
+    "kind": "goal_height",
+    "source_manifest_sha256": "6db86e7cc5734592c31731f818bb236461ef24b03cbe2321b64fd4d7e2fb5673",
+    "source_goal_z_range": [
+      0.45,
+      0.54
+    ],
+    "training_goal_z_range": [
+      0.1,
+      0.3
+    ],
+    "table_top_z": -0.02
+  },
+  "runtime": {
+    "ompl.panda_arm.allow_constraint_sampler_fallback": {
+      "type": 1,
+      "bool_value": false,
+      "integer_value": 0,
+      "double_value": 0.0,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": []
+    },
+    "ompl.panda_arm.enforce_joint_model_state_space": {
+      "type": 1,
+      "bool_value": true,
+      "integer_value": 0,
+      "double_value": 0.0,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": []
+    },
+    "ompl.panda_arm.longest_valid_segment_fraction": {
+      "type": 3,
+      "bool_value": false,
+      "integer_value": 0,
+      "double_value": 0.0005,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": []
+    },
+    "ompl.planner_configs.RRTConnectkConfigDefault.simplify_solutions": {
+      "type": 2,
+      "bool_value": false,
+      "integer_value": 0,
+      "double_value": 0.0,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": []
+    }
+  },
+  "created_utc": "2026-09-28T17:19:30Z",
+  "note": "Control scene and endpoints unchanged. Training scene clones source and lowers only table and goal z. Goal IK is necessarily recomputed. Endpoint infeasibility remains in the denominator. This is a combined height/table intervention.",
+  "blocks": [
+    {
+      "environment": 43,
+      "arm": "control"
+    },
+    {
+      "environment": 43,
+      "arm": "training"
+    },
+    {
+      "environment": 38,
+      "arm": "control"
+    },
+    {
+      "environment": 38,
+      "arm": "training"
+    },
+    {
+      "environment": 46,
+      "arm": "training"
+    },
+    {
+      "environment": 46,
+      "arm": "control"
+    },
+    {
+      "environment": 36,
+      "arm": "control"
+    },
+    {
+      "environment": 36,
+      "arm": "training"
+    },
+    {
+      "environment": 41,
+      "arm": "control"
+    },
+    {
+      "environment": 41,
+      "arm": "training"
+    },
+    {
+      "environment": 47,
+      "arm": "training"
+    },
+    {
+      "environment": 47,
+      "arm": "control"
+    },
+    {
+      "environment": 7,
+      "arm": "control"
+    },
+    {
+      "environment": 7,
+      "arm": "training"
+    },
+    {
+      "environment": 26,
+      "arm": "control"
+    },
+    {
+      "environment": 26,
+      "arm": "training"
+    },
+    {
+      "environment": 14,
+      "arm": "training"
+    },
+    {
+      "environment": 14,
+      "arm": "control"
+    },
+    {
+      "environment": 12,
+      "arm": "control"
+    },
+    {
+      "environment": 12,
+      "arm": "training"
+    },
+    {
+      "environment": 54,
+      "arm": "training"
+    },
+    {
+      "environment": 54,
+      "arm": "control"
+    },
+    {
+      "environment": 15,
+      "arm": "control"
+    },
+    {
+      "environment": 15,
+      "arm": "training"
+    },
+    {
+      "environment": 51,
+      "arm": "control"
+    },
+    {
+      "environment": 51,
+      "arm": "training"
+    },
+    {
+      "environment": 13,
+      "arm": "training"
+    },
+    {
+      "environment": 13,
+      "arm": "control"
+    },
+    {
+      "environment": 44,
+      "arm": "control"
+    },
+    {
+      "environment": 44,
+      "arm": "training"
+    },
+    {
+      "environment": 19,
+      "arm": "control"
+    },
+    {
+      "environment": 19,
+      "arm": "training"
+    },
+    {
+      "environment": 2,
+      "arm": "control"
+    },
+    {
+      "environment": 2,
+      "arm": "training"
+    },
+    {
+      "environment": 22,
+      "arm": "training"
+    },
+    {
+      "environment": 22,
+      "arm": "control"
+    },
+    {
+      "environment": 9,
+      "arm": "control"
+    },
+    {
+      "environment": 9,
+      "arm": "training"
+    },
+    {
+      "environment": 23,
+      "arm": "control"
+    },
+    {
+      "environment": 23,
+      "arm": "training"
+    },
+    {
+      "environment": 40,
+      "arm": "control"
+    },
+    {
+      "environment": 40,
+      "arm": "training"
+    },
+    {
+      "environment": 33,
+      "arm": "control"
+    },
+    {
+      "environment": 33,
+      "arm": "training"
+    },
+    {
+      "environment": 39,
+      "arm": "control"
+    },
+    {
+      "environment": 39,
+      "arm": "training"
+    },
+    {
+      "environment": 6,
+      "arm": "training"
+    },
+    {
+      "environment": 6,
+      "arm": "control"
+    },
+    {
+      "environment": 59,
+      "arm": "control"
+    },
+    {
+      "environment": 59,
+      "arm": "training"
+    },
+    {
+      "environment": 30,
+      "arm": "control"
+    },
+    {
+      "environment": 30,
+      "arm": "training"
+    },
+    {
+      "environment": 28,
+      "arm": "control"
+    },
+    {
+      "environment": 28,
+      "arm": "training"
+    },
+    {
+      "environment": 0,
+      "arm": "training"
+    },
+    {
+      "environment": 0,
+      "arm": "control"
+    },
+    {
+      "environment": 24,
+      "arm": "training"
+    },
+    {
+      "environment": 24,
+      "arm": "control"
+    },
+    {
+      "environment": 11,
+      "arm": "control"
+    },
+    {
+      "environment": 11,
+      "arm": "training"
+    },
+    {
+      "environment": 37,
+      "arm": "training"
+    },
+    {
+      "environment": 37,
+      "arm": "control"
+    },
+    {
+      "environment": 31,
+      "arm": "training"
+    },
+    {
+      "environment": 31,
+      "arm": "control"
+    },
+    {
+      "environment": 53,
+      "arm": "training"
+    },
+    {
+      "environment": 53,
+      "arm": "control"
+    },
+    {
+      "environment": 16,
+      "arm": "training"
+    },
+    {
+      "environment": 16,
+      "arm": "control"
+    },
+    {
+      "environment": 48,
+      "arm": "control"
+    },
+    {
+      "environment": 48,
+      "arm": "training"
+    },
+    {
+      "environment": 49,
+      "arm": "control"
+    },
+    {
+      "environment": 49,
+      "arm": "training"
+    },
+    {
+      "environment": 42,
+      "arm": "control"
+    },
+    {
+      "environment": 42,
+      "arm": "training"
+    },
+    {
+      "environment": 10,
+      "arm": "control"
+    },
+    {
+      "environment": 10,
+      "arm": "training"
+    },
+    {
+      "environment": 8,
+      "arm": "training"
+    },
+    {
+      "environment": 8,
+      "arm": "control"
+    },
+    {
+      "environment": 17,
+      "arm": "training"
+    },
+    {
+      "environment": 17,
+      "arm": "control"
+    },
+    {
+      "environment": 29,
+      "arm": "training"
+    },
+    {
+      "environment": 29,
+      "arm": "control"
+    },
+    {
+      "environment": 52,
+      "arm": "control"
+    },
+    {
+      "environment": 52,
+      "arm": "training"
+    },
+    {
+      "environment": 20,
+      "arm": "control"
+    },
+    {
+      "environment": 20,
+      "arm": "training"
+    },
+    {
+      "environment": 1,
+      "arm": "control"
+    },
+    {
+      "environment": 1,
+      "arm": "training"
+    },
+    {
+      "environment": 32,
+      "arm": "control"
+    },
+    {
+      "environment": 32,
+      "arm": "training"
+    },
+    {
+      "environment": 55,
+      "arm": "training"
+    },
+    {
+      "environment": 55,
+      "arm": "control"
+    },
+    {
+      "environment": 4,
+      "arm": "control"
+    },
+    {
+      "environment": 4,
+      "arm": "training"
+    },
+    {
+      "environment": 35,
+      "arm": "control"
+    },
+    {
+      "environment": 35,
+      "arm": "training"
+    },
+    {
+      "environment": 21,
+      "arm": "training"
+    },
+    {
+      "environment": 21,
+      "arm": "control"
+    },
+    {
+      "environment": 56,
+      "arm": "control"
+    },
+    {
+      "environment": 56,
+      "arm": "training"
+    },
+    {
+      "environment": 5,
+      "arm": "training"
+    },
+    {
+      "environment": 5,
+      "arm": "control"
+    },
+    {
+      "environment": 58,
+      "arm": "control"
+    },
+    {
+      "environment": 58,
+      "arm": "training"
+    },
+    {
+      "environment": 27,
+      "arm": "training"
+    },
+    {
+      "environment": 27,
+      "arm": "control"
+    },
+    {
+      "environment": 25,
+      "arm": "training"
+    },
+    {
+      "environment": 25,
+      "arm": "control"
+    },
+    {
+      "environment": 57,
+      "arm": "training"
+    },
+    {
+      "environment": 57,
+      "arm": "control"
+    },
+    {
+      "environment": 3,
+      "arm": "training"
+    },
+    {
+      "environment": 3,
+      "arm": "control"
+    },
+    {
+      "environment": 50,
+      "arm": "control"
+    },
+    {
+      "environment": 50,
+      "arm": "training"
+    },
+    {
+      "environment": 18,
+      "arm": "training"
+    },
+    {
+      "environment": 18,
+      "arm": "control"
+    },
+    {
+      "environment": 34,
+      "arm": "training"
+    },
+    {
+      "environment": 34,
+      "arm": "control"
+    },
+    {
+      "environment": 45,
+      "arm": "control"
+    },
+    {
+      "environment": 45,
+      "arm": "training"
+    }
+  ],
+  "completed_utc": "2026-09-28T17:54:52Z"
+}

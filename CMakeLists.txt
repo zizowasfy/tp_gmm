@@ -35,6 +35,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/DeformTPGMM.srv"
   "srv/PrepareSampling.srv"
   "srv/SamplingReport.srv"
+  "srv/AuditTrajectory.srv"
   DEPENDENCIES geometry_msgs std_msgs moveit_msgs
 )
 
@@ -81,6 +82,11 @@ ament_target_dependencies(gmm_constraint_sampler rclcpp pluginlib moveit_core mo
 rosidl_target_interfaces(gmm_constraint_sampler ${PROJECT_NAME} "rosidl_typesupport_cpp")
 pluginlib_export_plugin_description_file(moveit_core gmm_constraint_sampler_plugin_description.xml)
 
+add_executable(sampling_auditor src/sampling/auditor.cpp)
+target_compile_features(sampling_auditor PUBLIC cxx_std_17)
+ament_target_dependencies(sampling_auditor rclcpp moveit_core moveit_ros_planning moveit_msgs)
+rosidl_target_interfaces(sampling_auditor ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 # Install Python scripts and modules
 ament_python_install_package(tp_gmm_sampling PACKAGE_DIR python/tp_gmm_sampling)
 install(PROGRAMS
@@ -91,8 +97,18 @@ install(PROGRAMS
   scripts/validate_policy.py
   scripts/run_experiments.py
   scripts/sampling_client.py
+  scripts/replay_sampling_study.py
+  scripts/compare_clearance_replays.py
+  scripts/compare_cutoff_replays.py
+  scripts/run_goal_height_study.py
+  scripts/analyze_goal_height_study.py
+  scripts/run_sampling_study.py
+  scripts/analyze_sampling_study.py
+  scripts/summarize_sampler_case_study.py
   scripts/compare_sampling_approaches.py
   scripts/compare_gmr_proposals.py
+  scripts/run_gmr_study.py
+  scripts/analyze_gmr_study.py
   scripts/run_clearance_sweep.py
   scripts/clearance_analysis.py
   scripts/plot_clearance_analysis.py
@@ -107,6 +123,7 @@ install(PROGRAMS
 
 # Install C++ nodes/libraries
 install(TARGETS
+  sampling_auditor
   gmm_constraint_sampler
   gmm_rviz_converter
   gmm_rviz_converter_node
@@ -117,7 +134,7 @@ install(TARGETS
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
-install(FILES COMMANDS-cod.md SAMPLING.md CLEARANCE_ANALYSIS.md GMR_SAMPLING.md GMR_PILOT.md DESTINATION share/${PROJECT_NAME})
+install(FILES CUTOFF_STUDY.md GOAL_HEIGHT_STUDY.md CLEARANCE_REPLAY.md SAMPLING_STUDY.md COMMANDS-cod.md SAMPLING.md CLEARANCE_ANALYSIS.md GMR_SAMPLING.md GMR_PILOT.md GMR_STUDY.md DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY tasks DESTINATION share/${PROJECT_NAME})

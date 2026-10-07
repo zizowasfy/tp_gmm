@@ -1,0 +1,16 @@
+{
+  "environments": 120,
+  "ik_solutions": 120,
+  "collision_free_goals": 0,
+  "table_contacts": 120,
+  "hand_or_finger_table_contacts": 120,
+  "sampled_goal_z_range": [
+    0.10040166749409049,
+    0.2997368903060677
+  ],
+  "goal_z_range": [
+    0.1,
+    0.3
+  ],
+  "table_top_z": 0.25
+}

@@ -1,0 +1,239 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2d9cbdb..24a6501 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -35,6 +35,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
+   "srv/DeformTPGMM.srv"
+   "srv/PrepareSampling.srv"
+   "srv/SamplingReport.srv"
++  "srv/AuditTrajectory.srv"
+   DEPENDENCIES geometry_msgs std_msgs moveit_msgs
+ )
+ 
+@@ -81,6 +82,11 @@ ament_target_dependencies(gmm_constraint_sampler rclcpp pluginlib moveit_core mo
+ rosidl_target_interfaces(gmm_constraint_sampler ${PROJECT_NAME} "rosidl_typesupport_cpp")
+ pluginlib_export_plugin_description_file(moveit_core gmm_constraint_sampler_plugin_description.xml)
+ 
++add_executable(sampling_auditor src/sampling/auditor.cpp)
++target_compile_features(sampling_auditor PUBLIC cxx_std_17)
++ament_target_dependencies(sampling_auditor rclcpp moveit_core moveit_ros_planning moveit_msgs)
++rosidl_target_interfaces(sampling_auditor ${PROJECT_NAME} "rosidl_typesupport_cpp")
++
+ # Install Python scripts and modules
+ ament_python_install_package(tp_gmm_sampling PACKAGE_DIR python/tp_gmm_sampling)
+ install(PROGRAMS
+@@ -91,6 +97,12 @@ install(PROGRAMS
+   scripts/validate_policy.py
+   scripts/run_experiments.py
+   scripts/sampling_client.py
++  scripts/replay_sampling_study.py
++  scripts/compare_clearance_replays.py
++  scripts/run_goal_height_study.py
++  scripts/analyze_goal_height_study.py
++  scripts/run_sampling_study.py
++  scripts/analyze_sampling_study.py
+   scripts/compare_sampling_approaches.py
+   scripts/compare_gmr_proposals.py
+   scripts/run_clearance_sweep.py
+@@ -107,6 +119,7 @@ install(PROGRAMS
+ 
+ # Install C++ nodes/libraries
+ install(TARGETS
++  sampling_auditor
+   gmm_constraint_sampler
+   gmm_rviz_converter
+   gmm_rviz_converter_node
+@@ -117,7 +130,7 @@ install(TARGETS
+   RUNTIME DESTINATION lib/${PROJECT_NAME}
+ )
+ 
+-install(FILES COMMANDS-cod.md SAMPLING.md CLEARANCE_ANALYSIS.md GMR_SAMPLING.md GMR_PILOT.md DESTINATION share/${PROJECT_NAME})
++install(FILES GOAL_HEIGHT_STUDY.md CLEARANCE_REPLAY.md SAMPLING_STUDY.md COMMANDS-cod.md SAMPLING.md CLEARANCE_ANALYSIS.md GMR_SAMPLING.md GMR_PILOT.md DESTINATION share/${PROJECT_NAME})
+ install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
+ install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
+ install(DIRECTORY tasks DESTINATION share/${PROJECT_NAME})
+diff --git a/COMMANDS-cod.md b/COMMANDS-cod.md
+index 447b9be..48cefa4 100644
+--- a/COMMANDS-cod.md
++++ b/COMMANDS-cod.md
+@@ -17,6 +17,10 @@ The changed repositories are `tp_gmm`, `moveit2`, and `moveit_resources`. The va
+ 9. [Automated Tests](#9-automated-tests)
+ 10. [ROS Diagnostics & Troubleshooting](#10-ros-diagnostics--troubleshooting)
+ 11. [RL Clearance Generalization Sweeps](#11-rl-clearance-generalization-sweeps)
++12. [GMR Reference-Path Proposals](#gmr-reference-path-proposals-cartesian-ik)
++13. [Strict Pure-Sampler Case Study](#strict-pure-sampler-statistical-case-study)
++14. [Clearance-Only Replay](#clearance-only-replay-05--07)
++15. [Training Goal Height and Lower Table](#training-goal-height-range-with-a-separate-lower-table-scene)
+ 
+ ---
+ 
+@@ -208,7 +212,7 @@ ros2 run tp_gmm compare_sampling_approaches.py \
+   --repeats 3 --warmup 1 \
+   --output sampling_results/cod-configured
+ 
+-# Disable the two explicit exploration fractions; see the fallback caveat in Section 5.
++# Disable explicit exploration fractions; strict MoveIt wrapper requires the rebuilt library.
+ ros2 run tp_gmm compare_sampling_approaches.py \
+   --modes cartesian_ik joint_projected \
+   --sampler-config src/tp_gmm/config/sampling_pure.json \
+@@ -301,7 +305,7 @@ Edit a copy of `src/tp_gmm/config/sampling.json` and pass it using `--sampler-co
+ | `max_joint_delta` | `0.6` | Maximum joint displacement from an anchor |
+ | `linearization_tolerance` | `0.01` | Maximum FK linearization residual, metres |
+ 
+-`sampling_pure.json` sets `uniform_fraction` and `cartesian_fraction` to zero. Unanchored components can still use Cartesian IK rescue, and OMPL can fall back after repeated sampler failures. Inspect `online_ik_calls`, `missing_anchor_fallbacks`, `projected_valid`, and `failed_calls` before attributing a successful plan entirely to projection. A successful plan with zero accepted projected targets is not evidence of a successful projection-only search.
++`sampling_pure.json` sets `uniform_fraction` and `cartesian_fraction` to zero. Projected-only sampling rejects unanchored components without Cartesian rescue. The rebuilt MoveIt wrapper honors `allow_constraint_sampler_fallback: false` and times out without default uniform draws. Verify the installed behavior with `test_strict_sampling_runtime.py`; parameters and plugin counters alone cannot prove that the wrapper patch is loaded. See the strict statistical study commands below.
+ 
+ ---
+ 
+@@ -719,3 +723,109 @@ ros2 run tp_gmm compare_gmr_proposals.py \
+ ```
+ 
+ The paired comparison tests the same start/goal, deformed model and reference with GMM, GMR, hybrid and direct-reference IK. It changes its own MoveIt collision objects and restores them at exit, never executing motion. Reports and plots include reference deviation, latency, acceptance, path lengths and clearance. The clearance sweep also accepts these presets through `--sampler-config` with `--samplers cartesian_ik`. A nonzero `uniform_fraction` adds the existing constrained fallback; the presets and paired GMR comparison use zero.
++
++
++## Strict pure-sampler statistical case study
++
++Protocol and interpretation: [SAMPLING_STUDY.md](SAMPLING_STUDY.md). All three repositories must be on `sampling-approaches-cod`. Rebuild and restart; the installed MoveIt library must include the strict wrapper patch.
++
++```bash
++source /opt/ros/jazzy/setup.bash
++source install/setup.bash
++CMAKE_BUILD_PARALLEL_LEVEL=2 MAKEFLAGS=-j2 colcon build \
++  --packages-select moveit_planners_ompl tp_gmm moveit_resources_panda_moveit_config \
++  --executor sequential --cmake-args -DCMAKE_BUILD_TYPE=Release
++source install/setup.bash
++export ROS_DOMAIN_ID=81
++ros2 launch tp_gmm sampling_demo.launch.py rviz:=false \
++  policy_ckpt_path:=/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-11_21-20-28_ppo_torch/checkpoints/best_agent.pt
++```
++
++In another sourced terminal, using the same isolated domain:
++
++```bash
++export ROS_DOMAIN_ID=81
++python3 src/tp_gmm/tests/test_strict_sampling_runtime.py
++ros2 run tp_gmm run_sampling_study.py \
++  --environments-per-stratum 10 --repeats 10 --planning-time 3 \
++  --seed 20260926 --output sampling_results/my-pure-study
++ros2 run tp_gmm analyze_sampling_study.py sampling_results/my-pure-study
++```
++
++This runs 60 environments × 10 repeats × three methods (1,800 plans), with cutoff 2.0, zero explicit mixture fractions and strict no-default-fallback behavior. It never executes trajectories. `--design-only` saves all environments/models before planning; `--resume` requires the same design arguments and resumes only missing trials. Use a new directory for a new independent study. Do not pool interrupted/restarted duplicate trials or keep adding runs until a p-value crosses a threshold.
++
++Output includes frozen inputs, append-only `results.jsonl`, `trials.csv`, paired cluster statistics, PDF/PNG figures and `summary.md`. Unrestricted OMPL has empty GMM path constraints and samples joint coordinates; it is not uniform in Cartesian volume. The automated runner refuses a server that does not advertise strict sampling and joint-state-space configuration. The synthetic regression checks that the installed implementation actually enforces the advertised flag.
++
++The completed case study also uses an independent path-quality confirmation phase. Its directional hypotheses are specified in `SAMPLING_STUDY.md`; report its results separately from the initial success/PAR2 family:
++
++```bash
++ros2 run tp_gmm run_sampling_study.py \
++  --study-phase path_quality_confirmation \
++  --environments-per-stratum 10 --repeats 5 --planning-time 3 \
++  --seed 20260927 --output sampling_results/my-path-confirmation
++ros2 run tp_gmm analyze_sampling_study.py sampling_results/my-path-confirmation
++```
++
++
++## Clearance-only replay (0.5 / 0.7)
++
++See [CLEARANCE_REPLAY.md](CLEARANCE_REPLAY.md). This reuses the original saved environments and exact joint endpoints; it changes only requested RL clearance. The original 0.2 group maps to 0.5 and the 0.8 group maps to 0.7, so only the latter is a reduction. Keep the original goal-height range, checkpoint, cutoff 2.0, pure samplers and strict wrapper. Run from the workspace root against the same isolated planning laboratory:
++
++```bash
++export ROS_DOMAIN_ID=81
++python3 src/tp_gmm/tests/test_strict_sampling_runtime.py
++python3 src/tp_gmm/scripts/replay_sampling_study.py \
++  --source sampling_results/2026-09-26-pure-study \
++  --output sampling_results/2026-09-28-clearance-primary --clearances 0.5 0.7
++python3 src/tp_gmm/scripts/replay_sampling_study.py \
++  --source sampling_results/2026-09-26-path-confirmation \
++  --output sampling_results/2026-09-28-clearance-confirmation --clearances 0.5 0.7
++python3 src/tp_gmm/scripts/analyze_sampling_study.py sampling_results/2026-09-28-clearance-primary
++python3 src/tp_gmm/scripts/analyze_sampling_study.py sampling_results/2026-09-28-clearance-confirmation
++python3 src/tp_gmm/scripts/compare_clearance_replays.py \
++  --before sampling_results/2026-09-26-pure-study sampling_results/2026-09-26-path-confirmation \
++  --after sampling_results/2026-09-28-clearance-primary sampling_results/2026-09-28-clearance-confirmation \
++  --output sampling_results/2026-09-28-clearance-comparison
++```
++
++Use `--resume` only with identical source and clearance settings. A single `--clearances 0.6` applies 0.6 to every source case. Separate runs at additional levels must retain source-environment identities; they do not create new independent environments.
++
++The replay verifies MoveIt's live collision geometry against every frozen scene before planning. A successful scene-update service response alone is insufficient on this MoveIt build. The first attempt was invalidated and preserved separately after this discrepancy was reproduced; use only the verified restart described in [the protocol amendment](CLEARANCE_REPLAY.md#scene-restoration-amendment-before-the-retained-replay).
++
++Completed run: [clearance replay report, plots and data](case_studies/2026-09-28-clearance-replay/README.md).
++
++## Training goal-height range with a separate lower-table scene
++
++See [GOAL_HEIGHT_STUDY.md](GOAL_HEIGHT_STUDY.md). The control retains the exact original scene, table surface at z=0.25 m and goals at z=0.45–0.54 m. A separate cloned scene maps goal heights to the checkpoint's saved z=0.10–0.30 m training range and lowers the identical table to a surface at z=−0.02 m. Table dimensions, horizontal position, cylinder poses, starts, goal x/y, policy, clearances 0.5/0.7 and strict cutoff-2.0 sampling stay fixed. These are plan-only MoveIt scenes; Gazebo entities are not moved.
++
++Use the isolated controller-free launch from the pure-study instructions above. Run cohorts sequentially because they share the active planning scene:
++
++```bash
++export ROS_DOMAIN_ID=81
++python3 src/tp_gmm/scripts/run_goal_height_study.py \
++  --source sampling_results/2026-09-28-clearance-primary \
++  --output sampling_results/2026-09-28-height-primary \
++  --goal-z-range 0.1 0.3 --table-top-z -0.02
++python3 src/tp_gmm/scripts/run_goal_height_study.py \
++  --source sampling_results/2026-09-28-clearance-confirmation \
++  --output sampling_results/2026-09-28-height-confirmation \
++  --goal-z-range 0.1 0.3 --table-top-z -0.02
++
++# Analyze after all timed measurements have finished.
++for cohort in primary confirmation; do
++  for arm in control training; do
++    python3 src/tp_gmm/scripts/analyze_sampling_study.py \
++      "sampling_results/2026-09-28-height-${cohort}/${arm}"
++  done
++done
++python3 src/tp_gmm/scripts/analyze_goal_height_study.py \
++  sampling_results/2026-09-28-height-primary \
++  sampling_results/2026-09-28-height-confirmation \
++  --output sampling_results/2026-09-28-height-comparison
++```
++
++`--table-top-z` affects only the training scene. `--design-only` freezes scenes/models/endpoints without measured plans; `--resume` continues an identical frozen design. Keep separate output directories; source results are never overwritten. The total is 5,400 request outcomes, including endpoint-solve failures recorded without invoking planning. No uniform fallback or missing-anchor Cartesian rescue is allowed in either custom sampler.
++
++The paired report retains all endpoint failures and also reports the endpoint-feasible subset. Its primary inference weights source environments equally, preserves repeat clusters and corrects the three sampler comparisons. Because both goal height and table height change, this checks the requested scene arrangement and cannot isolate goal-height mismatch as the sole cause. Reused cohorts are sensitivity evidence, not fresh independent confirmation.
++
++Completed run: [goal-height and lower-table report, figures and raw data](case_studies/2026-09-28-goal-height/README.md).
+diff --git a/GMR_PILOT.md b/GMR_PILOT.md
+index cff83a7..49b0e29 100644
+--- a/GMR_PILOT.md
++++ b/GMR_PILOT.md
+@@ -1,3 +1,5 @@
++> Historical-run note (26 September 2026): this pilot predates the strict MoveIt sampler-wrapper patch. Zero plugin-level uniform counters do not exclude the wrapper's hidden default draws after repeated failures. These results are not pooled with the strict pure-sampler case study in [SAMPLING_STUDY.md](SAMPLING_STUDY.md).
++
+ # GMR proposal pilot — 24 September 2026
+ 
+ The first paired experiment supports keeping the GMR sampler as an **optional proposal**, with hybrid mixing as the initial practical choice. It does not justify replacing ordinary GMM sampling or claiming a general speedup.
+diff --git a/SAMPLING.md b/SAMPLING.md
+index 30d2647..ca66bca 100644
+--- a/SAMPLING.md
++++ b/SAMPLING.md
+@@ -64,7 +64,9 @@ Pass `--sampler-config src/tp_gmm/config/sampling.json` to either runner to over
+ | `max_joint_delta` | 0.6 | Maximum Euclidean joint displacement from an anchor |
+ | `linearization_tolerance` | 0.01 m | Maximum measured nonlinear FK residual |
+ 
+-The optional `config/sampling_pure.json` profile disables the two explicit exploration fractions. To isolate the custom proposals, set `uniform_fraction` and `cartesian_fraction` to zero. Unanchored components still use Cartesian IK rescue and are counted in `missing_anchor_fallbacks`; confirm that this and `online_ik_calls` are zero before describing a projected trial as having no online IK. OMPL also has its own uniform state-space fallback after repeated complete sampler failures; `failed_calls` exposes those failures. Successful-but-narrow proposals therefore still benefit from the explicit exploration fraction.
++The `config/sampling_pure.json` profile sets both explicit exploration fractions to zero. In projected-only mode, components without anchors are rejected; they do not trigger online Cartesian IK. Confirm `uniform_attempts`, `missing_anchor_fallbacks` and projected `online_ik_calls` are zero. The Panda configuration and sampling laboratory also set `allow_constraint_sampler_fallback: false`: the patched MoveIt OMPL wrapper retries the configured sampler until timeout instead of drawing from its default sampler after three failures. Rebuild `moveit_planners_ompl` and restart MoveIt for this to take effect. Strict constrained planning supports one planning attempt; unconstrained baseline requests retain ordinary joint-space sampling.
++
++For the research case study, use [SAMPLING_STUDY.md](SAMPLING_STUDY.md) and `run_sampling_study.py`. Its baseline is unrestricted OMPL (`ompl_uniform`), unlike the legacy quick comparison's corridor-constrained `uniform` mode. Older comparisons cannot demonstrate absence of MoveIt's hidden fallback.
+ 
+ ## Quick paired comparison
+ 
+diff --git a/launch/sampling_demo.launch.py b/launch/sampling_demo.launch.py
+index dfab214..df7c049 100644
+--- a/launch/sampling_demo.launch.py
++++ b/launch/sampling_demo.launch.py
+@@ -15,7 +15,12 @@ def generate_launch_description():
+               .planning_pipelines(pipelines=['ompl'])
+               .planning_scene_monitor(publish_robot_description=True, publish_robot_description_semantic=True)
+               .to_moveit_configs())
++    # Applies only to nonempty path constraints; an unconstrained request still
++    # allocates OMPL's ordinary joint-space sampler. Keep the laboratory fail-closed.
++    config.planning_pipelines['ompl']['panda_arm']['allow_constraint_sampler_fallback'] = False
+     return LaunchDescription([
++        Node(package='tp_gmm', executable='sampling_auditor', output='screen',
++             parameters=[config.to_dict()]),
+         DeclareLaunchArgument('rviz', default_value='true'),
+         DeclareLaunchArgument('lfd', default_value='true'),
+         DeclareLaunchArgument('policy_ckpt_path', default_value='', description='RL checkpoint; required for deformed comparison'),

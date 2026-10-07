@@ -1,0 +1,32 @@
+/home/zizo/.config/matplotlib is not a writable directory
+Matplotlib created a temporary cache directory at /tmp/matplotlib-gqn0_lw_ because there was an issue with the default path (/home/zizo/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+{
+  "gmm": {
+    "n": 3,
+    "successes": 2,
+    "success_rate": 0.6666666666666666,
+    "par2_s_mean": 2.0915490933305896,
+    "acceptance": 0.6923076923076923
+  },
+  "gmr_30mm": {
+    "n": 3,
+    "successes": 2,
+    "success_rate": 0.6666666666666666,
+    "par2_s_mean": 2.0470610876606465,
+    "acceptance": 0.6
+  },
+  "hybrid_30mm": {
+    "n": 3,
+    "successes": 2,
+    "success_rate": 0.6666666666666666,
+    "par2_s_mean": 2.115170937012105,
+    "acceptance": 0.6666666666666666
+  },
+  "reference_ik": {
+    "n": 3,
+    "successes": 1,
+    "success_rate": 0.3333333333333333,
+    "par2_s_mean": 4.04512268898543,
+    "acceptance": null
+  }
+}

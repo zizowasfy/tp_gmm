@@ -1,6 +1,6 @@
 {
   "corridor_mode": "covariance",
-  "cutoff": 2.0,
+  "cutoff": 3.0,
   "uniform_fraction": 0.0,
   "cartesian_fraction": 0.0
 }

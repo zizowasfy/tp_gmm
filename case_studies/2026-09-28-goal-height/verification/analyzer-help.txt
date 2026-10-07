@@ -1,0 +1,12 @@
+usage: analyze_goal_height_study.py [-h] --output OUTPUT
+                                    directories [directories ...]
+
+Paired analysis of original scenes versus cloned lower-goal/lower-table
+scenes.
+
+positional arguments:
+  directories      Parent study directories, one per source cohort
+
+options:
+  -h, --help       show this help message and exit
+  --output OUTPUT

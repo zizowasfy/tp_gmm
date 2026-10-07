@@ -1,0 +1,152 @@
+{
+  "cohorts": {
+    "primary": {
+      "methods": {
+        "cartesian_ik": {
+          "outcomes": 600,
+          "successes": 599,
+          "failures": {
+            "path_audit": 1
+          },
+          "action_requests": 600,
+          "attempts": 3951,
+          "valid_samples": 2124,
+          "uniform_attempts": 0,
+          "missing_anchor_fallbacks": 0,
+          "online_ik_calls": 3951
+        },
+        "joint_projected": {
+          "outcomes": 600,
+          "successes": 599,
+          "failures": {
+            "path_audit": 1
+          },
+          "action_requests": 600,
+          "attempts": 18634,
+          "valid_samples": 3539,
+          "uniform_attempts": 0,
+          "missing_anchor_fallbacks": 0,
+          "online_ik_calls": 0
+        },
+        "ompl_uniform": {
+          "outcomes": 600,
+          "successes": 600,
+          "failures": {},
+          "action_requests": 600,
+          "attempts": 0,
+          "valid_samples": 0,
+          "uniform_attempts": 0,
+          "missing_anchor_fallbacks": 0,
+          "online_ik_calls": 0
+        }
+      },
+      "runtime_artifacts": {
+        "install/moveit_planners_ompl/lib/libmoveit_ompl_planner_plugin.so.2.14.1": "e5c6dd5a485ab450797e029186341ba6c6bd4f55608231d3ee9bbf01d1d7f770",
+        "install/moveit_planners_ompl/lib/libmoveit_ompl_interface.so": "a59c29e0bc76c112c9ffec6ca8eb0247acc7364ccb932a27c74fb770512f4c18",
+        "install/moveit_planners_ompl/lib/libmoveit_ompl_planner_plugin.so": "e5c6dd5a485ab450797e029186341ba6c6bd4f55608231d3ee9bbf01d1d7f770",
+        "install/moveit_planners_ompl/lib/libmoveit_ompl_interface.so.2.14.1": "a59c29e0bc76c112c9ffec6ca8eb0247acc7364ccb932a27c74fb770512f4c18",
+        "install/tp_gmm/lib/libgmm_constraint_sampler.so": "a19b9972ba9fe70617504f3e2352a028e8d043577382291672704b308d2261b1",
+        "install/tp_gmm/lib/tp_gmm/sampling_auditor": "f6c3ea5f6b924a2b2103b5ce652e3f594676522b74a8cab996ff0e3f2b012519",
+        "src/tp_gmm/tasks/franka_pick_cube/TPGMM_model.pkl": "435f4f3a916f42abeeb63bc2f34d1ba7b36b6a17d137740e72d78beca9dc329b"
+      },
+      "strict_exhaustion_test": {
+        "result": "PASS",
+        "cutoff": 3.0,
+        "action_wall_s": 0.558189535047859,
+        "error_code": 99999,
+        "sampler_calls": 276560,
+        "attempts": 1106240,
+        "uniform_attempts": 0,
+        "anchors": 0
+      }
+    },
+    "confirmation": {
+      "methods": {
+        "cartesian_ik": {
+          "outcomes": 300,
+          "successes": 300,
+          "failures": {},
+          "action_requests": 300,
+          "attempts": 2064,
+          "valid_samples": 1092,
+          "uniform_attempts": 0,
+          "missing_anchor_fallbacks": 0,
+          "online_ik_calls": 2064
+        },
+        "joint_projected": {
+          "outcomes": 300,
+          "successes": 298,
+          "failures": {
+            "planning": 1,
+            "path_audit": 1
+          },
+          "action_requests": 300,
+          "attempts": 305580,
+          "valid_samples": 38553,
+          "uniform_attempts": 0,
+          "missing_anchor_fallbacks": 0,
+          "online_ik_calls": 0
+        },
+        "ompl_uniform": {
+          "outcomes": 300,
+          "successes": 300,
+          "failures": {},
+          "action_requests": 300,
+          "attempts": 0,
+          "valid_samples": 0,
+          "uniform_attempts": 0,
+          "missing_anchor_fallbacks": 0,
+          "online_ik_calls": 0
+        }
+      },
+      "runtime_artifacts": {
+        "install/moveit_planners_ompl/lib/libmoveit_ompl_planner_plugin.so.2.14.1": "e5c6dd5a485ab450797e029186341ba6c6bd4f55608231d3ee9bbf01d1d7f770",
+        "install/moveit_planners_ompl/lib/libmoveit_ompl_interface.so": "a59c29e0bc76c112c9ffec6ca8eb0247acc7364ccb932a27c74fb770512f4c18",
+        "install/moveit_planners_ompl/lib/libmoveit_ompl_planner_plugin.so": "e5c6dd5a485ab450797e029186341ba6c6bd4f55608231d3ee9bbf01d1d7f770",
+        "install/moveit_planners_ompl/lib/libmoveit_ompl_interface.so.2.14.1": "a59c29e0bc76c112c9ffec6ca8eb0247acc7364ccb932a27c74fb770512f4c18",
+        "install/tp_gmm/lib/libgmm_constraint_sampler.so": "a19b9972ba9fe70617504f3e2352a028e8d043577382291672704b308d2261b1",
+        "install/tp_gmm/lib/tp_gmm/sampling_auditor": "f6c3ea5f6b924a2b2103b5ce652e3f594676522b74a8cab996ff0e3f2b012519",
+        "src/tp_gmm/tasks/franka_pick_cube/TPGMM_model.pkl": "435f4f3a916f42abeeb63bc2f34d1ba7b36b6a17d137740e72d78beca9dc329b"
+      },
+      "strict_exhaustion_test": {
+        "result": "PASS",
+        "cutoff": 3.0,
+        "action_wall_s": 0.558189535047859,
+        "error_code": 99999,
+        "sampler_calls": 276560,
+        "attempts": 1106240,
+        "uniform_attempts": 0,
+        "anchors": 0
+      }
+    }
+  },
+  "checks": [
+    "All original cases, full start/goal states and collision scenes unchanged.",
+    "All prior/deformed GMMs and both GMR references identical except header timestamps.",
+    "All 120 original table surfaces remain z=0.25 m; goal z remains 0.45\u20130.54 m; requested clearances remain 0.2/0.8.",
+    "Schedule, repeats, model/checkpoint, runtime and non-cutoff settings unchanged.",
+    "Both custom methods record covariance cutoff 3.0, zero uniform fallback and missing-anchor rescue; projection has zero online IK.",
+    "All outcome keys, frozen-input content hashes and live scene read-back hashes verified.",
+    "Runtime/model artifacts and frozen runner source snapshots match their recorded SHA-256.",
+    "Protocol was frozen before measurements; cutoff-3.0 exhausted-sampler runtime regression passed."
+  ],
+  "total_outcomes": 2700,
+  "live_scenes": 120,
+  "software_checks": {
+    "unit_tests_passed": 20,
+    "test_groups": {
+      "test_cutoff*.py": 6,
+      "test_sampling_study*.py": 8,
+      "test_goal_height*.py": 4,
+      "test_clearance_replay_analysis.py": 2
+    },
+    "build": "colcon build --packages-select tp_gmm --executor sequential --cmake-args -DCMAKE_BUILD_TYPE=Release: passed",
+    "installed_cli_help": [
+      "replay_sampling_study.py",
+      "run_sampling_study.py",
+      "compare_cutoff_replays.py"
+    ],
+    "runtime_model_hashes_rechecked_after_build": true,
+    "build_warnings": "Existing misleading-indentation warnings in gmm_rviz_converter.cpp; no build errors."
+  }
+}

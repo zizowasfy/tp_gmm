@@ -1,0 +1,17 @@
+usage: run_goal_height_study.py [-h] --source SOURCE --output OUTPUT
+                                [--goal-z-range GOAL_Z_RANGE GOAL_Z_RANGE]
+                                [--table-top-z TABLE_TOP_Z] [--resume]
+                                [--design-only]
+
+Paired original-height scenes and cloned lower-goal/lower-table scenes.
+
+options:
+  -h, --help            show this help message and exit
+  --source SOURCE       Verified 0.5/0.7 clearance replay cohort
+  --output OUTPUT
+  --goal-z-range GOAL_Z_RANGE GOAL_Z_RANGE
+  --table-top-z TABLE_TOP_Z
+                        Training-height scene only; control table stays
+                        unchanged
+  --resume
+  --design-only

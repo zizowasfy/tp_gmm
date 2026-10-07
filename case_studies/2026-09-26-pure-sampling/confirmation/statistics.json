@@ -1,0 +1,523 @@
+{
+  "environments": 60,
+  "repeats": 5,
+  "plans": 900,
+  "design": {
+    "seed": 20260927,
+    "repeats": 5,
+    "environments_per_stratum": 10,
+    "planning_time": 3.0
+  },
+  "modes": {
+    "cartesian_ik": {
+      "n": 300,
+      "successes": 284,
+      "success_rate": 0.9466666666666667,
+      "success_ci95": [
+        0.8833333333333333,
+        0.9966666666666666
+      ],
+      "failures_by_stage": {
+        "path_audit": 1,
+        "start_invalid_in_corridor": 15
+      },
+      "total_attempts": 3607,
+      "total_valid_samples": 1820,
+      "uniform_attempts": 0,
+      "online_ik_calls": 3607,
+      "missing_anchor_fallbacks": 0,
+      "par2_s_mean": 0.4545784906447322,
+      "par2_s_ci95": [
+        0.16498785744922742,
+        0.814724280549024
+      ],
+      "par2_s_successful_median": 0.12071827449835837,
+      "par2_s_successful_p95": 0.28763520256325137,
+      "action_wall_s_mean": 0.13523879117468215,
+      "action_wall_s_ci95": [
+        0.11885569649637907,
+        0.15477046786134208
+      ],
+      "action_wall_s_successful_median": 0.12071827449835837,
+      "action_wall_s_successful_p95": 0.28763520256325137,
+      "moveit_planning_s_mean": 0.03435576839,
+      "moveit_planning_s_ci95": [
+        0.024783605788,
+        0.04765139759933331
+      ],
+      "moveit_planning_s_successful_median": 0.0213486855,
+      "moveit_planning_s_successful_p95": 0.09902915844999985,
+      "end_to_end_wall_s_mean": 0.15671628963124629,
+      "end_to_end_wall_s_ci95": [
+        0.14026955947404593,
+        0.17622570584768255
+      ],
+      "end_to_end_wall_s_successful_median": 0.14293066199752502,
+      "end_to_end_wall_s_successful_p95": 0.308384018347715,
+      "valid_per_attempt": 0.5045744385916274,
+      "setup_s_median": 4.0657e-05,
+      "sampling_s_median": 0.0129431975,
+      "draw_s_median": 4.321e-06,
+      "online_ik_s_median": 0.012654809999999999,
+      "anchor_ik_s_median": 0.0,
+      "jacobian_setup_s_median": 0.0,
+      "fk_mapping_s_median": 0.0,
+      "validity_s_median": 0.000135035,
+      "joint_path_length_median": 9.417010704980001,
+      "ee_path_length_m_median": 0.6943556509795,
+      "min_world_clearance_m_median": 0.01500980113745,
+      "trajectory_duration_s_median": 3.2734249325
+    },
+    "joint_projected": {
+      "n": 300,
+      "successes": 282,
+      "success_rate": 0.9400000000000001,
+      "success_ci95": [
+        0.88,
+        0.99
+      ],
+      "failures_by_stage": {
+        "path_audit": 1,
+        "planning": 2,
+        "start_invalid_in_corridor": 15
+      },
+      "total_attempts": 569544,
+      "total_valid_samples": 91607,
+      "uniform_attempts": 0,
+      "online_ik_calls": 0,
+      "missing_anchor_fallbacks": 0,
+      "par2_s_mean": 0.4985887282685144,
+      "par2_s_ci95": [
+        0.21286862092942951,
+        0.8555256395200703
+      ],
+      "par2_s_successful_median": 0.12280127400299534,
+      "par2_s_successful_p95": 0.3182652272400446,
+      "action_wall_s_mean": 0.1593359602817024,
+      "action_wall_s_ci95": [
+        0.1245146579107192,
+        0.21123086996847507
+      ],
+      "action_wall_s_successful_median": 0.12280127400299534,
+      "action_wall_s_successful_p95": 0.3182652272400446,
+      "moveit_planning_s_mean": 0.04632130723666666,
+      "moveit_planning_s_ci95": [
+        0.03370716710525,
+        0.06052325678866666
+      ],
+      "moveit_planning_s_successful_median": 0.0260258195,
+      "moveit_planning_s_successful_p95": 0.1776334438499999,
+      "end_to_end_wall_s_mean": 0.18087069294357208,
+      "end_to_end_wall_s_ci95": [
+        0.14598617577354403,
+        0.2327038786941508
+      ],
+      "end_to_end_wall_s_successful_median": 0.1447906294488348,
+      "end_to_end_wall_s_successful_p95": 0.3391365713934646,
+      "valid_per_attempt": 0.1608427092551234,
+      "setup_s_median": 0.020070298,
+      "sampling_s_median": 0.00015982300000000002,
+      "draw_s_median": 3.3435e-05,
+      "online_ik_s_median": 0.0,
+      "anchor_ik_s_median": 0.019914281,
+      "jacobian_setup_s_median": 8.01345e-05,
+      "fk_mapping_s_median": 4.2175e-06,
+      "validity_s_median": 5.8969500000000005e-05,
+      "joint_path_length_median": 8.434889601275,
+      "ee_path_length_m_median": 0.6588063655330001,
+      "min_world_clearance_m_median": 0.012483120022299999,
+      "trajectory_duration_s_median": 3.2063586545
+    },
+    "ompl_uniform": {
+      "n": 300,
+      "successes": 300,
+      "success_rate": 1.0,
+      "success_ci95": [
+        1.0,
+        1.0
+      ],
+      "failures_by_stage": {},
+      "total_attempts": 0,
+      "total_valid_samples": 0,
+      "uniform_attempts": 0,
+      "online_ik_calls": 0,
+      "missing_anchor_fallbacks": 0,
+      "par2_s_mean": 0.15171441034801927,
+      "par2_s_ci95": [
+        0.14412338012049442,
+        0.16118301968244964
+      ],
+      "par2_s_successful_median": 0.1473817969672382,
+      "par2_s_successful_p95": 0.22574487404781396,
+      "action_wall_s_mean": 0.15171441034801927,
+      "action_wall_s_ci95": [
+        0.14412338012049442,
+        0.16118301968244964
+      ],
+      "action_wall_s_successful_median": 0.1473817969672382,
+      "action_wall_s_successful_p95": 0.22574487404781396,
+      "moveit_planning_s_mean": 0.015816655699999998,
+      "moveit_planning_s_ci95": [
+        0.014769002323749999,
+        0.016950925396583334
+      ],
+      "moveit_planning_s_successful_median": 0.012973231,
+      "moveit_planning_s_successful_p95": 0.03295104410000001,
+      "end_to_end_wall_s_mean": 0.15341147948017655,
+      "end_to_end_wall_s_ci95": [
+        0.1458125227423928,
+        0.16287853673259087
+      ],
+      "end_to_end_wall_s_successful_median": 0.1491995264950674,
+      "end_to_end_wall_s_successful_p95": 0.2273293752485188,
+      "valid_per_attempt": null,
+      "setup_s_median": null,
+      "sampling_s_median": null,
+      "draw_s_median": null,
+      "online_ik_s_median": null,
+      "anchor_ik_s_median": null,
+      "jacobian_setup_s_median": null,
+      "fk_mapping_s_median": null,
+      "validity_s_median": null,
+      "joint_path_length_median": 13.35720533055,
+      "ee_path_length_m_median": 2.11591822312,
+      "min_world_clearance_m_median": 0.02032842416435,
+      "trajectory_duration_s_median": 3.5468143925
+    }
+  },
+  "primary": [
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "success",
+      "difference": 0.006666666666666667,
+      "ci95": [
+        -0.006666666666666665,
+        0.02333333333333333
+      ],
+      "p": 0.75,
+      "independent_environments": 60,
+      "holm_p": 0.75
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "par2_s",
+      "difference": -0.04401023762378221,
+      "ci95": [
+        -0.1394753486377255,
+        0.03358972110474127
+      ],
+      "p": 0.3026469735302647,
+      "independent_environments": 60,
+      "holm_p": 0.6052939470605294
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "success",
+      "difference": -0.05333333333333334,
+      "ci95": [
+        -0.11666666666666667,
+        -0.0033333333333333327
+      ],
+      "p": 0.125,
+      "independent_environments": 60,
+      "holm_p": 0.49111508884911154
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "par2_s",
+      "difference": 0.30286408029671286,
+      "ci95": [
+        0.012024040138712739,
+        0.6643785321774088
+      ],
+      "p": 0.12277877221227788,
+      "independent_environments": 60,
+      "holm_p": 0.49111508884911154
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "success",
+      "difference": -0.060000000000000005,
+      "ci95": [
+        -0.12000000000000001,
+        -0.01
+      ],
+      "p": 0.0625,
+      "independent_environments": 60,
+      "holm_p": 0.3125
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "par2_s",
+      "difference": 0.3468743179204951,
+      "ci95": [
+        0.06143808162645047,
+        0.7024580020374752
+      ],
+      "p": 0.045669543304566955,
+      "independent_environments": 60,
+      "holm_p": 0.2740172598274017
+    }
+  ],
+  "quality": [
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "joint_path_length",
+      "difference": 0.8012784881086638,
+      "ci95": [
+        0.14651443662194513,
+        1.480965329180726
+      ],
+      "environments": 57,
+      "matched_success_pairs": 281
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "ee_path_length_m",
+      "difference": 0.025515704422403224,
+      "ci95": [
+        -0.01325117053342344,
+        0.06494636675139161
+      ],
+      "environments": 57,
+      "matched_success_pairs": 281
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "min_world_clearance_m",
+      "difference": 0.002796150110886893,
+      "ci95": [
+        0.0010114243487650053,
+        0.004686221669629675
+      ],
+      "environments": 57,
+      "matched_success_pairs": 281
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "joint_path_length",
+      "difference": -3.7525577292642542,
+      "ci95": [
+        -4.280236214201685,
+        -3.1870111089957534
+      ],
+      "environments": 57,
+      "matched_success_pairs": 284
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "ee_path_length_m",
+      "difference": -1.4445149306468863,
+      "ci95": [
+        -1.549094237437647,
+        -1.3436496466532228
+      ],
+      "environments": 57,
+      "matched_success_pairs": 284
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "min_world_clearance_m",
+      "difference": -0.0069761107961200195,
+      "ci95": [
+        -0.009944401949555289,
+        -0.004148247787208174
+      ],
+      "environments": 57,
+      "matched_success_pairs": 284
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "joint_path_length",
+      "difference": -4.513298637898518,
+      "ci95": [
+        -5.0363219275395155,
+        -3.9771070744358914
+      ],
+      "environments": 57,
+      "matched_success_pairs": 282
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "ee_path_length_m",
+      "difference": -1.4672492529823726,
+      "ci95": [
+        -1.5800434279667563,
+        -1.3606630965872455
+      ],
+      "environments": 57,
+      "matched_success_pairs": 282
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "min_world_clearance_m",
+      "difference": -0.009848710968887677,
+      "ci95": [
+        -0.013043907197284835,
+        -0.006753705339244047
+      ],
+      "environments": 57,
+      "matched_success_pairs": 282
+    }
+  ],
+  "confirmation_primary": [
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "joint_path_length",
+      "difference": 0.8012784881086638,
+      "ci95": [
+        0.14651443662194513,
+        1.480965329180726
+      ],
+      "environments": 57,
+      "matched_success_pairs": 281,
+      "p_one_sided": 0.021309786902130978,
+      "holm_p": 0.042619573804261957
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "ee_path_length_m",
+      "difference": 0.025515704422403224,
+      "ci95": [
+        -0.01325117053342344,
+        0.06494636675139161
+      ],
+      "environments": 57,
+      "matched_success_pairs": 281,
+      "p_one_sided": 0.12205877941220587,
+      "holm_p": 0.12205877941220587
+    }
+  ],
+  "preparation": {
+    "model_load_s": {
+      "median": 0.004123834485653788,
+      "mean": 0.0044157266209367664
+    },
+    "reproduction_s": {
+      "median": 0.008047451497986913,
+      "mean": 0.008255238170386292
+    },
+    "rl_deformation_s": {
+      "median": 0.0007200019899755716,
+      "mean": 0.0008919618150684983
+    },
+    "deformed_regression_s": {
+      "median": 0.0016944209928624332,
+      "mean": 0.0017010870020991813
+    },
+    "total_s": {
+      "median": 0.0161721549811773,
+      "mean": 0.016843372507719324
+    }
+  },
+  "strata": {
+    "central_c0.2": {
+      "cartesian_ik": {
+        "successes": 50,
+        "plans": 50
+      },
+      "joint_projected": {
+        "successes": 50,
+        "plans": 50
+      },
+      "ompl_uniform": {
+        "successes": 50,
+        "plans": 50
+      }
+    },
+    "central_c0.8": {
+      "cartesian_ik": {
+        "successes": 45,
+        "plans": 50
+      },
+      "joint_projected": {
+        "successes": 45,
+        "plans": 50
+      },
+      "ompl_uniform": {
+        "successes": 50,
+        "plans": 50
+      }
+    },
+    "distant_c0.2": {
+      "cartesian_ik": {
+        "successes": 50,
+        "plans": 50
+      },
+      "joint_projected": {
+        "successes": 50,
+        "plans": 50
+      },
+      "ompl_uniform": {
+        "successes": 50,
+        "plans": 50
+      }
+    },
+    "distant_c0.8": {
+      "cartesian_ik": {
+        "successes": 44,
+        "plans": 50
+      },
+      "joint_projected": {
+        "successes": 44,
+        "plans": 50
+      },
+      "ompl_uniform": {
+        "successes": 50,
+        "plans": 50
+      }
+    },
+    "offset_c0.2": {
+      "cartesian_ik": {
+        "successes": 45,
+        "plans": 50
+      },
+      "joint_projected": {
+        "successes": 45,
+        "plans": 50
+      },
+      "ompl_uniform": {
+        "successes": 50,
+        "plans": 50
+      }
+    },
+    "offset_c0.8": {
+      "cartesian_ik": {
+        "successes": 50,
+        "plans": 50
+      },
+      "joint_projected": {
+        "successes": 48,
+        "plans": 50
+      },
+      "ompl_uniform": {
+        "successes": 50,
+        "plans": 50
+      }
+    }
+  },
+  "cartesian_over_projected_par2_ratio": {
+    "estimate": 0.9117303799132809,
+    "ci95": [
+      0.6917778701037578,
+      1.0870763777941763
+    ]
+  }
+}

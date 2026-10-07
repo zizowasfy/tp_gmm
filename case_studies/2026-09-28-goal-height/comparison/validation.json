@@ -1,0 +1,164 @@
+{
+  "cohorts": {
+    "primary": {
+      "control/cartesian_ik": {
+        "outcomes": 600,
+        "successes": 579,
+        "failure_stages": {
+          "path_audit": 1,
+          "start_invalid_in_corridor": 20
+        },
+        "action_requests": 580,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 4972
+      },
+      "control/joint_projected": {
+        "outcomes": 600,
+        "successes": 579,
+        "failure_stages": {
+          "start_invalid_in_corridor": 20,
+          "path_audit": 1
+        },
+        "action_requests": 580,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 0
+      },
+      "control/ompl_uniform": {
+        "outcomes": 600,
+        "successes": 599,
+        "failure_stages": {
+          "path_audit": 1
+        },
+        "action_requests": 600,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 0
+      },
+      "training/cartesian_ik": {
+        "outcomes": 600,
+        "successes": 368,
+        "failure_stages": {
+          "planning": 82,
+          "path_audit": 10,
+          "goal_invalid_in_corridor": 20,
+          "goal_ik_design": 120
+        },
+        "action_requests": 460,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 300371
+      },
+      "training/joint_projected": {
+        "outcomes": 600,
+        "successes": 315,
+        "failure_stages": {
+          "planning": 141,
+          "goal_invalid_in_corridor": 20,
+          "goal_ik_design": 120,
+          "path_audit": 4
+        },
+        "action_requests": 460,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 0
+      },
+      "training/ompl_uniform": {
+        "outcomes": 600,
+        "successes": 480,
+        "failure_stages": {
+          "goal_ik_design": 120
+        },
+        "action_requests": 480,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 0
+      }
+    },
+    "confirmation": {
+      "control/cartesian_ik": {
+        "outcomes": 300,
+        "successes": 280,
+        "failure_stages": {
+          "start_invalid_in_corridor": 20
+        },
+        "action_requests": 280,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 2847
+      },
+      "control/joint_projected": {
+        "outcomes": 300,
+        "successes": 278,
+        "failure_stages": {
+          "planning": 2,
+          "start_invalid_in_corridor": 20
+        },
+        "action_requests": 280,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 0
+      },
+      "control/ompl_uniform": {
+        "outcomes": 300,
+        "successes": 299,
+        "failure_stages": {
+          "path_audit": 1
+        },
+        "action_requests": 300,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 0
+      },
+      "training/cartesian_ik": {
+        "outcomes": 300,
+        "successes": 198,
+        "failure_stages": {
+          "planning": 50,
+          "goal_ik_design": 45,
+          "path_audit": 2,
+          "goal_invalid_in_corridor": 5
+        },
+        "action_requests": 250,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 157388
+      },
+      "training/joint_projected": {
+        "outcomes": 300,
+        "successes": 182,
+        "failure_stages": {
+          "planning": 66,
+          "goal_ik_design": 45,
+          "path_audit": 2,
+          "goal_invalid_in_corridor": 5
+        },
+        "action_requests": 250,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 0
+      },
+      "training/ompl_uniform": {
+        "outcomes": 300,
+        "successes": 255,
+        "failure_stages": {
+          "goal_ik_design": 45
+        },
+        "action_requests": 255,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 0
+      }
+    }
+  },
+  "checks": [
+    "All control cases, exact start/goal states and scenes equal the original saved source.",
+    "Control prior and deformed GMM payloads equal source (header timestamps ignored).",
+    "Non-arm goal joints are unchanged in all 99 endpoint-feasible scene pairs.",
+    "Every training scene changes only table z; every training case changes only goal z.",
+    "All outcome keys, environment content hashes and live scene read-back hashes verified.",
+    "Recorded pure-sampler assertions pass; no uniform attempts or projected Cartesian rescues.",
+    "Every frozen runtime/model artifact and runner source snapshot matches its recorded SHA-256."
+  ]
+}

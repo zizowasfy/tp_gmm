@@ -1,0 +1,11 @@
+# Scene-restoration diagnosis and complete restart
+
+The first replay attempt is excluded in full (1,800 + 900 plans). Its frozen RL deformations remain valid and were reused, but its measured outcomes are not included in the retained analysis.
+
+The initial confirmation replay rejected the same unchanged goal for all three methods, including unrestricted OMPL. A fresh application of that environment found the goal valid. Reproducing the preceding full-scene update sequence reproduced the false rejection. `GetPlanningScene` then returned environment 59’s obstacle at (0.510906, −0.074637, 0.427125), although environment 24 had just been applied with obstacle (0.459812, 0.144177, 0.370989). The service reported success in both cases. The stale obstacle produced contacts against `panda_link5` and `panda_link6`; an offline audit of the intended frozen scene found no collision and 0.055295 m minimum world clearance at the goal.
+
+In this MoveIt source, `PlanningSceneMonitor::newPlanningSceneMessage` calls `clearDiffs()` on its monitored child before replacing the parent with a full snapshot. `PlanningScene::clearDiffs()` copies the parent's existing world. The observed stale child-world snapshot is consistent with that update order. This new replay transport path differed from the original study runner’s direct scene diffs.
+
+The corrected replay follows the full snapshot with an explicit scene diff and compares a read-back snapshot of collision geometry, fixed transforms, allowed collisions, padding, scale and model identity. A mismatch aborts the run. The reproduction test then returned matching expected/actual hashes and three valid goal checks. Every retained environment has a saved verification record. This changes scene restoration and verification only; sampler/planner binaries and parameters are unchanged.
+
+Both cohorts were restarted completely, before inspecting any corrected outcomes. No successful plans from the invalidated attempt were retained, and no individual failed trials were selectively rerun. The original invalidated directories remain on disk; `invalidated_attempts.json` records their paths and hashes. The JSON diagnostic snapshots here allow inspection of the discrepancy and fix.

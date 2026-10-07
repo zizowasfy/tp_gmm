@@ -1,0 +1,23 @@
+usage: run_sampling_study.py [-h] --output OUTPUT
+                             [--environments-per-stratum ENVIRONMENTS_PER_STRATUM]
+                             [--repeats REPEATS]
+                             [--planning-time PLANNING_TIME] [--cutoff CUTOFF]
+                             [--seed SEED] [--task TASK]
+                             [--study-phase {primary,path_quality_confirmation}]
+                             [--resume] [--design-only]
+
+Fixed-design, paired, plan-only comparison; stops on purity/provenance errors.
+
+options:
+  -h, --help            show this help message and exit
+  --output OUTPUT
+  --environments-per-stratum ENVIRONMENTS_PER_STRATUM
+  --repeats REPEATS
+  --planning-time PLANNING_TIME
+  --cutoff CUTOFF       Covariance cutoff; pure sampling and strict fallback
+                        remain enforced
+  --seed SEED
+  --task TASK
+  --study-phase {primary,path_quality_confirmation}
+  --resume
+  --design-only

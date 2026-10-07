@@ -1,0 +1,22 @@
+[
+  {
+    "archive": "raw-primary-control.tar.xz",
+    "bytes": 42513468,
+    "verified_files": 153
+  },
+  {
+    "archive": "raw-primary-training.tar.xz",
+    "bytes": 36176232,
+    "verified_files": 153
+  },
+  {
+    "archive": "raw-confirmation-control.tar.xz",
+    "bytes": 21842808,
+    "verified_files": 153
+  },
+  {
+    "archive": "raw-confirmation-training.tar.xz",
+    "bytes": 20204284,
+    "verified_files": 153
+  }
+]

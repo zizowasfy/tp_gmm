@@ -1,0 +1,13 @@
+usage: summarize_sampler_case_study.py [-h] --output OUTPUT
+                                       cohorts [cohorts ...]
+
+Compare samplers at one fixed configuration, with equal environment weights.
+This retrospective analysis uses no before/after observations. All 24 pairwise
+tests (three method pairs, eight outcomes) share one Holm correction.
+
+positional arguments:
+  cohorts
+
+options:
+  -h, --help       show this help message and exit
+  --output OUTPUT

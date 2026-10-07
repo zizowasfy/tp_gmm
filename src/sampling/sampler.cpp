@@ -86,6 +86,7 @@ bool GMMConstraintSampler::sample(moveit::core::RobotState& state, const moveit:
     }
     else
     {
+      local_["gmm_attempts"]++;
       const size_t k = mixture_(rng_);
       local_["component_" + std::to_string(k) + "_selected"]++;
       bool projected = session_->config.mode == "joint_projected" &&

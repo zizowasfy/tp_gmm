@@ -1,0 +1,10 @@
+usage: compare_cutoff_replays.py [-h] --before BEFORE [BEFORE ...] --after
+                                 AFTER [AFTER ...] --output OUTPUT
+
+Paired covariance-cutoff sensitivity with frozen geometry, clearance and GMMs.
+
+options:
+  -h, --help            show this help message and exit
+  --before BEFORE [BEFORE ...]
+  --after AFTER [AFTER ...]
+  --output OUTPUT

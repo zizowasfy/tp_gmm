@@ -96,6 +96,11 @@ void GMMConstraintSamplerAllocator::report(const srv::SamplingReport::Request& r
     for (const auto& [key, value] : metrics)
     { json << ",\"" << key << "\":"; if (std::isfinite(value)) json << value; else json << "null"; }
     json << ",\"proposal\":\"" << session->config.proposal << "\"";
+    json << ",\"gmr_stddev\":" << session->config.gmr_stddev
+         << ",\"gmr_cutoff\":" << session->config.gmr_cutoff
+         << ",\"gmr_fraction\":" << session->config.gmr_fraction
+         << ",\"uniform_fraction\":" << session->config.uniform_fraction
+         << ",\"cartesian_fraction\":" << session->config.cartesian_fraction;
     json << ",\"corridor_mode\":\"" << session->config.corridor_mode << "\",\"component_cutoffs\":[";
     for (size_t k = 0; k < session->cutoffs.size(); ++k) { if (k) json << ','; json << session->cutoffs[k]; }
     json << "],\"weights\":[";

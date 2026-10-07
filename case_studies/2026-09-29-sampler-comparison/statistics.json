@@ -1,0 +1,1291 @@
+{
+  "environments": 120,
+  "requests": 2700,
+  "modes": {
+    "cartesian_ik": {
+      "requests": 900,
+      "successes": 899,
+      "pooled_success_rate": 0.9988888888888889,
+      "failure_stages": {
+        "path_audit": 1
+      },
+      "metrics": {
+        "success": {
+          "mean": 0.9991666666666668,
+          "ci95": [
+            0.9974999999999999,
+            1.0
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "par2_s": {
+          "mean": 0.15579542422288795,
+          "ci95": [
+            0.14691981751354372,
+            0.16777087108516814
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "action_wall_s": {
+          "mean": 0.15094225287961305,
+          "ci95": [
+            0.14573794211683466,
+            0.15627619088038042
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "end_to_end_wall_s": {
+          "mean": 0.17966324339290923,
+          "ci95": [
+            0.1744975363724879,
+            0.18501236153833933
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "audit.joint_path_length": {
+          "mean": 10.84707739453699,
+          "ci95": [
+            10.561469400901863,
+            11.14678828760231
+          ],
+          "environments": 120,
+          "requests": 899,
+          "success_only": true
+        },
+        "audit.ee_path_length_m": {
+          "mean": 0.8530598113962757,
+          "ci95": [
+            0.8292226719839314,
+            0.877750314904643
+          ],
+          "environments": 120,
+          "requests": 899,
+          "success_only": true
+        },
+        "audit.min_world_clearance_m": {
+          "mean": 0.02169386326636804,
+          "ci95": [
+            0.019421544657408946,
+            0.024009760489017765
+          ],
+          "environments": 120,
+          "requests": 899,
+          "success_only": true
+        },
+        "curve.min_clearance_m": {
+          "mean": 0.10575924328466406,
+          "ci95": [
+            0.10166465823225146,
+            0.10980710548033891
+          ],
+          "environments": 120,
+          "requests": 899,
+          "success_only": true
+        }
+      },
+      "stages": {
+        "setup_s": {
+          "median_s": 2.3698000000000002e-05,
+          "mean_s": 2.7899015e-05
+        },
+        "sampling_s": {
+          "median_s": 0.009311145,
+          "mean_s": 0.015206130275833334
+        },
+        "draw_s": {
+          "median_s": 3.5745000000000003e-06,
+          "mean_s": 4.4578733333333336e-06
+        },
+        "online_ik_s": {
+          "median_s": 0.009065265999999999,
+          "mean_s": 0.0149166103125
+        },
+        "anchor_ik_s": {
+          "median_s": 0.0,
+          "mean_s": 0.0
+        },
+        "jacobian_setup_s": {
+          "median_s": 0.0,
+          "mean_s": 0.0
+        },
+        "fk_mapping_s": {
+          "median_s": 0.0,
+          "mean_s": 0.0
+        },
+        "validity_s": {
+          "median_s": 0.0001125845,
+          "mean_s": 0.00015906901166666667
+        }
+      },
+      "counters": {
+        "attempts": 6015,
+        "valid_samples": 3216,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 6015,
+        "anchor_ik_calls": 0,
+        "trust_region_rejections": 0,
+        "projection_support_rejections": 0,
+        "missing_anchor_rejections": 0
+      },
+      "successful_request_medians": {
+        "par2_s": 0.14337235409766436,
+        "action_wall_s": 0.14337235409766436,
+        "end_to_end_wall_s": 0.17166562099009752,
+        "audit.joint_path_length": 11.6195338486,
+        "audit.ee_path_length_m": 0.809931167434,
+        "audit.min_world_clearance_m": 0.0152093075149,
+        "curve.min_clearance_m": 0.10106754926392367
+      },
+      "acceptance": {
+        "mean": 0.5713096852246743,
+        "ci95": [
+          0.5536182003855503,
+          0.5895682988248093
+        ],
+        "environments": 120,
+        "aggregate_ratio": 0.5346633416458852
+      }
+    },
+    "joint_projected": {
+      "requests": 900,
+      "successes": 897,
+      "pooled_success_rate": 0.9966666666666667,
+      "failure_stages": {
+        "path_audit": 2,
+        "planning": 1
+      },
+      "metrics": {
+        "success": {
+          "mean": 0.9958333333333333,
+          "ci95": [
+            0.9908333333333333,
+            1.0
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "par2_s": {
+          "mean": 0.17836416117458914,
+          "ci95": [
+            0.1512553159589564,
+            0.2133960677194118
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "action_wall_s": {
+          "mean": 0.158902443270102,
+          "ci95": [
+            0.1460156932438622,
+            0.1768771908971248
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "end_to_end_wall_s": {
+          "mean": 0.18770944504998624,
+          "ci95": [
+            0.17457963241319038,
+            0.20541565776879242
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "audit.joint_path_length": {
+          "mean": 9.644502965574077,
+          "ci95": [
+            9.310049684872736,
+            9.98808329255812
+          ],
+          "environments": 120,
+          "requests": 897,
+          "success_only": true
+        },
+        "audit.ee_path_length_m": {
+          "mean": 0.7883626639147852,
+          "ci95": [
+            0.7665997059717348,
+            0.8106172937990189
+          ],
+          "environments": 120,
+          "requests": 897,
+          "success_only": true
+        },
+        "audit.min_world_clearance_m": {
+          "mean": 0.02015600599656809,
+          "ci95": [
+            0.01786144911171885,
+            0.02260911820419553
+          ],
+          "environments": 120,
+          "requests": 897,
+          "success_only": true
+        },
+        "curve.min_clearance_m": {
+          "mean": 0.10329842798371332,
+          "ci95": [
+            0.09926666095491198,
+            0.10721935853238561
+          ],
+          "environments": 120,
+          "requests": 897,
+          "success_only": true
+        }
+      },
+      "stages": {
+        "setup_s": {
+          "median_s": 0.021775001500000002,
+          "mean_s": 0.036898046521666665
+        },
+        "sampling_s": {
+          "median_s": 0.0001651095,
+          "mean_s": 0.0020238861325
+        },
+        "draw_s": {
+          "median_s": 3.6621e-05,
+          "mean_s": 0.00040257875249999993
+        },
+        "online_ik_s": {
+          "median_s": 0.0,
+          "mean_s": 0.0
+        },
+        "anchor_ik_s": {
+          "median_s": 0.021608224500000002,
+          "mean_s": 0.036731194268333336
+        },
+        "jacobian_setup_s": {
+          "median_s": 8.580649999999999e-05,
+          "mean_s": 9.562599166666666e-05
+        },
+        "fk_mapping_s": {
+          "median_s": 4.706e-06,
+          "mean_s": 6.290050249999998e-05
+        },
+        "validity_s": {
+          "median_s": 5.7937e-05,
+          "mean_s": 0.0005986247841666667
+        }
+      },
+      "counters": {
+        "attempts": 324214,
+        "valid_samples": 42092,
+        "uniform_attempts": 0,
+        "missing_anchor_fallbacks": 0,
+        "online_ik_calls": 0,
+        "anchor_ik_calls": 16443,
+        "trust_region_rejections": 16789,
+        "projection_support_rejections": 73017,
+        "missing_anchor_rejections": 163598
+      },
+      "successful_request_medians": {
+        "par2_s": 0.14258947200141847,
+        "action_wall_s": 0.14258947200141847,
+        "end_to_end_wall_s": 0.1717017019400373,
+        "audit.joint_path_length": 10.4920444998,
+        "audit.ee_path_length_m": 0.718175615531,
+        "audit.min_world_clearance_m": 0.0137724345222,
+        "curve.min_clearance_m": 0.0987959696677245
+      },
+      "acceptance": {
+        "mean": 0.20742264633339638,
+        "ci95": [
+          0.1984867513878049,
+          0.2166518987861016
+        ],
+        "environments": 120,
+        "aggregate_ratio": 0.129827829766759
+      }
+    },
+    "ompl_uniform": {
+      "requests": 900,
+      "successes": 900,
+      "pooled_success_rate": 1.0,
+      "failure_stages": {},
+      "metrics": {
+        "success": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "par2_s": {
+          "mean": 0.16724981876128978,
+          "ci95": [
+            0.1620922130014927,
+            0.1728393326297252
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "action_wall_s": {
+          "mean": 0.16724981876128978,
+          "ci95": [
+            0.16204148270504573,
+            0.17272769548611544
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "end_to_end_wall_s": {
+          "mean": 0.16874174847345177,
+          "ci95": [
+            0.16361634913654657,
+            0.17432839556444132
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": false
+        },
+        "audit.joint_path_length": {
+          "mean": 13.819634153213425,
+          "ci95": [
+            13.560175350427775,
+            14.094230805720814
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": true
+        },
+        "audit.ee_path_length_m": {
+          "mean": 2.2175052573654614,
+          "ci95": [
+            2.14969818692097,
+            2.288117687329079
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": true
+        },
+        "audit.min_world_clearance_m": {
+          "mean": 0.025490134198248773,
+          "ci95": [
+            0.02239397562636561,
+            0.028628557707270578
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": true
+        },
+        "curve.min_clearance_m": {
+          "mean": 0.10854384681411101,
+          "ci95": [
+            0.10378461484705304,
+            0.11322589348111065
+          ],
+          "environments": 120,
+          "requests": 900,
+          "success_only": true
+        }
+      },
+      "stages": {
+        "setup_s": null,
+        "sampling_s": null,
+        "draw_s": null,
+        "online_ik_s": null,
+        "anchor_ik_s": null,
+        "jacobian_setup_s": null,
+        "fk_mapping_s": null,
+        "validity_s": null
+      },
+      "counters": {},
+      "successful_request_medians": {
+        "par2_s": 0.16216068546054885,
+        "action_wall_s": 0.16216068546054885,
+        "end_to_end_wall_s": 0.16350309451809153,
+        "audit.joint_path_length": 13.37904202505,
+        "audit.ee_path_length_m": 2.1421877269,
+        "audit.min_world_clearance_m": 0.0169261907535,
+        "curve.min_clearance_m": 0.10306253640231762
+      }
+    }
+  },
+  "contrasts": [
+    {
+      "first": "cartesian_ik",
+      "second": "joint_projected",
+      "metric": "success",
+      "mean": 0.0033333333333333335,
+      "ci95": [
+        -0.0008333333333333334,
+        0.008333333333333335
+      ],
+      "environments": 120,
+      "p": 0.375,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 1.0
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "joint_projected",
+      "metric": "par2_s",
+      "mean": -0.02256873695170119,
+      "ci95": [
+        -0.056558196619521675,
+        0.005506204323952258
+      ],
+      "environments": 120,
+      "p": 0.2012479875201248,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 1.0
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "joint_projected",
+      "metric": "action_wall_s",
+      "mean": -0.00796019039048891,
+      "ci95": [
+        -0.024332725205931643,
+        0.004690154066408771
+      ],
+      "environments": 120,
+      "p": 0.3849261507384926,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 1.0
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "joint_projected",
+      "metric": "end_to_end_wall_s",
+      "mean": -0.008046201657076988,
+      "ci95": [
+        -0.02448039988115488,
+        0.004386034505119218
+      ],
+      "environments": 120,
+      "p": 0.3774962250377496,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 1.0
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "joint_projected",
+      "metric": "audit.joint_path_length",
+      "mean": 1.1937579731610393,
+      "ci95": [
+        0.8260764425468721,
+        1.5626914028850305
+      ],
+      "environments": 120,
+      "p": 9.99990000099999e-06,
+      "matched_requests": 896,
+      "success_only": true,
+      "holm_p": 0.00023999760002399976
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "joint_projected",
+      "metric": "audit.ee_path_length_m",
+      "mean": 0.06432256033304282,
+      "ci95": [
+        0.038910581622492765,
+        0.09006074908408176
+      ],
+      "environments": 120,
+      "p": 2.999970000299997e-05,
+      "matched_requests": 896,
+      "success_only": true,
+      "holm_p": 0.0005099949000509995
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "joint_projected",
+      "metric": "audit.min_world_clearance_m",
+      "mean": 0.00155793355623452,
+      "ci95": [
+        9.262448773563271e-05,
+        0.003002663949045419
+      ],
+      "environments": 120,
+      "p": 0.04562954370456295,
+      "matched_requests": 896,
+      "success_only": true,
+      "holm_p": 0.41066589334106657
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "joint_projected",
+      "metric": "curve.min_clearance_m",
+      "mean": 0.0024724724607170776,
+      "ci95": [
+        0.0008213518787096172,
+        0.004130435770409799
+      ],
+      "environments": 120,
+      "p": 0.005169948300516995,
+      "matched_requests": 896,
+      "success_only": true,
+      "holm_p": 0.06203937960620394
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "ompl_uniform",
+      "metric": "success",
+      "mean": -0.0008333333333333334,
+      "ci95": [
+        -0.0025000000000000005,
+        0.0
+      ],
+      "environments": 120,
+      "p": 1.0,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 1.0
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "ompl_uniform",
+      "metric": "par2_s",
+      "mean": -0.01145439453840178,
+      "ci95": [
+        -0.020402670547487404,
+        0.0008583411530465395
+      ],
+      "environments": 120,
+      "p": 0.017609823901760982,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 0.19370806291937082
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "ompl_uniform",
+      "metric": "action_wall_s",
+      "mean": -0.016307565881676662,
+      "ci95": [
+        -0.02143780139072381,
+        -0.011270972796815236
+      ],
+      "environments": 120,
+      "p": 9.99990000099999e-06,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 0.00023999760002399976
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "ompl_uniform",
+      "metric": "end_to_end_wall_s",
+      "mean": 0.010921494919457474,
+      "ci95": [
+        0.005675618646305036,
+        0.01604245075485958
+      ],
+      "environments": 120,
+      "p": 0.00027999720002799973,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 0.003919960800391996
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "ompl_uniform",
+      "metric": "audit.joint_path_length",
+      "mean": -2.97157107807749,
+      "ci95": [
+        -3.2785211341315956,
+        -2.669318410771379
+      ],
+      "environments": 120,
+      "p": 9.99990000099999e-06,
+      "matched_requests": 899,
+      "success_only": true,
+      "holm_p": 0.00023999760002399976
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "ompl_uniform",
+      "metric": "audit.ee_path_length_m",
+      "mean": -1.3639589099217269,
+      "ci95": [
+        -1.429202092381109,
+        -1.2982425934348847
+      ],
+      "environments": 120,
+      "p": 9.99990000099999e-06,
+      "matched_requests": 899,
+      "success_only": true,
+      "holm_p": 0.00023999760002399976
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "ompl_uniform",
+      "metric": "audit.min_world_clearance_m",
+      "mean": -0.003830696084055512,
+      "ci95": [
+        -0.005679864674501413,
+        -0.002077840283099347
+      ],
+      "environments": 120,
+      "p": 2.999970000299997e-05,
+      "matched_requests": 899,
+      "success_only": true,
+      "holm_p": 0.0005099949000509995
+    },
+    {
+      "first": "cartesian_ik",
+      "second": "ompl_uniform",
+      "metric": "curve.min_clearance_m",
+      "mean": -0.002834044237707738,
+      "ci95": [
+        -0.005155849043963905,
+        -0.0005481126266106091
+      ],
+      "environments": 120,
+      "p": 0.025199748002519975,
+      "matched_requests": 899,
+      "success_only": true,
+      "holm_p": 0.2519974800251997
+    },
+    {
+      "first": "joint_projected",
+      "second": "ompl_uniform",
+      "metric": "success",
+      "mean": -0.004166666666666667,
+      "ci95": [
+        -0.009166666666666667,
+        0.0
+      ],
+      "environments": 120,
+      "p": 0.25,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 1.0
+    },
+    {
+      "first": "joint_projected",
+      "second": "ompl_uniform",
+      "metric": "par2_s",
+      "mean": 0.011114342413299404,
+      "ci95": [
+        -0.015094907336824689,
+        0.04451865766568518
+      ],
+      "environments": 120,
+      "p": 0.5157448425515745,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 1.0
+    },
+    {
+      "first": "joint_projected",
+      "second": "ompl_uniform",
+      "metric": "action_wall_s",
+      "mean": -0.008347375491187754,
+      "ci95": [
+        -0.02068676947741187,
+        0.00794891747991883
+      ],
+      "environments": 120,
+      "p": 0.35094649053509464,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 1.0
+    },
+    {
+      "first": "joint_projected",
+      "second": "ompl_uniform",
+      "metric": "end_to_end_wall_s",
+      "mean": 0.01896769657653446,
+      "ci95": [
+        0.006316987190191868,
+        0.03543427832377104
+      ],
+      "environments": 120,
+      "p": 0.003009969900300997,
+      "matched_requests": 900,
+      "success_only": false,
+      "holm_p": 0.03912960870391296
+    },
+    {
+      "first": "joint_projected",
+      "second": "ompl_uniform",
+      "metric": "audit.joint_path_length",
+      "mean": -4.177210776627487,
+      "ci95": [
+        -4.48504088154304,
+        -3.865697851835808
+      ],
+      "environments": 120,
+      "p": 9.99990000099999e-06,
+      "matched_requests": 897,
+      "success_only": true,
+      "holm_p": 0.00023999760002399976
+    },
+    {
+      "first": "joint_projected",
+      "second": "ompl_uniform",
+      "metric": "audit.ee_path_length_m",
+      "mean": -1.429695654507055,
+      "ci95": [
+        -1.4972911322905436,
+        -1.3642226545327851
+      ],
+      "environments": 120,
+      "p": 9.99990000099999e-06,
+      "matched_requests": 897,
+      "success_only": true,
+      "holm_p": 0.00023999760002399976
+    },
+    {
+      "first": "joint_projected",
+      "second": "ompl_uniform",
+      "metric": "audit.min_world_clearance_m",
+      "mean": -0.005335701574399215,
+      "ci95": [
+        -0.0075990611513430005,
+        -0.0032615680609866544
+      ],
+      "environments": 120,
+      "p": 9.99990000099999e-06,
+      "matched_requests": 897,
+      "success_only": true,
+      "holm_p": 0.00023999760002399976
+    },
+    {
+      "first": "joint_projected",
+      "second": "ompl_uniform",
+      "metric": "curve.min_clearance_m",
+      "mean": -0.005234065482932687,
+      "ci95": [
+        -0.007781608233436245,
+        -0.002750116957134712
+      ],
+      "environments": 120,
+      "p": 0.00016999830001699983,
+      "matched_requests": 897,
+      "success_only": true,
+      "holm_p": 0.0025499745002549976
+    }
+  ],
+  "cohorts": {
+    "cohort_1": {
+      "cartesian_ik": {
+        "requests": 600,
+        "successes": 599,
+        "means": {
+          "success": 0.9983333333333333,
+          "par2_s": 0.16750713044292448,
+          "action_wall_s": 0.15780078775637474,
+          "end_to_end_wall_s": 0.18728330019900266,
+          "audit.joint_path_length": 10.778689201436283,
+          "audit.ee_path_length_m": 0.8476865202891779,
+          "audit.min_world_clearance_m": 0.019610574401834394,
+          "curve.min_clearance_m": 0.10462226545253599
+        }
+      },
+      "joint_projected": {
+        "requests": 600,
+        "successes": 599,
+        "means": {
+          "success": 0.9983333333333333,
+          "par2_s": 0.16476881024544127,
+          "action_wall_s": 0.15522867519699501,
+          "end_to_end_wall_s": 0.1847612822948334,
+          "audit.joint_path_length": 9.932699318058791,
+          "audit.ee_path_length_m": 0.791331300484366,
+          "audit.min_world_clearance_m": 0.017812634426947575,
+          "curve.min_clearance_m": 0.1028951557082109
+        }
+      },
+      "ompl_uniform": {
+        "requests": 600,
+        "successes": 600,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.17662984068583076,
+          "action_wall_s": 0.17662984068583076,
+          "end_to_end_wall_s": 0.1780291106505319,
+          "audit.joint_path_length": 13.910932876172854,
+          "audit.ee_path_length_m": 2.192501547436657,
+          "audit.min_world_clearance_m": 0.023150631324180673,
+          "curve.min_clearance_m": 0.1086546888164808
+        }
+      }
+    },
+    "cohort_2": {
+      "cartesian_ik": {
+        "requests": 300,
+        "successes": 300,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.14408371800285144,
+          "action_wall_s": 0.14408371800285144,
+          "end_to_end_wall_s": 0.17204318658681586,
+          "audit.joint_path_length": 10.9154655876377,
+          "audit.ee_path_length_m": 0.8584331025033733,
+          "audit.min_world_clearance_m": 0.023777152130901702,
+          "curve.min_clearance_m": 0.10689622111679215
+        }
+      },
+      "joint_projected": {
+        "requests": 300,
+        "successes": 298,
+        "means": {
+          "success": 0.9933333333333334,
+          "par2_s": 0.191959512103737,
+          "action_wall_s": 0.16257621134320893,
+          "end_to_end_wall_s": 0.1906576078051391,
+          "audit.joint_path_length": 9.356306613089357,
+          "audit.ee_path_length_m": 0.7853940273452041,
+          "audit.min_world_clearance_m": 0.022499377566188604,
+          "curve.min_clearance_m": 0.10370170025921574
+        }
+      },
+      "ompl_uniform": {
+        "requests": 300,
+        "successes": 300,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.1578697968367487,
+          "action_wall_s": 0.1578697968367487,
+          "end_to_end_wall_s": 0.15945438629637163,
+          "audit.joint_path_length": 13.728335430254,
+          "audit.ee_path_length_m": 2.2425089672942673,
+          "audit.min_world_clearance_m": 0.027829637072316876,
+          "curve.min_clearance_m": 0.10843300481174119
+        }
+      }
+    }
+  },
+  "strata": {
+    "central_c0.2": {
+      "cartesian_ik": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.17395281795063058,
+          "action_wall_s": 0.17395281795063058,
+          "end_to_end_wall_s": 0.2111520611686865,
+          "audit.joint_path_length": 12.4636470054836,
+          "audit.ee_path_length_m": 0.9580983076382049,
+          "audit.min_world_clearance_m": 0.01482450230145555,
+          "curve.min_clearance_m": 0.0932961701287561
+        }
+      },
+      "joint_projected": {
+        "requests": 150,
+        "successes": 149,
+        "means": {
+          "success": 0.99,
+          "par2_s": 0.21391687357623596,
+          "action_wall_s": 0.15487239692534788,
+          "end_to_end_wall_s": 0.19208064236387143,
+          "audit.joint_path_length": 11.250730961317876,
+          "audit.ee_path_length_m": 0.899010866146155,
+          "audit.min_world_clearance_m": 0.013185571420564837,
+          "curve.min_clearance_m": 0.08737356630352852
+        }
+      },
+      "ompl_uniform": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.1775169048580574,
+          "action_wall_s": 0.1775169048580574,
+          "end_to_end_wall_s": 0.17900059895589948,
+          "audit.joint_path_length": 14.141432864426553,
+          "audit.ee_path_length_m": 2.3080851385604353,
+          "audit.min_world_clearance_m": 0.020128355214122113,
+          "curve.min_clearance_m": 0.09768983785358963
+        }
+      }
+    },
+    "central_c0.8": {
+      "cartesian_ik": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.15597065401205326,
+          "action_wall_s": 0.15597065401205326,
+          "end_to_end_wall_s": 0.18401822163548787,
+          "audit.joint_path_length": 11.17608890518385,
+          "audit.ee_path_length_m": 0.90366976302897,
+          "audit.min_world_clearance_m": 0.01163682066637505,
+          "curve.min_clearance_m": 0.08525823974160188
+        }
+      },
+      "joint_projected": {
+        "requests": 150,
+        "successes": 149,
+        "means": {
+          "success": 0.9949999999999999,
+          "par2_s": 0.2034128597739618,
+          "action_wall_s": 0.17479245462862308,
+          "end_to_end_wall_s": 0.20314001697872303,
+          "audit.joint_path_length": 11.215212225762581,
+          "audit.ee_path_length_m": 0.9394730443484679,
+          "audit.min_world_clearance_m": 0.011663572237724601,
+          "curve.min_clearance_m": 0.08528357250086052
+        }
+      },
+      "ompl_uniform": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.18339559134969022,
+          "action_wall_s": 0.18339559134969022,
+          "end_to_end_wall_s": 0.1849044436844997,
+          "audit.joint_path_length": 14.432430399071302,
+          "audit.ee_path_length_m": 2.389805493871715,
+          "audit.min_world_clearance_m": 0.013924029954296948,
+          "curve.min_clearance_m": 0.08963830321025926
+        }
+      }
+    },
+    "distant_c0.2": {
+      "cartesian_ik": {
+        "requests": 150,
+        "successes": 149,
+        "means": {
+          "success": 0.9949999999999999,
+          "par2_s": 0.16276746525312774,
+          "action_wall_s": 0.13364843719347844,
+          "end_to_end_wall_s": 0.161785075312946,
+          "audit.joint_path_length": 9.598027738455487,
+          "audit.ee_path_length_m": 0.7058530192256189,
+          "audit.min_world_clearance_m": 0.036695276991538864,
+          "curve.min_clearance_m": 0.13881830212202723
+        }
+      },
+      "joint_projected": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.11724084153596778,
+          "action_wall_s": 0.11724084153596778,
+          "end_to_end_wall_s": 0.14532685608486645,
+          "audit.joint_path_length": 7.03490378261345,
+          "audit.ee_path_length_m": 0.5370369971125849,
+          "audit.min_world_clearance_m": 0.03343494860512263,
+          "curve.min_clearance_m": 0.13700591382455268
+        }
+      },
+      "ompl_uniform": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.1514603102183901,
+          "action_wall_s": 0.1514603102183901,
+          "end_to_end_wall_s": 0.15299362963996826,
+          "audit.joint_path_length": 13.36767618232355,
+          "audit.ee_path_length_m": 2.155780199894145,
+          "audit.min_world_clearance_m": 0.04311424776551821,
+          "curve.min_clearance_m": 0.14192136437186725
+        }
+      }
+    },
+    "distant_c0.8": {
+      "cartesian_ik": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.13279304372961634,
+          "action_wall_s": 0.13279304372961634,
+          "end_to_end_wall_s": 0.16007991932041474,
+          "audit.joint_path_length": 9.638706340819951,
+          "audit.ee_path_length_m": 0.7664588957191101,
+          "audit.min_world_clearance_m": 0.03167979658023272,
+          "curve.min_clearance_m": 0.12813083625863736
+        }
+      },
+      "joint_projected": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.15479374799586368,
+          "action_wall_s": 0.15479374799586368,
+          "end_to_end_wall_s": 0.18206447361211758,
+          "audit.joint_path_length": 7.88764757115415,
+          "audit.ee_path_length_m": 0.7240657528259501,
+          "audit.min_world_clearance_m": 0.03238187750431447,
+          "curve.min_clearance_m": 0.1279356991393738
+        }
+      },
+      "ompl_uniform": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.16074451999564193,
+          "action_wall_s": 0.16074451999564193,
+          "end_to_end_wall_s": 0.16220803859003355,
+          "audit.joint_path_length": 13.3217968093276,
+          "audit.ee_path_length_m": 2.036939441960855,
+          "audit.min_world_clearance_m": 0.03646370541010661,
+          "curve.min_clearance_m": 0.12735102120354982
+        }
+      }
+    },
+    "offset_c0.2": {
+      "cartesian_ik": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.1473031133034965,
+          "action_wall_s": 0.1473031133034965,
+          "end_to_end_wall_s": 0.17460761494061444,
+          "audit.joint_path_length": 10.90677406652705,
+          "audit.ee_path_length_m": 0.87938553364859,
+          "audit.min_world_clearance_m": 0.019063661223038354,
+          "curve.min_clearance_m": 0.09608701700121534
+        }
+      },
+      "joint_projected": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.14503702668822366,
+          "action_wall_s": 0.14503702668822366,
+          "end_to_end_wall_s": 0.17252584206755273,
+          "audit.joint_path_length": 10.240292567406652,
+          "audit.ee_path_length_m": 0.7908044887958401,
+          "audit.min_world_clearance_m": 0.014034983970573584,
+          "curve.min_clearance_m": 0.0905159239056906
+        }
+      },
+      "ompl_uniform": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.15940595218504314,
+          "action_wall_s": 0.15940595218504314,
+          "end_to_end_wall_s": 0.1609252565720817,
+          "audit.joint_path_length": 13.6338064928759,
+          "audit.ee_path_length_m": 2.1452402247546307,
+          "audit.min_world_clearance_m": 0.020670279789879356,
+          "curve.min_clearance_m": 0.09829869616810696
+        }
+      }
+    },
+    "offset_c0.8": {
+      "cartesian_ik": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.16198545108840337,
+          "action_wall_s": 0.16198545108840337,
+          "end_to_end_wall_s": 0.186336567979306,
+          "audit.joint_path_length": 11.299220310751998,
+          "audit.ee_path_length_m": 0.9048933491171601,
+          "audit.min_world_clearance_m": 0.016263121835567728,
+          "curve.min_clearance_m": 0.09296489445574643
+        }
+      },
+      "joint_projected": {
+        "requests": 150,
+        "successes": 149,
+        "means": {
+          "success": 0.99,
+          "par2_s": 0.23578361747728196,
+          "action_wall_s": 0.2066781918465858,
+          "end_to_end_wall_s": 0.23111883919278625,
+          "audit.joint_path_length": 10.23823068518975,
+          "audit.ee_path_length_m": 0.8397848342597125,
+          "audit.min_world_clearance_m": 0.016235082241108423,
+          "curve.min_clearance_m": 0.0916758922282738
+        }
+      },
+      "ompl_uniform": {
+        "requests": 150,
+        "successes": 150,
+        "means": {
+          "success": 1.0,
+          "par2_s": 0.1709756339609157,
+          "action_wall_s": 0.1709756339609157,
+          "end_to_end_wall_s": 0.172418523398228,
+          "audit.joint_path_length": 14.020662171255648,
+          "audit.ee_path_length_m": 2.2691810451509897,
+          "audit.min_world_clearance_m": 0.01864018705556942,
+          "curve.min_clearance_m": 0.0963638580772931
+        }
+      }
+    }
+  },
+  "preparation": {
+    "model_load_s": {
+      "mean_s": 0.0060065702525510765,
+      "median_s": 0.005025504971854389
+    },
+    "reproduction_s": {
+      "mean_s": 0.011248863490376,
+      "median_s": 0.009316915471572429
+    },
+    "rl_deformation_s": {
+      "mean_s": 0.0020326500593607004,
+      "median_s": 0.0009921774617396295
+    },
+    "deformed_regression_s": {
+      "mean_s": 0.0024294027311649795,
+      "median_s": 0.0019123699748888612
+    },
+    "total_s": {
+      "mean_s": 0.02382644772781835,
+      "median_s": 0.020156950049567968
+    }
+  },
+  "configuration": {
+    "settings": {
+      "corridor_mode": "covariance",
+      "corridor_scale": 10.0,
+      "cutoff": 3.0,
+      "covariance_floor": 1e-08,
+      "uniform_fraction": 0.0,
+      "cartesian_fraction": 0.0,
+      "ik_timeout": 0.005,
+      "branches": 3,
+      "anchor_attempts": 16,
+      "nullspace_stddev": 0.08,
+      "max_joint_delta": 0.6,
+      "linearization_tolerance": 0.01,
+      "proposal": "gmm",
+      "gmr_stddev": 0.01,
+      "gmr_cutoff": 2.0,
+      "gmr_fraction": 0.8
+    },
+    "runtime": {
+      "ompl.panda_arm.allow_constraint_sampler_fallback": {
+        "type": 1,
+        "bool_value": false,
+        "integer_value": 0,
+        "double_value": 0.0,
+        "string_value": "",
+        "byte_array_value": [],
+        "bool_array_value": [],
+        "integer_array_value": [],
+        "double_array_value": [],
+        "string_array_value": []
+      },
+      "ompl.panda_arm.enforce_joint_model_state_space": {
+        "type": 1,
+        "bool_value": true,
+        "integer_value": 0,
+        "double_value": 0.0,
+        "string_value": "",
+        "byte_array_value": [],
+        "bool_array_value": [],
+        "integer_array_value": [],
+        "double_array_value": [],
+        "string_array_value": []
+      },
+      "ompl.panda_arm.longest_valid_segment_fraction": {
+        "type": 3,
+        "bool_value": false,
+        "integer_value": 0,
+        "double_value": 0.0005,
+        "string_value": "",
+        "byte_array_value": [],
+        "bool_array_value": [],
+        "integer_array_value": [],
+        "double_array_value": [],
+        "string_array_value": []
+      },
+      "ompl.planner_configs.RRTConnectkConfigDefault.simplify_solutions": {
+        "type": 2,
+        "bool_value": false,
+        "integer_value": 0,
+        "double_value": 0.0,
+        "string_value": "",
+        "byte_array_value": [],
+        "bool_array_value": [],
+        "integer_array_value": [],
+        "double_array_value": [],
+        "string_array_value": []
+      }
+    },
+    "planning_time": 3.0,
+    "policy_sha256": "d9ec51ff464b93f8ad87e4d5dc2b3bb649f89dbb5fa4155b5df46ed788d2e5ba",
+    "environment_ranges": {
+      "start_low": [
+        0.28,
+        -0.2,
+        0.57
+      ],
+      "start_high": [
+        0.38,
+        0.2,
+        0.66
+      ],
+      "goal_low": [
+        0.53,
+        -0.2,
+        0.45
+      ],
+      "goal_high": [
+        0.65,
+        0.2,
+        0.54
+      ],
+      "obstacle_fraction": [
+        0.4,
+        0.6
+      ],
+      "obstacle_offset_low": [
+        -0.025,
+        -0.035,
+        -0.025
+      ],
+      "obstacle_offset_high": [
+        0.025,
+        0.035,
+        0.025
+      ],
+      "radius": [
+        0.03,
+        0.05
+      ],
+      "height": [
+        0.25,
+        0.38
+      ],
+      "minimum_endpoint_separation": 0.2
+    }
+  },
+  "analysis": {
+    "scope": "Fixed-configuration sampler comparison; no before/after data",
+    "status": "Retrospective exploratory synthesis; configuration selected during preliminary diagnostics",
+    "unit": "Environment, equal weight across cohorts; preserve paired repeat IDs",
+    "bootstrap": 20000,
+    "permutations": 100000,
+    "seed": 202609291,
+    "stratification": "Cohort \u00d7 obstacle layout \u00d7 requested clearance",
+    "correction": "One Holm family: all 24 two-sided pairwise tests across eight metrics",
+    "intervals": "Pointwise 95% cluster intervals; not simultaneous",
+    "quality": "Paired contrasts use only requests successful under both methods",
+    "baseline": "OMPL bounded joint-space sampling with empty path constraints; no GMM preparation"
+  }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "archive": "raw-primary.tar.xz",
+    "bytes": 45921208,
+    "verified_files": 153
+  },
+  {
+    "archive": "raw-confirmation.tar.xz",
+    "bytes": 23434916,
+    "verified_files": 153
+  }
+]

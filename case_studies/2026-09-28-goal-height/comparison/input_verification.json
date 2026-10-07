@@ -1,0 +1,842 @@
+[
+  {
+    "phase": 0,
+    "environment": 0,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "38067c322df6f4a32825c7ca016289e62b04fb91cb4d507b45bf6fdedefa6dc4",
+    "training_sha256": "277067f206b38eaf4855e8b3cfe5ccac45c0c3dfd14674588854d746699c9b50"
+  },
+  {
+    "phase": 0,
+    "environment": 1,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "118655471dc4408bd9f24cb246ab91bb1efe037ba76133048675103e32186685",
+    "training_sha256": "200c180a1a6a30fc522f0f5a2495fb5d9691b25735d92cf5e7600ff0d4399eb6"
+  },
+  {
+    "phase": 0,
+    "environment": 2,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "c5980db1ec5f82e12b436b57fa258a7a6db6b344ff480586cd80c0329e71c768",
+    "training_sha256": "58a86a765050fb741c3eebfb91fbaa940be4c1c36df4b7db2ad3db551efbca64"
+  },
+  {
+    "phase": 0,
+    "environment": 3,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "fef59e00721398dd7ea6737246a58cd69d08e841ecb7e04e9acb3f9648fb3905",
+    "training_sha256": "afb246b86fad34394b4342d88d62f156a3f5b36458c40edb6ded1f001895534c"
+  },
+  {
+    "phase": 0,
+    "environment": 4,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "ea5e8438256b1f85aede21d15ca4d20dc2604c5e1ab2f6e3a6c0d587bc9e99bc",
+    "training_sha256": "8cf9146ba7ad2eed2a2f8a14edd842f242316a9d7310b610d16df98670be5227"
+  },
+  {
+    "phase": 0,
+    "environment": 5,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "d150aaeddcaf15788e167b87cd07f72117fb72f3dd7d778c93060991d858194f",
+    "training_sha256": "4ba912394bd9ec1129257baf3d046d1ebc56b616519e3ba584f668d8ff326a0c"
+  },
+  {
+    "phase": 0,
+    "environment": 6,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "38f3a773f15db462bb013b04c5be46d9a54fe254a6e13a0439274ac90d09fa29",
+    "training_sha256": "3f0b320b21f13b392e18a8e3ad24f81a54e0aa8a17a98ee88ddaff5af009b5ca"
+  },
+  {
+    "phase": 0,
+    "environment": 7,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "3ed0784b172be13d829581f43a23007466ba79c270c2e26aea3f343d582d5395",
+    "training_sha256": "00aec8508024e1764a3cc0a9a77b5358e797cfc1291fcb8015dc007e595abb4a"
+  },
+  {
+    "phase": 0,
+    "environment": 8,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "e7f05ddb64c12388650227a7a4d02a8196ee2221bfe46e32418579367755b9e5",
+    "training_sha256": "37bacf423d86a57a00ba745bd12709b4dea104b6f1cfcaafd3399a481906cab8"
+  },
+  {
+    "phase": 0,
+    "environment": 9,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "03bad5082f6e7f1de646cb522ddf385effef48cde230c2f0658678c432dfee14",
+    "training_sha256": "36d5033b0540b97f8bb95ddc727c8fbed0dab9de769d6c12ee6b1e6e15c09aca"
+  },
+  {
+    "phase": 0,
+    "environment": 10,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "712280cc4959c67474aeec12930836a794184597696308cd60256dda89c97239",
+    "training_sha256": "68ae3638b85128104ec9840bef7a17faa50a72967f996f40163efd8943ea2b1a"
+  },
+  {
+    "phase": 0,
+    "environment": 11,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "e905e54dc37266b6fc7b6cab5f82ea41347d4ffdd92cfd94f8c228c5a181cd3b",
+    "training_sha256": "1529d9245ac4595d05b4530a19cf5014c8a3245db5e7415022e33332227683bb"
+  },
+  {
+    "phase": 0,
+    "environment": 12,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "ff0830c0b9183553d6ac201e00447973cab945ab6144bbabc267395e25a3cc8c",
+    "training_sha256": "b571a128bbcf5a4ecc310f9d963ce25fea8327c18ed191e8272e99dd5584ed16"
+  },
+  {
+    "phase": 0,
+    "environment": 13,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "c0f4b256ade1e798ffe5193c5a3769e0173bfbcb8094237af6b681d0b77527cf",
+    "training_sha256": "aede1b9b22299197acfcaae6d79c48309ee42e54fc068f1821849c040ec72272"
+  },
+  {
+    "phase": 0,
+    "environment": 14,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "1bef32badf3b0d966f8b78489a7f6eb7e83402eef8663cb2a774bf76d95c915e",
+    "training_sha256": "e1706f89ce2f453b73117a9753ed58023478ce2fd957331c54d6fe62f101c7df"
+  },
+  {
+    "phase": 0,
+    "environment": 15,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "b59b01b16eed3f63f3a4e5aa1d0d0e8c6a16d37a33a70cfa6eec47b2b18b6043",
+    "training_sha256": "c39ef168cee23307f897bd1002dabb5af1c636ac4a2e53a88dd6f096a178908f"
+  },
+  {
+    "phase": 0,
+    "environment": 16,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "a4199b7c51075f5ab17c6ccc23c331a501128e5bbbafe137bfc77632a1153d03",
+    "training_sha256": "272ba3d1e602a6748940cf93ecf777a74fc4bf07e35b9cd0f19abeca61f68b52"
+  },
+  {
+    "phase": 0,
+    "environment": 17,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "a99834ace3642c61aed4879ec7f527fda9ffca1320b64d80cf9ee4b40d66d28e",
+    "training_sha256": "26e7c50fb2beda169c30e3fcafd7637758a1c56869d4765069df934b350a7822"
+  },
+  {
+    "phase": 0,
+    "environment": 18,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "dfaea4a789501b3098ffd23828d36adaf67cb096949461eb98cc37f322a49e41",
+    "training_sha256": "95e3a9b4f6c2fd94618e81ad4bf223018e021b9d12025f10ce7f34a19f06b633"
+  },
+  {
+    "phase": 0,
+    "environment": 19,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "c3fddef5dac556e08176682addcdf0ef4835771b81ab979ddd5c798305d0c7ce",
+    "training_sha256": "4bb77e2151f01df7c17ae8a43c13f57e6ae89964565d145cc5f5caf81c4d73fa"
+  },
+  {
+    "phase": 0,
+    "environment": 20,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "e4d5cd369aaeb2b7da8bc92c3ab6af179b33ec694c812b3520e99c3e48b9382d",
+    "training_sha256": "eb356c9c19180c87ebbf172ef4dc16f0af5c1831c509ddb52d6d6eeaca165a95"
+  },
+  {
+    "phase": 0,
+    "environment": 21,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "3cbf860018540625ae10fa28ca4ef8f9ce5d33f66834fbf2158c855ec2d53664",
+    "training_sha256": "74bc86568da465a9566ec5f129de1d8b2d255efbc542ec987a2b10616fbf0f80"
+  },
+  {
+    "phase": 0,
+    "environment": 22,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "4f87fe545d7b9e67cc1b1db090633adb786cb1da87bcecf15a4e44eaaacedb47",
+    "training_sha256": "9324f8c3dac78e45f5563ce86bf2aab7998843eb939696103ab25f2803ddc08b"
+  },
+  {
+    "phase": 0,
+    "environment": 23,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "817a82aae0d7198dd3fa066660b8f36aa52af70806cd42038400f711f0d59669",
+    "training_sha256": "d0aabb0487d841b871d22979fe62ee85c59a2520ec7e23315cccc4f7986f85e2"
+  },
+  {
+    "phase": 0,
+    "environment": 24,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "8493bf3e5a3770573a089910807c54665f904fafb38bd6b434b9c57d2bba8833",
+    "training_sha256": "602cf01130289a6cbf53fd64b2c47d6af6ccd0287fd0b744f51451a6ff4b723c"
+  },
+  {
+    "phase": 0,
+    "environment": 25,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "b1d756099472173c18e1833952cb9285a86c33230ed76caa6b4f9ee022918f2f",
+    "training_sha256": "92a9fccdf29fb86fbded666da51b25a91adf19d3ffec0bb7c82047581ef3afd6"
+  },
+  {
+    "phase": 0,
+    "environment": 26,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "e6dc99cc4d14b1481c9d855a7d96ecbacbdd3abb23b3777ba0812ae75a56b3de",
+    "training_sha256": "818c7cf1919be2e5967ac0b810c9c2ccf50e09db3a7bc981a3bd15d68e512c9e"
+  },
+  {
+    "phase": 0,
+    "environment": 27,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "549030927fc7ae08be23e8a7c07194bb6ff99fe5820c6a7b91730d55b48665b4",
+    "training_sha256": "aa6cc8fe05508d55fd6ebdccd4629f67ae957ead045cac34f93348dc681156af"
+  },
+  {
+    "phase": 0,
+    "environment": 28,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "0315802f3c0f9ce54383e83570d74edf88e47e53db7cc3221b8886a45824154c",
+    "training_sha256": "cc1648a410eea495ace262bd56d0708294cdc9b62877e20cfa608e2a9a9d1ae4"
+  },
+  {
+    "phase": 0,
+    "environment": 29,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "0744c9110c59c45e6802cbb705af76f4d1bc4ca14396f84f447f34ecff07e144",
+    "training_sha256": "b801e05a4a8510d4ff507f2b457b224972278a331d558baaa5f00e026fcbe3c7"
+  },
+  {
+    "phase": 0,
+    "environment": 30,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "79c03ea78ddefca5a880d68eea01adede26c6719eca6f655ec860aa7bdfd36d2",
+    "training_sha256": "e83d80a7486134cd0afbea36a5e76a15c06be6172bd745f9865fdbb0871741b0"
+  },
+  {
+    "phase": 0,
+    "environment": 31,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "5d0bc8e1c3e649c9b95a2402c5f19a009c2bec77435a419b65120e30e019ee29",
+    "training_sha256": "3dee5ca0b907bf482d3256e7c6571ee830966919f552b562a422f5344aa4c8a2"
+  },
+  {
+    "phase": 0,
+    "environment": 32,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "50ae6e384666aede2801211abeca42e1ea7ac661601c29f1c749a057eeabcdb0",
+    "training_sha256": "710dae3286f1c24172046bccb6b3a13ecceb82442ac87312f6bdb489f19da446"
+  },
+  {
+    "phase": 0,
+    "environment": 33,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "8156062016f300114d036ae5e8349ba12f96ba886815d08b0b69d4dc87027d0f",
+    "training_sha256": "321d0af64adce0bb0e484c657e96f1358ce83744a04df65af070c2fdf04a2838"
+  },
+  {
+    "phase": 0,
+    "environment": 34,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "fd2ac3861ec37c8aa1a9815b5a82433a52f7d005f628b7b0f6dba916569a597b",
+    "training_sha256": "8bbb38312caf240094ce430e64ede24cb9f6dba685add22a50b1b192de7ca0b1"
+  },
+  {
+    "phase": 0,
+    "environment": 35,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "5d7b7d2905ee6c6ba6c939892c18edad962657688f3abc6f53c002cd5980022e",
+    "training_sha256": "f09cd1ed408513cafdfd1c6edc27e43d484d3a2c4ee5cc1ebca2af6012ce35af"
+  },
+  {
+    "phase": 0,
+    "environment": 36,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "a4072c243fadfb3eb78644a6cfbf30711705d7a8be8a073cc92874752a337273",
+    "training_sha256": "dcf47df5280d13a2a76c5d319d95adc1ce736010db850724c42117b6695eaf78"
+  },
+  {
+    "phase": 0,
+    "environment": 37,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "a4feca21f3370392aee786a046903205679c0ccd20ef3937c56c7ce83ec99d55",
+    "training_sha256": "a457bbf1d4eb3864e4c77979f9cc05846c0809f29100b03c2e984d33c3f627fd"
+  },
+  {
+    "phase": 0,
+    "environment": 38,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "0b5e1d0bccc370f5e4494558bf0f812a322d7de0040872fefa6029257c663bee",
+    "training_sha256": "af4a04ad8d002db9e8518166f9224d7273859cd77b11abd26341242036a733d4"
+  },
+  {
+    "phase": 0,
+    "environment": 39,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "60c33ca5e31405ec25b329ca7942f5f55799b9fe93cc38cb3c4ba76a22434ad2",
+    "training_sha256": "ee8867020f2fcc8d8d249ec7d46c5967592a1864e8c4e7672a3ed504e6207238"
+  },
+  {
+    "phase": 0,
+    "environment": 40,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "dce1e244d7bf08fc81a34b9031c75496f47081e021613e887bf2d05ab6c9530f",
+    "training_sha256": "ad18e12b5a5db35ed4869b18a005302b24033e200ab6c3315989d87653f36e1f"
+  },
+  {
+    "phase": 0,
+    "environment": 41,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "28594340eb7558feb602ba70663e7fd97d557d78af608ba6303f0a54be172fb4",
+    "training_sha256": "4423b649de9d186c8e3df3862e77bba0a05524edb87d6c5035e7ac0559dbd8c1"
+  },
+  {
+    "phase": 0,
+    "environment": 42,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "76cc162c544c4271319a398ef9a1888ae95b5bacc1e1eee255a086d61b6ea104",
+    "training_sha256": "2ddb4ce82df28f61bad9fef16ce8d99cb324ae43e3007ad702acb1369a944341"
+  },
+  {
+    "phase": 0,
+    "environment": 43,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "9e224bc0806df6d28f6e229d2defe6a0a7646b988496c7169e7ac8988a045dda",
+    "training_sha256": "470e49611255e7d3a1e076dce997cb91d458b052d0f4097967d69b7f025d6dd3"
+  },
+  {
+    "phase": 0,
+    "environment": 44,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "423e85a1372f2b966fafa75a26a682b246fa3f7e0430e0d902c09c5df6e18dbc",
+    "training_sha256": "5ccb7ffff14d92efa2b876ff8ef8dea129b82645600e42209eef4715da1d8d51"
+  },
+  {
+    "phase": 0,
+    "environment": 45,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "8df242b11ea8ca09f6bb2c1d8ea1e3ec2b827748145a6d8c14bae2bd9466123d",
+    "training_sha256": "f906e27b600da0363f4323fb2fcb1c4c7bfa777f4a91cf1d40ce0112386a1d87"
+  },
+  {
+    "phase": 0,
+    "environment": 46,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "be305ef07cdaf76da54e6fdff1844931200ddd565ca0c87261851e64d32b3d3a",
+    "training_sha256": "2539f7488533a577eb5de202ab87d95aba2490de2ff0037e540472383ee81ab2"
+  },
+  {
+    "phase": 0,
+    "environment": 47,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "05aafbafe0f83f38cdba7ac3572e51b3262d63b6c8c50ca45d25811adf43533a",
+    "training_sha256": "74701d9dfe7e628e05f88be2e4c262a4423728f4cb0e2e2668c3aacec650a415"
+  },
+  {
+    "phase": 0,
+    "environment": 48,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "c77a3015fe4bed8ab7b95912ca1052ec0088ae7fcb86be7cfb9963a65c0ab469",
+    "training_sha256": "0fdf32e25d3d2ccb4b06997fc6ca13bf3e79dcb2fce29a3033ea8619c8ccfc58"
+  },
+  {
+    "phase": 0,
+    "environment": 49,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "b5cd09d6ec1cac9ceffe8cf64415b9103404444ad2d08c019395247cc2271168",
+    "training_sha256": "1ac0a853c474203891b1d9e336f00210d4072c7b579adac98bdfac49d68b0d19"
+  },
+  {
+    "phase": 0,
+    "environment": 50,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "b19faf00f3de7e90d5c13731915f79180fab177c5f9db06f2e8d3176ecf43810",
+    "training_sha256": "ab0315ccc983b11d899e4079d1bb8fc50936bbdc2ce2811b784aa5e6537f543a"
+  },
+  {
+    "phase": 0,
+    "environment": 51,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "2936282a9578fd73d419911cf7b1171f2822f7f8c37fa33608fcb5eb3d45835e",
+    "training_sha256": "376fc8b43e34f70f4e20cfdc2de460c5edf453ca72c514d3c47dbfbfcf1dd5be"
+  },
+  {
+    "phase": 0,
+    "environment": 52,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "6d95a85615e08fcddc67677fb57d91e50be035681aa8a50698d878b7d8ef82d1",
+    "training_sha256": "b441a11ae62dd8ef2998997ccea62699939013c1bf82602fb42e810c0dacb89b"
+  },
+  {
+    "phase": 0,
+    "environment": 53,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "dd797cf092eaf4dbacf6ebc4e0ec977c2bcc85b19999a8df7324562520793943",
+    "training_sha256": "8e20016aabe70788fb7ae4daf595f03af6dcfda26ab9e51380a506c7178ec16c"
+  },
+  {
+    "phase": 0,
+    "environment": 54,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "a7fe550090ed17b5150d8ea46a60f798e9c9fb9b05ed69ceedff5f18b6778dcf",
+    "training_sha256": "f2fde879bf45e5cf53a9fe2a2a4def706b79bff2f1f9e5cd2e3e77b6661062bb"
+  },
+  {
+    "phase": 0,
+    "environment": 55,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "03d4b242e7aa139da9be9b4a10e455104187c8a4fc7c368e8c8aa18590ddf399",
+    "training_sha256": "1f52372e4701e0cb2177c9435a25fa16ddabb829f8f80c3c0f7ee1a370e92baf"
+  },
+  {
+    "phase": 0,
+    "environment": 56,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "76a694f61edc39b55f45ad847d65f23a5f3eac63667c0189273f31dc70f60bb4",
+    "training_sha256": "a15be5a08335ae9efdb1e4f35b5a136fd653c6a3b9c948fb3e72a0d7f65aa58f"
+  },
+  {
+    "phase": 0,
+    "environment": 57,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "6f4a0a31342f28dd3b45c3a8ca1cdad2fb6ffc4dff77412a53a6440542fea984",
+    "training_sha256": "20eaa20c6587fd602866eb5698e554a612cde6ee404032a94fd80c7cc23a676b"
+  },
+  {
+    "phase": 0,
+    "environment": 58,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "d6c5d43827b81b0507c083fa146db97535e31baba4167346743be2ae88a775ac",
+    "training_sha256": "0eb4a70271342f539baca0cc1b81b290206179d69e0ac821a076f3b5f74085d1"
+  },
+  {
+    "phase": 0,
+    "environment": 59,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "8c926510a86e662085001e0a0f5f1a7520b2c8e9a7de7c99355b0416ad28f0fc",
+    "training_sha256": "09837b601640340b1573bf14dedb66bf8b9e6b828c128ec1734f7b9114868950"
+  },
+  {
+    "phase": 1,
+    "environment": 0,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "664d579562edefcb5bde1c519eb87891ba2528cd781fa85e9348df9d2a9e4a58",
+    "training_sha256": "375cfc3afa7d7104dd7cb15807c5cb709456a4c98460a69d457fc7dccb5e0ae2"
+  },
+  {
+    "phase": 1,
+    "environment": 1,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "60438a5ced514aa2045a21d2438c81806a8701fd52833ebb073b112353c5d56c",
+    "training_sha256": "9e0988163a763a33cc191b8d4cb64b511c8ac702d63d2b83d51977b479e57fc3"
+  },
+  {
+    "phase": 1,
+    "environment": 2,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "7584a0fb29c5291d05963589f3ebf039a901378ca4e97046f6a038c41dbebb8c",
+    "training_sha256": "27518ba6174993e2eb6ba3a18d847c1a15307554f042458582141262c468043a"
+  },
+  {
+    "phase": 1,
+    "environment": 3,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "5f5d173b8aafc9ce473d1117267d0b4af33db44d906e74963093496bba54ffc2",
+    "training_sha256": "ff1969a1c956d9d92ba8b4b2bdd09d9f173c8802fae2e3d95f653e6a3e480065"
+  },
+  {
+    "phase": 1,
+    "environment": 4,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "8d4e371134736be8b4ab04c3dcb5821e97992aecb892ea87bd371a983f9c3ab8",
+    "training_sha256": "b6c7e922a61a52874ee9b27e7f69385fd82643a1f82fd2966ed3d8d2fed9cdd4"
+  },
+  {
+    "phase": 1,
+    "environment": 5,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "503363033488b02e2d46014cfd6f7cf78cc1da638345579138183db5c734f6dd",
+    "training_sha256": "3ca08dab3c88a16188ae2d02b467429a36cc319c35bab6d56bd36c69a5856f05"
+  },
+  {
+    "phase": 1,
+    "environment": 6,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "27ebcb15da9ee02d16e9069392f6478488da2ddcf04b55870fb293527250e726",
+    "training_sha256": "bf461b2429ae724b9402bc2331b0f082c022394b920378d1c16a2e64ba5567c2"
+  },
+  {
+    "phase": 1,
+    "environment": 7,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "c83b979a2d073ed3b06325f8fc1805567e7c9a8be7508453e928118cbc875f5d",
+    "training_sha256": "7459d3c6904b147597a4066ebe7eaf0fea63ca20d50611dffca5862066fbb207"
+  },
+  {
+    "phase": 1,
+    "environment": 8,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "3ddb298e186417d21eec5e6a52a669789b1e798aa209827c9aa7a7f4b5cf495d",
+    "training_sha256": "70b0a0dbde51c987b6b7a6ad49fe0bfe9ddb2820b892481adcb9703665326f1c"
+  },
+  {
+    "phase": 1,
+    "environment": 9,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "f9faeae707811482c1368c7d43882a032ac289a53a948994c981f0bfdae32f77",
+    "training_sha256": "4969dd68f6b3b05d6352fbcc4cdbbd32494d98c06ee87eb104b5817269905a87"
+  },
+  {
+    "phase": 1,
+    "environment": 10,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "bbd84b0020574e6dfa1f26008491034486571e43ac75b3cd2e89f60dba47f6c5",
+    "training_sha256": "2ff9e5dd245b2eb739eb28ed353f07a348e9320df19fadca12e2f51167fa466f"
+  },
+  {
+    "phase": 1,
+    "environment": 11,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "b5dcc1e0f559419ce816a4fd762e8b551dd32689a8acb6dba9b98e3d4bbe4b22",
+    "training_sha256": "b64fcb0fdbb84680241eb339a68c6211a80122e7b9090c5cc2dead658b22b2b4"
+  },
+  {
+    "phase": 1,
+    "environment": 12,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "cd0fb16a6832c0963c02d8606165d118d9cc22b6f523e355ca5c300a6ef68f2b",
+    "training_sha256": "06d60aff25a6985ab92b6b39513429bdad83ad6ebaecf2f52be89daa23f1d0bb"
+  },
+  {
+    "phase": 1,
+    "environment": 13,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "e8d7611821d39d31a90e44977be27ba1d0378ac95c68e1886fcf4835dd4c47be",
+    "training_sha256": "e6503af840eea7f17bb4ed4715feb4f5d5349edf206618501f8c3a193f41660d"
+  },
+  {
+    "phase": 1,
+    "environment": 14,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "7146faa2900301b80ecab81418774227ff9c548a01ac7eae81beaac41198c0bc",
+    "training_sha256": "0bf50a78cee4d8a57a3f15875f89d63889e5dae9cc92b85b25577858f9a01e65"
+  },
+  {
+    "phase": 1,
+    "environment": 15,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "38ba784fff158ae10319c9a65a4b962e5c6cd0217ea98dc5266b75c07f214288",
+    "training_sha256": "e79109ee536a360aeb981fe0c1daef32345f7b153e9ff490e5ed84afd73d3e3f"
+  },
+  {
+    "phase": 1,
+    "environment": 16,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "6f5273ce7f85a424373bff5354f2172cb6340b5bee3efcb03a05ec986e8eebb4",
+    "training_sha256": "82e8e373df1ac2ec1ceaa6b831b9b63702c2b6f77ce2c483cdad1588c83b67ed"
+  },
+  {
+    "phase": 1,
+    "environment": 17,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "4fd56c95de4b4b24fb030fe117489d136136acce9fd6550e6f27093dc6bc70a3",
+    "training_sha256": "1b0a54949f9358dde09a4f12e47c0ce22a015e5181752a59d15631e0b90250e8"
+  },
+  {
+    "phase": 1,
+    "environment": 18,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "39c147a9cb405165a02e5c92ddc70a59cf7ba4bae73ca2ed70241924908fc41f",
+    "training_sha256": "ea53e2d7c972ac87283680723378a105588d080b95383b70e1aff95d07e63e60"
+  },
+  {
+    "phase": 1,
+    "environment": 19,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "71a29625d39b595e2e4e2a4945972b2dbaa6742d7ac6f9711960d319cbcb3bed",
+    "training_sha256": "4286e0a9963cb82afa91b525bb5b8375eff8cf8959d4fd43db3119c910e9f950"
+  },
+  {
+    "phase": 1,
+    "environment": 20,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "1198ad7585c8392107e2d3dd299784372c2dd6a96975e7a3f41db5b85cee5847",
+    "training_sha256": "f1f176db3c6131fe4990ef66b28586b00bfe07e38463e9ae84df81f5237e8501"
+  },
+  {
+    "phase": 1,
+    "environment": 21,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "71860ab3997779eca1d2b66f536536c1ad09a2110c16cb607b9e4adb46e55b83",
+    "training_sha256": "6034104e11a85d0d6b2569419104e1b9b56033a43da7a5bf4e06880d45044054"
+  },
+  {
+    "phase": 1,
+    "environment": 22,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "c4a1f5f6693589e93b07a829ce2cbeda237bf01ad2e01ed88e63092a5f8b1de0",
+    "training_sha256": "fe67b9c6f027d88b6a4bbcc8c1911350464747fbb154aecce843aa5bd8bb1d48"
+  },
+  {
+    "phase": 1,
+    "environment": 23,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "24ee24e8f07e58b070a833e998cff64404cb1ca0439d7e13c083f53303b6f1be",
+    "training_sha256": "e05f15e6c463ed909c6fd60ef7ab6a096e6ab8df191c3dbc6bd755d6d972eb07"
+  },
+  {
+    "phase": 1,
+    "environment": 24,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "fc5510c57626a3b56f88aa636e05b401e4d2c6d1c359c5c24f3b044285b79e2c",
+    "training_sha256": "0cdfe257931dc84102913fd92da5d8e9f0bc44c9a036ab5472fd5a5c3077d680"
+  },
+  {
+    "phase": 1,
+    "environment": 25,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "f7a95e5ae655f9a48c01f7a96f7e93f3675f9a9818880ce2a62534de46707cf5",
+    "training_sha256": "731765148c93ab18b9b06f6c7a3fd8db03977889b62a9746018d9a67a8fd6a97"
+  },
+  {
+    "phase": 1,
+    "environment": 26,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "cbe1bb302946b654a731f77ac31cfdbfef543200f83506b529ef5c468b8a48ad",
+    "training_sha256": "9bb39c5e5a7990c33f23aa47568588ea8d5b7dc9feadfe5ae1a877a84a65b2f8"
+  },
+  {
+    "phase": 1,
+    "environment": 27,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "c69772bdedd31974d9eb9a5b43e74bab0cc73899f1ead23a64d1bd330167571c",
+    "training_sha256": "d06b69c818539bc0489a25912d73edeeb7a6dd486a11cdcaf3878d0f910d6fb2"
+  },
+  {
+    "phase": 1,
+    "environment": 28,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "29b24d1750cd00e5b52f422fc6fa13b2ab5066a1d53cf1f9a73d44569327e1cc",
+    "training_sha256": "8de28accc2a3847c512247c5491588b17f6f06469a7d62e6ed3c7529c72e05a1"
+  },
+  {
+    "phase": 1,
+    "environment": 29,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "50f9c755da44fbfab9c6a539a1b7a1a01d52ab4109c3025fbc61ad14f20994d7",
+    "training_sha256": "abd0fd44026e08709ba627cb3770fc2917f6fe39a99040ce72d7c6a94fefdb48"
+  },
+  {
+    "phase": 1,
+    "environment": 30,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "32a53cfeb64d97caed90e33b274c9c52855ecd94c18d253c15bd50cab6fe1b63",
+    "training_sha256": "2cf673fd181f8b01c2e8be3935960d32daf9017d11594d936e1a00d75f1e6fcb"
+  },
+  {
+    "phase": 1,
+    "environment": 31,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "93c64e7f126b72b3a620b6fd7d45b3061956226fba0bedad2b06aaa24928bcfe",
+    "training_sha256": "94cc5778107b0338e820c412ba7df39c4946bd2963f08545da88edb71a1504fa"
+  },
+  {
+    "phase": 1,
+    "environment": 32,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "a94923a0274c9656453c311f17c34e138ac0b6aebfe244d59cb4bc50c2f199fc",
+    "training_sha256": "6149aa7b3b673be64027b41dd783dca561da20d6c19edd57416e4d68392d0113"
+  },
+  {
+    "phase": 1,
+    "environment": 33,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "7346df8251f492bed8df2f0e25f72f541509665a3f4eb05399533f38a136792a",
+    "training_sha256": "38d9bb13b7e5216bf68201e6528ca0d42600413c7705833515e73b01feca3541"
+  },
+  {
+    "phase": 1,
+    "environment": 34,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "3fdb1de2c8b3b9de8fb7a04efdba7d52b18c1d42d513bc1d8bf102b0f7c0909a",
+    "training_sha256": "935fe110b3064ffd6c47e1dc85abffb584f4ac834ae571d8b3269ec7895dac68"
+  },
+  {
+    "phase": 1,
+    "environment": 35,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "f94f380a2b3671e37f4f2f727b05973947320b8b933e23ed5dddc17ffcdbc3f9",
+    "training_sha256": "3f6a00824c3866da83272d83ed9f9d13a573e6fbd80c17a4d9b89960abe160f4"
+  },
+  {
+    "phase": 1,
+    "environment": 36,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "3db9c29aea154a93b6f68ca4c402e49e9f267aa7c5eee4b8d5fbe94f89b34c5b",
+    "training_sha256": "c41cf01802102198ef315a07bc51c7a127403c118d13a6f17eb538377af9b513"
+  },
+  {
+    "phase": 1,
+    "environment": 37,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "ff158666b3ad8961a73fe4563332872f5456ff3191108b16d819ef60298c3ad2",
+    "training_sha256": "9598fe0b5b4550c27bb91f0a392f1aeaef670b61c0bcffc977627a6624d1018e"
+  },
+  {
+    "phase": 1,
+    "environment": 38,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "57b31cfcd185a671aa0a64f18165d227effedfc90a9c61438be3f05c10584b23",
+    "training_sha256": "bf12d3ccb66841a6bb0e13324d264fe54b9f84d10d6381e4217907cfdc002354"
+  },
+  {
+    "phase": 1,
+    "environment": 39,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "c1c155899f0be9fc6edfae963ab6165c6d214923c4f2ca7dc729adfa4d9490d6",
+    "training_sha256": "126478bffa8cf0b19a6b1cad1f4d77bbf5366d6cf7c46864a452ae1d58d90c26"
+  },
+  {
+    "phase": 1,
+    "environment": 40,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "9daf8ee8287e17de57a6a2169e59d2ae3a03b452f178253b547a3f6d76a427a8",
+    "training_sha256": "aed6fa04ecd3579f5ba8e071619e0aad14f9f14780ebfddd4fd4fb0e6b62d49b"
+  },
+  {
+    "phase": 1,
+    "environment": 41,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "3e12951401d459ef81a2eea2df88a1f80c348bdcd2196db6b9a4864b1bd705a4",
+    "training_sha256": "53eaff91be47369994b25b405d81a56138843fa88e4be2883df26b77008a1be0"
+  },
+  {
+    "phase": 1,
+    "environment": 42,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "f1b619d8edcc3467fa75b29d626ba24ba6cc985cfd3c6f243cd57ec59bf3ee63",
+    "training_sha256": "5e42934697f3067c23c187faf2e1daf4bf35cd53974489a54d4b475daf42f8ec"
+  },
+  {
+    "phase": 1,
+    "environment": 43,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "ea441511cfd629668102e526b3153d60deff3d858253b03031e6d61c112d14e0",
+    "training_sha256": "1dd02bb011ca5ab11670bb6a219a58671222a698d22873b0ff1664716dbf7c97"
+  },
+  {
+    "phase": 1,
+    "environment": 44,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "1011db803c279ba17503e234ad9ddf00df905dbfacdbf9814e9347fb3c33863a",
+    "training_sha256": "d1114c087662f2e1bddae42a5a8c7c2cdd15c566c174c4d7f6a641f5293e7428"
+  },
+  {
+    "phase": 1,
+    "environment": 45,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "31963b62e8105760be1b73333659dfa52b6fb767b8382f4672a14760a198d0f0",
+    "training_sha256": "3f2ea095a709f43728c5e2391b067441986cbbeb8a8585ba975a6dc5d67e198e"
+  },
+  {
+    "phase": 1,
+    "environment": 46,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "ea963b28871f66c0fe48d5909774571cf46c2454865b0fa5f6bfd41bb15e6a67",
+    "training_sha256": "0bd9cf5d99c4a512f4c7ac734dd48b026efc9105820668d22093cc27ac9cbf65"
+  },
+  {
+    "phase": 1,
+    "environment": 47,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "8e8b4dbbd3024284454258ea46e888b9f4df3a312c1f7f58f738e0e1dde71da3",
+    "training_sha256": "f7b0e1bac85c4918337edee01ef9da488190b254edd9af9d6ac7caf9c8be8220"
+  },
+  {
+    "phase": 1,
+    "environment": 48,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "56da9d9e01bed510d149d34ed1a732188534037b6cf6eed3f9214db6e5e2d44f",
+    "training_sha256": "d463eb7e2b6af764232d6302c0cc12ee53460d044d83e52480366d45e3917893"
+  },
+  {
+    "phase": 1,
+    "environment": 49,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "a1d7ed66411614e684aaed3522188cfbe6d04a01211745a3a78ac8092a46085f",
+    "training_sha256": "10b59d4aa822c8ee387526bc6391e1cdcfe09eb2e4b2dee6fae24d999be9d2f4"
+  },
+  {
+    "phase": 1,
+    "environment": 50,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "fad83e015b743a8ccbb481643593e84d7cd840420549ded68f29fa179f2fdc55",
+    "training_sha256": "a0010a2a18098634ff1772703a31d8faf414831db4f742e2b656239a57ff82ee"
+  },
+  {
+    "phase": 1,
+    "environment": 51,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "fe2a2dfa4d7901271949e2bb4adcb5318365313f2b29555f3fde3767b26b0d25",
+    "training_sha256": "e0641600d16fc5b78da18f1a14fcd3fa1ffc6bf1fadf14b440b3f4dbab973262"
+  },
+  {
+    "phase": 1,
+    "environment": 52,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "4eb0223399a6f19bb6a8d7cc055d58d3c40cf47abd80beb3f0cee0bd4c8dfd02",
+    "training_sha256": "1c5834ea9fbc0cd621bca42d1396f202deb4d6171bc3fc4016ded4efb2148f41"
+  },
+  {
+    "phase": 1,
+    "environment": 53,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "701a45f5767cfa69cc1f8f6f55ae1023864656d7b75198fa9827c7fa9d9f4a98",
+    "training_sha256": "baecc362567c6d9f6e48945196ab26409266e7823cc4a5fe22db8a3b6109bcf6"
+  },
+  {
+    "phase": 1,
+    "environment": 54,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "ca26a898034bdfaf4a006fb926fc86840a1a7dc42c6a81d15e0bdd99789fb577",
+    "training_sha256": "96a765b2eb3dd446fcda16017fd9daba71b4a778b423aa3afa378cd0776b8e25"
+  },
+  {
+    "phase": 1,
+    "environment": 55,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "0d960dfd49436c261e161585a33502b70cd8faaf3949fa66a199b6677ef84e4a",
+    "training_sha256": "850765a4863b05ea80be1aa62c116a18128fdc0a35e9ec239922b1b32c26c1cd"
+  },
+  {
+    "phase": 1,
+    "environment": 56,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "6f2f79f82a3958693dfee662e9e259ce08f50bba7f3f39949fa2e218d4574532",
+    "training_sha256": "1b8bb5e70e32ee01791f296e2191031ff688f0d12fadb3be337346b358ef26f0"
+  },
+  {
+    "phase": 1,
+    "environment": 57,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "34e0b7e301715ca065ded9dea07b808cff5951749db9d5467b70449769373a19",
+    "training_sha256": "ea06ac99882197e916efa8afe6ce5c9911fd951e206670a2ee92d4defc3c5498"
+  },
+  {
+    "phase": 1,
+    "environment": 58,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "e83c791b5e09a9a8b6f10c8ceb7be531e7e2a0d10b2c06ec58d3fa0a4fed62ce",
+    "training_sha256": "4c9ac718e96e07697de42101e511f3be38beec5127b8d9d09fc69312b98ca18e"
+  },
+  {
+    "phase": 1,
+    "environment": 59,
+    "only_goal_and_table_height_changed": true,
+    "control_sha256": "e447d0b9d22e98363ef547f75a38d69e8d033e29e302d0b38c49d7e2e7fbcf1e",
+    "training_sha256": "00c94f23ebfc1a426395dc3f267ef838fbdd6957e672d03f2ee5c361e59a0f5f"
+  }
+]

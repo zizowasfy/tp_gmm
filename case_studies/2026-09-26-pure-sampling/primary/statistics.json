@@ -1,0 +1,493 @@
+{
+  "environments": 60,
+  "repeats": 10,
+  "plans": 1800,
+  "design": {
+    "seed": 20260926,
+    "repeats": 10,
+    "environments_per_stratum": 10,
+    "planning_time": 3.0
+  },
+  "modes": {
+    "cartesian_ik": {
+      "n": 600,
+      "successes": 569,
+      "success_rate": 0.9483333333333334,
+      "success_ci95": [
+        0.8833333333333333,
+        0.9983333333333333
+      ],
+      "failures_by_stage": {
+        "path_audit": 1,
+        "start_invalid_in_corridor": 30
+      },
+      "total_attempts": 5731,
+      "total_valid_samples": 3233,
+      "uniform_attempts": 0,
+      "online_ik_calls": 5731,
+      "missing_anchor_fallbacks": 0,
+      "par2_s_mean": 0.4369589935507005,
+      "par2_s_ci95": [
+        0.14503999401680875,
+        0.8117913204940191
+      ],
+      "par2_s_successful_median": 0.124776906974148,
+      "par2_s_successful_p95": 0.2457781176315621,
+      "action_wall_s_mean": 0.12734997066407228,
+      "action_wall_s_ci95": [
+        0.1164232825235522,
+        0.13767889049722237
+      ],
+      "action_wall_s_successful_median": 0.124776906974148,
+      "action_wall_s_successful_p95": 0.2457781176315621,
+      "moveit_planning_s_mean": 0.026655012064999994,
+      "moveit_planning_s_ci95": [
+        0.023188243427375,
+        0.030189068695916664
+      ],
+      "moveit_planning_s_successful_median": 0.021153728,
+      "moveit_planning_s_successful_p95": 0.07096571220000002,
+      "end_to_end_wall_s_mean": 0.14847050010304275,
+      "end_to_end_wall_s_ci95": [
+        0.13744232601694967,
+        0.15886998245463468
+      ],
+      "end_to_end_wall_s_successful_median": 0.14538597699720412,
+      "end_to_end_wall_s_successful_p95": 0.2664525027619676,
+      "valid_per_attempt": 0.5641249345663933,
+      "setup_s_median": 4.1474e-05,
+      "sampling_s_median": 0.010961354999999999,
+      "draw_s_median": 4.2070000000000005e-06,
+      "online_ik_s_median": 0.010627933499999999,
+      "anchor_ik_s_median": 0.0,
+      "jacobian_setup_s_median": 0.0,
+      "fk_mapping_s_median": 0.0,
+      "validity_s_median": 0.0001249245,
+      "joint_path_length_median": 9.92927993133,
+      "ee_path_length_m_median": 0.687520596964,
+      "min_world_clearance_m_median": 0.0135310129718,
+      "trajectory_duration_s_median": 3.370899662
+    },
+    "joint_projected": {
+      "n": 600,
+      "successes": 568,
+      "success_rate": 0.9466666666666667,
+      "success_ci95": [
+        0.8833333333333333,
+        0.995
+      ],
+      "failures_by_stage": {
+        "path_audit": 1,
+        "planning": 1,
+        "start_invalid_in_corridor": 30
+      },
+      "total_attempts": 172108,
+      "total_valid_samples": 47471,
+      "uniform_attempts": 0,
+      "online_ik_calls": 0,
+      "missing_anchor_fallbacks": 0,
+      "par2_s_mean": 0.44323363745284344,
+      "par2_s_ci95": [
+        0.15603112405268627,
+        0.8109252400464315
+      ],
+      "par2_s_successful_median": 0.12000570850796066,
+      "par2_s_successful_p95": 0.2493524194462225,
+      "action_wall_s_mean": 0.1284261762695193,
+      "action_wall_s_ci95": [
+        0.1150350249774686,
+        0.1433368784028862
+      ],
+      "action_wall_s_successful_median": 0.12000570850796066,
+      "action_wall_s_successful_p95": 0.2493524194462225,
+      "moveit_planning_s_mean": 0.028100124656666666,
+      "moveit_planning_s_ci95": [
+        0.023794440510749998,
+        0.03321537295320833
+      ],
+      "moveit_planning_s_successful_median": 0.0249014795,
+      "moveit_planning_s_successful_p95": 0.09610900654999999,
+      "end_to_end_wall_s_mean": 0.14957595319099104,
+      "end_to_end_wall_s_ci95": [
+        0.13612605271915768,
+        0.16448162904221195
+      ],
+      "end_to_end_wall_s_successful_median": 0.14115254799253307,
+      "end_to_end_wall_s_successful_p95": 0.2703238481568405,
+      "valid_per_attempt": 0.27582099611871613,
+      "setup_s_median": 0.0181093345,
+      "sampling_s_median": 0.0001316375,
+      "draw_s_median": 2.6178e-05,
+      "online_ik_s_median": 0.0,
+      "anchor_ik_s_median": 0.0179622365,
+      "jacobian_setup_s_median": 8.56675e-05,
+      "fk_mapping_s_median": 3.4335000000000002e-06,
+      "validity_s_median": 4.82325e-05,
+      "joint_path_length_median": 9.278439372295,
+      "ee_path_length_m_median": 0.6817833966094999,
+      "min_world_clearance_m_median": 0.012341430575599999,
+      "trajectory_duration_s_median": 3.3518319935000003
+    },
+    "ompl_uniform": {
+      "n": 600,
+      "successes": 600,
+      "success_rate": 1.0,
+      "success_ci95": [
+        1.0,
+        1.0
+      ],
+      "failures_by_stage": {},
+      "total_attempts": 0,
+      "total_valid_samples": 0,
+      "uniform_attempts": 0,
+      "online_ik_calls": 0,
+      "missing_anchor_fallbacks": 0,
+      "par2_s_mean": 0.15275168762629618,
+      "par2_s_ci95": [
+        0.14622749895884526,
+        0.1606067501922468
+      ],
+      "par2_s_successful_median": 0.14583093451801687,
+      "par2_s_successful_p95": 0.24939504305948487,
+      "action_wall_s_mean": 0.15275168762629618,
+      "action_wall_s_ci95": [
+        0.14622749895884526,
+        0.1606067501922468
+      ],
+      "action_wall_s_successful_median": 0.14583093451801687,
+      "action_wall_s_successful_p95": 0.24939504305948487,
+      "moveit_planning_s_mean": 0.015416538856666667,
+      "moveit_planning_s_ci95": [
+        0.014372314311374998,
+        0.016617824573416668
+      ],
+      "moveit_planning_s_successful_median": 0.0127835405,
+      "moveit_planning_s_successful_p95": 0.030813628599999993,
+      "end_to_end_wall_s_mean": 0.15444415477744766,
+      "end_to_end_wall_s_ci95": [
+        0.14790538301531583,
+        0.16232228325500184
+      ],
+      "end_to_end_wall_s_successful_median": 0.14761635349714197,
+      "end_to_end_wall_s_successful_p95": 0.25144474901899216,
+      "valid_per_attempt": null,
+      "setup_s_median": null,
+      "sampling_s_median": null,
+      "draw_s_median": null,
+      "online_ik_s_median": null,
+      "anchor_ik_s_median": null,
+      "jacobian_setup_s_median": null,
+      "fk_mapping_s_median": null,
+      "validity_s_median": null,
+      "joint_path_length_median": 13.2988176288,
+      "ee_path_length_m_median": 2.04390200885,
+      "min_world_clearance_m_median": 0.0165688149668,
+      "trajectory_duration_s_median": 3.5685303375
+    }
+  },
+  "primary": [
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "success",
+      "difference": 0.0016666666666666663,
+      "ci95": [
+        -0.0033333333333333327,
+        0.006666666666666665
+      ],
+      "p": 1.0,
+      "independent_environments": 60,
+      "holm_p": 1.0
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "par2_s",
+      "difference": -0.006274643902143001,
+      "ci95": [
+        -0.037899520624300444,
+        0.024281594251905812
+      ],
+      "p": 0.8121718782812172,
+      "independent_environments": 60,
+      "holm_p": 1.0
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "success",
+      "difference": -0.051666666666666666,
+      "ci95": [
+        -0.11666666666666667,
+        -0.0016666666666666663
+      ],
+      "p": 0.125,
+      "independent_environments": 60,
+      "holm_p": 0.625
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "par2_s",
+      "difference": 0.2842073059244043,
+      "ci95": [
+        -0.007217425530524149,
+        0.658647407567565
+      ],
+      "p": 0.17913820861791382,
+      "independent_environments": 60,
+      "holm_p": 0.625
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "success",
+      "difference": -0.05333333333333334,
+      "ci95": [
+        -0.11666666666666667,
+        -0.004999999999999999
+      ],
+      "p": 0.0625,
+      "independent_environments": 60,
+      "holm_p": 0.375
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "par2_s",
+      "difference": 0.2904819498265471,
+      "ci95": [
+        0.003766312174018824,
+        0.6575342290058689
+      ],
+      "p": 0.13984860151398487,
+      "independent_environments": 60,
+      "holm_p": 0.625
+    }
+  ],
+  "quality": [
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "joint_path_length",
+      "difference": 0.9081653920247778,
+      "ci95": [
+        0.40854066350664653,
+        1.423193461604177
+      ],
+      "environments": 57,
+      "matched_success_pairs": 567
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "ee_path_length_m",
+      "difference": 0.03191864642775574,
+      "ci95": [
+        0.002903624075100384,
+        0.06131741271652353
+      ],
+      "environments": 57,
+      "matched_success_pairs": 567
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "joint_projected",
+      "metric": "min_world_clearance_m",
+      "difference": 0.0008225549214421862,
+      "ci95": [
+        -0.00036652968278620907,
+        0.002000748575680641
+      ],
+      "environments": 57,
+      "matched_success_pairs": 567
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "joint_path_length",
+      "difference": -3.7732250783064676,
+      "ci95": [
+        -4.192604966571047,
+        -3.349709099948729
+      ],
+      "environments": 57,
+      "matched_success_pairs": 569
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "ee_path_length_m",
+      "difference": -1.3894149203762878,
+      "ci95": [
+        -1.4784663363007835,
+        -1.306367887665875
+      ],
+      "environments": 57,
+      "matched_success_pairs": 569
+    },
+    {
+      "a": "cartesian_ik",
+      "b": "ompl_uniform",
+      "metric": "min_world_clearance_m",
+      "difference": -0.00601717710901931,
+      "ci95": [
+        -0.008677806905760917,
+        -0.003607677394803486
+      ],
+      "environments": 57,
+      "matched_success_pairs": 569
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "joint_path_length",
+      "difference": -4.691187057498836,
+      "ci95": [
+        -5.172201603035407,
+        -4.222903597087153
+      ],
+      "environments": 57,
+      "matched_success_pairs": 568
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "ee_path_length_m",
+      "difference": -1.4258236670387507,
+      "ci95": [
+        -1.512998204111184,
+        -1.3486721813722968
+      ],
+      "environments": 57,
+      "matched_success_pairs": 568
+    },
+    {
+      "a": "joint_projected",
+      "b": "ompl_uniform",
+      "metric": "min_world_clearance_m",
+      "difference": -0.006872675778980987,
+      "ci95": [
+        -0.009559650745058997,
+        -0.004379166233789524
+      ],
+      "environments": 57,
+      "matched_success_pairs": 568
+    }
+  ],
+  "preparation": {
+    "model_load_s": {
+      "median": 0.004104601975996047,
+      "mean": 0.004283164968364872
+    },
+    "reproduction_s": {
+      "median": 0.008002201502677053,
+      "mean": 0.008054523917962797
+    },
+    "rl_deformation_s": {
+      "median": 0.000713250512490049,
+      "mean": 0.0009081624118455996
+    },
+    "deformed_regression_s": {
+      "median": 0.001691963494522497,
+      "mean": 0.0016859718482010067
+    },
+    "total_s": {
+      "median": 0.016160263505298644,
+      "mean": 0.016512840215000324
+    }
+  },
+  "strata": {
+    "central_c0.2": {
+      "cartesian_ik": {
+        "successes": 100,
+        "plans": 100
+      },
+      "joint_projected": {
+        "successes": 100,
+        "plans": 100
+      },
+      "ompl_uniform": {
+        "successes": 100,
+        "plans": 100
+      }
+    },
+    "central_c0.8": {
+      "cartesian_ik": {
+        "successes": 90,
+        "plans": 100
+      },
+      "joint_projected": {
+        "successes": 89,
+        "plans": 100
+      },
+      "ompl_uniform": {
+        "successes": 100,
+        "plans": 100
+      }
+    },
+    "distant_c0.2": {
+      "cartesian_ik": {
+        "successes": 99,
+        "plans": 100
+      },
+      "joint_projected": {
+        "successes": 100,
+        "plans": 100
+      },
+      "ompl_uniform": {
+        "successes": 100,
+        "plans": 100
+      }
+    },
+    "distant_c0.8": {
+      "cartesian_ik": {
+        "successes": 90,
+        "plans": 100
+      },
+      "joint_projected": {
+        "successes": 89,
+        "plans": 100
+      },
+      "ompl_uniform": {
+        "successes": 100,
+        "plans": 100
+      }
+    },
+    "offset_c0.2": {
+      "cartesian_ik": {
+        "successes": 100,
+        "plans": 100
+      },
+      "joint_projected": {
+        "successes": 100,
+        "plans": 100
+      },
+      "ompl_uniform": {
+        "successes": 100,
+        "plans": 100
+      }
+    },
+    "offset_c0.8": {
+      "cartesian_ik": {
+        "successes": 90,
+        "plans": 100
+      },
+      "joint_projected": {
+        "successes": 90,
+        "plans": 100
+      },
+      "ompl_uniform": {
+        "successes": 100,
+        "plans": 100
+      }
+    }
+  },
+  "cartesian_over_projected_par2_ratio": {
+    "estimate": 0.9858434844020373,
+    "ci95": [
+      0.8828592639193703,
+      1.066847381719595
+    ]
+  }
+}
