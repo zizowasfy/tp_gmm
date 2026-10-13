@@ -58,5 +58,23 @@ int main()
   assert((j*p.null_basis).norm() < 1e-12);
   const Eigen::MatrixXd qcov = p.inverse*covariance*p.inverse.transpose() + 0.1*p.null_basis*p.null_basis.transpose();
   assert((j*qcov*j.transpose()-covariance).norm() < 1e-12);
+  // Box corners must not pass the ellipsoid test. Zero-weight modes are absent.
+  const Eigen::Matrix3d rotation=Eigen::AngleAxisd(.71,Eigen::Vector3d(1,2,3).normalized()).toRotationMatrix();
+  const Eigen::Vector3d radii(1.,2.,3.),center(2.,-1.,.4);
+  auto ellipsoid=canonicalGaussian(center,rotation*radii.array().square().matrix().asDiagonal()*rotation.transpose(),1e-8);
+  const Eigen::Vector3d corner=center+rotation*Eigen::Vector3d(.9,1.8,2.7);
+  auto inactive=canonicalGaussian(corner,Eigen::Matrix3d::Identity(),1e-8);
+  assert(!unionContains({ellipsoid,inactive},{1.,0.},corner,1.));
+  assert(unionContains({ellipsoid,inactive},{.5,.5},corner,1.));
+  assert(unionContains({ellipsoid},{1.},center+rotation*Eigen::Vector3d(1.,0,0),1.));
+  assert(!unionContains({ellipsoid},{1.},center+rotation*Eigen::Vector3d(1.+1e-8,0,0),1.));
+  // Construct an exterior point on a nonradial outward surface normal.
+  const Eigen::Vector3d surface=radii.cwiseProduct(Eigen::Vector3d(1.,2.,3.).normalized());
+  const Eigen::Vector3d normal_vector=surface.cwiseQuotient(radii.array().square().matrix());
+  const Eigen::Vector3d outside=center+rotation*(surface+.4*normal_vector);
+  assert(std::abs(ellipsoidDistance(ellipsoid,outside,1.)-.4*normal_vector.norm())<1e-12);
+  auto floored=canonicalGaussian(Eigen::Vector3d::Zero(),Eigen::Matrix3d::Zero(),1e-4);
+  assert(std::abs(ellipsoidDistance(floored,Eigen::Vector3d(.04,0,0),3.)-.01)<1e-12);
+  assert(std::abs(unionDistance({ellipsoid,inactive},{1.,0.},outside,1.)-.4*normal_vector.norm())<1e-12);
   std::cout << "Gaussian factors, invalid covariance, rejection distribution, Mahalanobis support and SVD covariance/null space: PASS\n";
 }

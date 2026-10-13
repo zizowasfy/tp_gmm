@@ -36,4 +36,21 @@ class GMRClientTest(unittest.TestCase):
             with self.client.session(): raise RuntimeError('caller failed')
         self.assertEqual(released,['one'])
 
+    def test_ellipsoids_require_gmm_proposal(self):
+        request=self.client.prepare(self.model,'arm','tool',Quaternion(w=1.),'cartesian_ik',
+                                    proposal='gmm',corridor_geometry='gmm_ellipsoids')
+        self.assertEqual(request.corridor_geometry,'gmm_ellipsoids')
+        for proposal in ('gmr_path','hybrid'):
+            with self.assertRaises(ValueError):
+                self.client.prepare(self.model,'arm','tool',Quaternion(w=1.),'cartesian_ik',
+                    proposal=proposal,reference_path=self.path,corridor_geometry='gmm_ellipsoids')
+
+    def test_tube_is_explicit_and_rejects_hybrid_or_zero_radius(self):
+        opts=dict(proposal='gmr_path',reference_path=self.path,corridor_geometry='gmr_tube',gmr_stddev=.03,gmr_cutoff=3.)
+        request=self.client.prepare(self.model,'arm','tool',Quaternion(w=1.),'cartesian_ik',**opts)
+        self.assertEqual(request.corridor_geometry,'gmr_tube')
+        for change in ({'proposal':'hybrid'},{'proposal':'gmm'},{'gmr_stddev':0.},{'corridor_geometry':'unknown'}):
+            with self.assertRaises(ValueError):
+                self.client.prepare(self.model,'arm','tool',Quaternion(w=1.),'cartesian_ik',**(opts|change))
+
 if __name__=='__main__': unittest.main()

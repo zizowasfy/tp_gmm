@@ -126,6 +126,9 @@ bool GMMConstraintSampler::valid(moveit::core::RobotState& state)
   bool ok = true;
   if (!state.satisfiesBounds(jmg_)) { local_["bounds_rejections"]++; ok = false; }
   else if (!constraint_set_.decide(state).satisfied) { local_["constraint_rejections"]++; ok = false; }
+  else if (session_->config.corridor_geometry == "gmm_ellipsoids" &&
+           !sampling::unionContains(session_->gaussians, session_->weights, fk(state), session_->config.cutoff))
+  { local_["ellipsoid_support_rejections"]++; local_["constraint_rejections"]++; ok = false; }
   else if (!scene_->isStateFeasible(state, false)) { local_["feasibility_rejections"]++; ok = false; }
   else
   {

@@ -11,7 +11,8 @@ PROPOSALS = ('gmm', 'gmr_path', 'hybrid')
 DEFAULTS = dict(cutoff=2.0, covariance_floor=1e-8, uniform_fraction=0.1,
                 cartesian_fraction=0.1, ik_timeout=0.005, branches=3,
                 anchor_attempts=16, nullspace_stddev=0.08, max_joint_delta=0.6,
-                linearization_tolerance=0.01, proposal='gmm', gmr_stddev=0.01, gmr_cutoff=2.0, gmr_fraction=0.8)
+                linearization_tolerance=0.01, proposal='gmm', gmr_stddev=0.01, gmr_cutoff=2.0, gmr_fraction=0.8,
+                corridor_geometry='gmm_boxes')
 
 class SamplingClient:
     def __init__(self, node, namespace=''):
@@ -49,6 +50,12 @@ class SamplingClient:
             raise ValueError(f"Unknown proposal {settings['proposal']}")
         if settings['proposal'] != 'gmm' and (mode != 'cartesian_ik' or not req.reference_path.poses):
             raise ValueError('GMR proposals require cartesian_ik and a request-matched reference_path')
+        if settings['corridor_geometry'] not in ('gmm_boxes', 'gmm_ellipsoids', 'gmr_tube'):
+            raise ValueError('Unknown corridor geometry')
+        if settings['corridor_geometry'] == 'gmm_ellipsoids' and settings['proposal'] != 'gmm':
+            raise ValueError('Ellipsoid corridor requires pure GMM proposals')
+        if settings['corridor_geometry'] == 'gmr_tube' and (settings['proposal'] != 'gmr_path' or settings['gmr_stddev'] <= 0):
+            raise ValueError('GMR tube requires pure GMR proposals and positive spread')
         for key, value in settings.items():
             setattr(req, key, value)
         return self.call(self.prepare_client, req)

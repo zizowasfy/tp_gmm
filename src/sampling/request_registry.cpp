@@ -48,6 +48,12 @@ void GMMConstraintSamplerAllocator::prepare(const srv::PrepareSampling::Request&
       throw std::invalid_argument("GMR path proposals currently require cartesian_ik mapping");
     if (!range(req.gmr_stddev, 0., 0.5) || !range(req.gmr_cutoff, 1., 6.) || !range(req.gmr_fraction, 0., 1.))
       throw std::invalid_argument("Invalid GMR proposal settings");
+    if (req.corridor_geometry != "gmm_boxes" && req.corridor_geometry != "gmm_ellipsoids" && req.corridor_geometry != "gmr_tube")
+      throw std::invalid_argument("Unknown corridor geometry");
+    if (req.corridor_geometry == "gmm_ellipsoids" && req.proposal != "gmm")
+      throw std::invalid_argument("Ellipsoid corridor requires pure GMM proposals");
+    if (req.corridor_geometry == "gmr_tube" && (req.proposal != "gmr_path" || req.gmr_stddev <= 0.))
+      throw std::invalid_argument("Tube requires pure GMR proposals and positive spread");
     auto session = std::make_shared<SamplingSession>();
     session->config = req;
     const auto path_begin = Clock::now();
@@ -70,7 +76,7 @@ void GMMConstraintSamplerAllocator::prepare(const srv::PrepareSampling::Request&
          "projected_attempts", "projected_valid", "online_ik_calls", "online_ik_success", "anchor_ik_calls",
          "anchor_ik_success", "anchors", "unanchored_components", "missing_anchor_fallbacks", "missing_anchor_rejections", "singular_anchors",
          "trust_region_rejections", "projection_support_rejections", "bounds_rejections", "constraint_rejections",
-         "collision_checks", "collision_rejections", "callback_rejections", "feasibility_rejections",
+         "collision_checks", "collision_rejections", "callback_rejections", "feasibility_rejections", "ellipsoid_support_rejections",
          "linearization_residual_sum_m", "linearization_checks", "proposal_mahalanobis_squared_sum",
          "valid_mahalanobis_squared_sum", "gmr_attempts", "gmr_valid", "gmr_draws", "gmr_fraction_sum", "gmr_offset_squared_sum_m2"}) session->metrics[key] = 0;
     double total = 0;
@@ -103,6 +109,29 @@ void GMMConstraintSamplerAllocator::prepare(const srv::PrepareSampling::Request&
     }
     if (!std::isfinite(total) || total <= 0) throw std::invalid_argument("Weights must have positive finite sum");
     for (double& w : session->weights) w /= total;
+    if (req.corridor_geometry == "gmr_tube")
+    {
+      // Exactly the Minkowski sum of the reference polyline and a radius-r ball:
+      // finite cylinders plus endpoint/junction spheres. No covariance boxes remain.
+      position.constraint_region.primitives.clear(); position.constraint_region.primitive_poses.clear();
+      const double radius = req.gmr_stddev * req.gmr_cutoff;
+      const auto& points = session->reference->points();
+      for (size_t i = 0; i < points.size(); ++i)
+      {
+        shape_msgs::msg::SolidPrimitive sphere; sphere.type = sphere.SPHERE; sphere.dimensions = {radius};
+        geometry_msgs::msg::Pose center; center.position = point(points[i]); center.orientation.w = 1.;
+        position.constraint_region.primitives.push_back(sphere); position.constraint_region.primitive_poses.push_back(center);
+        if (i + 1 == points.size()) continue;
+        const Eigen::Vector3d direction = points[i + 1] - points[i];
+        shape_msgs::msg::SolidPrimitive cylinder; cylinder.type = cylinder.CYLINDER;
+        cylinder.dimensions = {direction.norm(), radius};
+        center.position = point((points[i] + points[i + 1]) / 2.);
+        const Eigen::Quaterniond q = Eigen::Quaterniond::FromTwoVectors(Eigen::Vector3d::UnitZ(), direction);
+        center.orientation.w = q.w(); center.orientation.x = q.x(); center.orientation.y = q.y(); center.orientation.z = q.z();
+        position.constraint_region.primitives.push_back(cylinder); position.constraint_region.primitive_poses.push_back(center);
+      }
+      session->metrics["corridor_radius_m"] = radius;
+    }
     std::lock_guard<std::mutex> lock(mutex_);
     // Expire only unreferenced, abandoned sessions. Active samplers retain their immutable snapshot.
     for (auto it = sessions_.begin(); it != sessions_.end();)
@@ -114,6 +143,25 @@ void GMMConstraintSamplerAllocator::prepare(const srv::PrepareSampling::Request&
     session->metrics["prepare_s"] = seconds(begin);
     sessions_[session->id] = session;
     res.success = true; res.request_id = session->id; res.constraints = session->constraints;
+    // Export exactly the sampler's canonical eigensystems at round-trip precision.
+    // In ellipsoid mode the returned boxes are screening geometry only.
+    std::ostringstream descriptor; descriptor << std::setprecision(17);
+    auto vector = [&](const Eigen::Vector3d& v) { descriptor << '[' << v.x() << ',' << v.y() << ',' << v.z() << ']'; };
+    descriptor << "{\"schema_version\":1,\"geometry\":\"" << req.corridor_geometry
+               << "\",\"constraints_name\":\"" << session->constraints.name << "\",\"cutoff\":" << req.cutoff
+               << ",\"covariance_floor\":" << req.covariance_floor
+               << ",\"mahalanobis_roundoff\":" << sampling::supportRoundoff(req.cutoff)
+               << ",\"components\":[";
+    for (size_t i = 0; i < session->gaussians.size(); ++i)
+    {
+      const auto& g = session->gaussians[i]; if (i) descriptor << ',';
+      descriptor << "{\"index\":" << i << ",\"weight\":" << session->weights[i] << ",\"mean\":"; vector(g.mean);
+      descriptor << ",\"eigenvalues\":"; vector(g.eigenvalues); descriptor << ",\"axes\":[";
+      for (int row = 0; row < 3; ++row) for (int col = 0; col < 3; ++col)
+      { if (row || col) descriptor << ','; descriptor << g.axes(row,col); }
+      descriptor << "]}";
+    }
+    descriptor << "]}"; res.corridor_json = descriptor.str();
     res.message = "Prepared immutable model and matching corridor";
   }
   catch (const std::exception& ex) { res.success = false; res.message = ex.what(); }
@@ -153,7 +201,7 @@ void GMMConstraintSamplerAllocator::report(const srv::SamplingReport::Request& r
     json << std::setprecision(12) << "{\"request_id\":\"" << session->id << "\",\"mode\":\"" << session->config.mode << "\"";
     for (const auto& [key, value] : metrics)
     { json << ",\"" << key << "\":"; if (std::isfinite(value)) json << value; else json << "null"; }
-    json << ",\"proposal\":\"" << session->config.proposal << "\"}";
+    json << ",\"proposal\":\"" << session->config.proposal << "\",\"corridor_geometry\":\"" << session->config.corridor_geometry << "\"}";
     publishMarkers();
     res.success = true; res.json = json.str(); res.message = "Runtime sampler counters";
     if (req.release) { std::lock_guard<std::mutex> lock(mutex_); sessions_.erase(req.request_id); }

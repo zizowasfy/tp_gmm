@@ -120,6 +120,8 @@ install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY tasks DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY include DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY include/tp_gmm/ DESTINATION include/${PROJECT_NAME}/${PROJECT_NAME})
+ament_export_include_directories(include/${PROJECT_NAME})
 install(DIRECTORY scripts DESTINATION share/${PROJECT_NAME})
 
 ament_export_dependencies(

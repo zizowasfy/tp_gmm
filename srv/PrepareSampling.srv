@@ -24,8 +24,15 @@ float64 gmr_stddev 0.01
 float64 gmr_cutoff 2.0
 # Probability of choosing GMR rather than GMM in hybrid mode, after uniform fallback.
 float64 gmr_fraction 0.8
+# Tube is the union of radius (gmr_stddev * gmr_cutoff) capsules along reference_path.
+# Only pure Cartesian GMR supports it; the historical default is unchanged.
+string corridor_geometry "gmm_boxes"
 ---
 bool success
 string message
 string request_id
 moveit_msgs/Constraints constraints
+# Canonical support, including regularized eigensystems and active weights.
+# gmm_ellipsoids requires this descriptor in the planner's feasibility predicate;
+# the Constraints position boxes are only a broad phase for this geometry.
+string corridor_json
