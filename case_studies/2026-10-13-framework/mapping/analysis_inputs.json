@@ -1,0 +1,18 @@
+[
+  {
+    "cohort": "cohort_1",
+    "directory": "/home/zizo/the_folder/ws_moveit/sampling_results/2026-10-13-framework-primary",
+    "manifest_sha256": "8cd59922a277eb2a6eb440cd0b59c18e4363dd48ea335e0732d0c77e89cee483",
+    "results_sha256": "99a725fb5ea43cbad1b90ab5d9f4315abe80eba0ef0bb89e0de01d4d2cecca40",
+    "environments": 60,
+    "repeats": 10
+  },
+  {
+    "cohort": "cohort_2",
+    "directory": "/home/zizo/the_folder/ws_moveit/sampling_results/2026-10-13-framework-confirmation",
+    "manifest_sha256": "21d858b91d05bbd065d00155a8861e70b18357cb790648f43bac589f3d6fed8a",
+    "results_sha256": "93818180ec5621ad36171ce2caaa095c5f7175a72452399ecc2a4e32310a1e29",
+    "environments": 60,
+    "repeats": 5
+  }
+]

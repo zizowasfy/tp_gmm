@@ -76,7 +76,7 @@ class ReferenceIKBaseline:
             ee = []; length = 0.
             for a,b in zip(configurations[:-1],configurations[1:]):
                 length += float(np.linalg.norm(b-a))
-                for fraction in np.linspace(0.,1.,max(2,math.ceil(np.linalg.norm(b-a)/.02)+1)):
+                for fraction in np.linspace(0.,1.,max(2,math.ceil(np.linalg.norm(b-a)/.005)+1)):
                     state = deepcopy(start)
                     positions = dict(zip(state.joint_state.name,state.joint_state.position))
                     positions.update(zip(joint_names, map(float,a+(b-a)*fraction)))

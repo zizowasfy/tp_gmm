@@ -1,0 +1,68 @@
+{
+  "workspace": "/home/zizo/the_folder/ws_moveit",
+  "datasets": {
+    "clearance_results/2026-10-13-framework": {
+      "measured_requests": 150,
+      "excluded_warmups": 0,
+      "archive": "case_study_archives/2026-10-13-framework/raw-clearance.tar.xz",
+      "archive_sha256": "1af469836cefd988058e67b8ea7f1a00a8ab2806c181beaee4f3ec33990fbb31",
+      "files": {
+        "clearance_results/2026-10-13-framework/results.json": {
+          "sha256": "02bd0e2b6f9be2a500e29af55c9fbd04d5f415ee14216acc1d002f99d9c74c92",
+          "bytes": 908582656
+        }
+      }
+    },
+    "sampling_results/2026-10-13-framework-primary": {
+      "measured_requests": 1800,
+      "excluded_warmups": 0,
+      "archive": "case_study_archives/2026-10-13-framework/raw-mapping-primary.tar.zst",
+      "archive_sha256": "57f057bd842fe2f355a97c0dd68ec01896dfcc0a67a734171f60bb42b99aaca6",
+      "files": {
+        "sampling_results/2026-10-13-framework-primary/results.jsonl": {
+          "sha256": "99a725fb5ea43cbad1b90ab5d9f4315abe80eba0ef0bb89e0de01d4d2cecca40",
+          "bytes": 3740451948
+        },
+        "sampling_results/2026-10-13-framework-primary/manifest.json": {
+          "sha256": "8cd59922a277eb2a6eb440cd0b59c18e4363dd48ea335e0732d0c77e89cee483",
+          "bytes": 280464
+        }
+      }
+    },
+    "sampling_results/2026-10-13-framework-confirmation": {
+      "measured_requests": 900,
+      "excluded_warmups": 0,
+      "archive": "case_study_archives/2026-10-13-framework/raw-mapping-confirmation.tar.zst",
+      "archive_sha256": "c7fa7ffb8906a356d1bb110d18517911faaf81130f54f611573e0f4364ab3261",
+      "files": {
+        "sampling_results/2026-10-13-framework-confirmation/results.jsonl": {
+          "sha256": "93818180ec5621ad36171ce2caaa095c5f7175a72452399ecc2a4e32310a1e29",
+          "bytes": 1853432999
+        },
+        "sampling_results/2026-10-13-framework-confirmation/manifest.json": {
+          "sha256": "21d858b91d05bbd065d00155a8861e70b18357cb790648f43bac589f3d6fed8a",
+          "bytes": 181070
+        }
+      }
+    },
+    "gmr_results/2026-10-13-framework": {
+      "measured_requests": 1890,
+      "excluded_warmups": 9,
+      "archive": "case_study_archives/2026-10-13-framework/raw-gmr.tar.zst",
+      "archive_sha256": "457fd27c715483738ea1c3b5934b39fb93af10df9c78803c1a8e38ef0c20626f",
+      "files": {
+        "gmr_results/2026-10-13-framework/results.jsonl": {
+          "sha256": "a9662a25fe72fa91141f6147c52f573c631c4834ff27bd2a309d4deb8df52700",
+          "bytes": 2247918415
+        },
+        "gmr_results/2026-10-13-framework/manifest.json": {
+          "sha256": "fd72a1cff92bcb5e3a7d482b8d4b47d39e204040ece1ef7a9b26e90fffa5f015",
+          "bytes": 472668
+        }
+      }
+    }
+  },
+  "total_measured_requests": 4740,
+  "excluded_warmups": 9,
+  "policy_sha256": "d9ec51ff464b93f8ad87e4d5dc2b3bb649f89dbb5fa4155b5df46ed788d2e5ba"
+}

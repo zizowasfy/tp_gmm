@@ -1,0 +1,10 @@
+Internal ctest changing into directory: /home/zizo/the_folder/ws_moveit/build/tp_gmm
+Test project /home/zizo/the_folder/ws_moveit/build/tp_gmm
+    Start 1: sampling_math
+1/2 Test #1: sampling_math ....................   Passed    0.02 sec
+    Start 2: path_proposal
+2/2 Test #2: path_proposal ....................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   0.03 sec

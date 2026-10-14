@@ -1,0 +1,4 @@
+mapping_primary {'cartesian_ik': (600, 600), 'joint_projected': (600, 600), 'ompl_uniform': (600, 600)}
+mapping_confirmation {'ompl_uniform': (300, 300), 'cartesian_ik': (300, 300), 'joint_projected': (296, 300)}
+gmr {'gmr_30mm': (589, 633), 'gmm': (598, 633), 'reference_ik': (387, 633)}
+ALL_RESULT_INTEGRITY_CHECKS_PASSED

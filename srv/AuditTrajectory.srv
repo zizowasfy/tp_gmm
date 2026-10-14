@@ -5,7 +5,8 @@ moveit_msgs/RobotTrajectory trajectory
 moveit_msgs/Constraints constraints
 string group_name
 string link_name
-float64 joint_step 0.01
+string corridor_json
+float64 joint_step 0.005
 ---
 bool success
 string message

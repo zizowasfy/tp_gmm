@@ -31,6 +31,7 @@
   <depend>moveit_ros_planning</depend>
   <depend>moveit_ros_planning_interface</depend>
   <depend>moveit_msgs</depend>
+  <depend>jsoncpp</depend>
 
   <!-- Python Dependencies -->
   <depend>rclpy</depend>

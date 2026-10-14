@@ -1,3 +1,5 @@
+> Current paper protocol: [framework alignment](FRAMEWORK_ALIGNMENT.md). The active comparisons use exact ellipsoid/tube support and omit Hybrid. Earlier examples below retain their historical scope.
+
 > Additional modular GMR-path and hybrid proposals are documented in [GMR_SAMPLING.md](GMR_SAMPLING.md). Existing GMM proposals remain the default.
 
 # GMM sampling with Codex

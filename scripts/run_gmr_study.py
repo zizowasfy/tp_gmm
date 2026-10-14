@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Frozen, resumable plan-only GMM/GMR-30-mm/hybrid/reference-IK study."""
+"""Frozen, resumable plan-only GMM/GMR-30-mm/reference-IK study."""
 import argparse
 from copy import deepcopy
 import hashlib
@@ -23,21 +23,21 @@ from run_clearance_sweep import xyz
 from compare_sampling_approaches import pose
 from clearance_analysis import DEFAULT_ENVIRONMENT, random_environment, curve_metrics
 
-MODES = ('gmm', 'gmr_30mm', 'hybrid_30mm', 'reference_ik')
-PROPOSALS = dict(gmm='gmm', gmr_30mm='gmr_path', hybrid_30mm='hybrid', reference_ik='gmm')
+MODES = ('gmm', 'gmr_30mm', 'reference_ik')
+PROPOSALS = dict(gmm='gmm', gmr_30mm='gmr_path', reference_ik='gmr_path')
 POLICY_SHA256 = 'd9ec51ff464b93f8ad87e4d5dc2b3bb649f89dbb5fa4155b5df46ed788d2e5ba'
 SETTINGS = pure_settings(3.) | dict(gmr_stddev=.03, gmr_cutoff=3., gmr_fraction=.8)
 
 
 def settings(mode):
-    return SETTINGS | dict(proposal=PROPOSALS[mode])
+    return SETTINGS | dict(proposal=PROPOSALS[mode], corridor_geometry='gmm_ellipsoids' if mode == 'gmm' else 'gmr_tube')
 
 
 def assert_proposal_pure(mode, stats):
     expected = settings(mode)
     if stats.get('mode') != 'cartesian_ik' or any(k not in stats for k in ('attempts','gmm_attempts','gmr_attempts','uniform_attempts')):
         raise RuntimeError('Missing proposal telemetry or incorrect mapping')
-    for key in ('proposal', 'corridor_mode', 'gmr_stddev', 'gmr_cutoff', 'gmr_fraction',
+    for key in ('proposal', 'corridor_mode', 'corridor_geometry', 'gmr_stddev', 'gmr_cutoff', 'gmr_fraction',
                 'uniform_fraction', 'cartesian_fraction'):
         if stats.get(key) != expected[key]:
             raise RuntimeError(f'Proposal configuration mismatch: {mode}/{key}: {stats.get(key)}')
@@ -82,20 +82,18 @@ class GMRStudyRunner(StudyRunner):
         if mode != 'reference_ik':
             return self.study_plan(start, goal, case, 'cartesian_ik', seed, budget, scene)
         begin = time.perf_counter()
-        prepared = self.prepare_sampling(pose(case['goal'], self.frame_id), mode='cartesian_ik', seed=seed)
+        prepared = self.prepare_for_plan(start, goal, case, 'cartesian_ik', seed)
         row = dict(success=False, planner_success=False, sampling={}, action_wall_s=0.,
                    prepare_service_wall_s=time.perf_counter()-begin,
-                   path_constraints_sha256=digest(asdict(prepared.constraints)))
+                   path_constraints_sha256=digest(asdict(prepared.constraints)), corridor_json=prepared.corridor_json)
         try:
             # Apply identical endpoint preflight to every method.
             for label, state in [('start', start), ('goal', goal)]:
-                valid = self.service(self.validity_client, GetStateValidity.Request(
-                    robot_state=state, group_name=self.group_name, constraints=prepared.constraints))
-                if not valid.valid:
+                if not self.endpoint_valid(state, prepared.constraints, prepared.corridor_json):
                     row['failure_stage'] = label+'_invalid_in_corridor'
                     return row
             row['preflight_wall_s'] = time.perf_counter()-begin
-            result = self.baseline.plan(self.deformed_reference, start, goal,
+            result = self.baseline.plan(self.prepared_reference, start, goal,
                 [n for n in goal.joint_state.name if n.startswith('panda_joint')], self.group_name,
                 self.ee_link, pose(case['goal'], self.frame_id).pose.orientation, prepared.constraints, budget)
             row.update({k:v for k,v in result.items() if k not in ('sampling', 'ee_points')})
@@ -106,7 +104,7 @@ class GMRStudyRunner(StudyRunner):
                 audited = self.service(self.audit_client, AuditTrajectory.Request(scene=scene,
                     trajectory_start=message(RobotState,row['trajectory_start']),
                     trajectory=message(RobotTrajectory,row['trajectory']), constraints=prepared.constraints,
-                    group_name=self.group_name, link_name=self.ee_link, joint_step=.01), timeout=60)
+                    corridor_json=prepared.corridor_json, group_name=self.group_name, link_name=self.ee_link, joint_step=.005), timeout=60)
                 if not audited.success:
                     raise RuntimeError('Reference audit failed: '+audited.message)
                 row['audit'] = json.loads(audited.json)
@@ -125,9 +123,19 @@ class GMRStudyRunner(StudyRunner):
 def runtime_fingerprint(root):
     """Hash sources and loaded artefacts; resume refuses algorithm/model changes."""
     workspace = root.parents[1]
-    paths = [p for folder in ('src','include','scripts','python','srv','launch','config','tests')
+    paths = [p for folder in ('src','include','python','srv','launch','config')
              for p in (root/folder).rglob('*') if p.is_file() and '__pycache__' not in str(p)]
-    paths += [root/'tasks/franka_pick_cube/TPGMM_model.pkl',root/'GMR_STUDY.md',root/'CMakeLists.txt']
+    paths += [root/'tasks/franka_pick_cube/TPGMM_model.pkl', root/'CMakeLists.txt']
+    paths += [root/'scripts'/name for name in ('run_experiments.py', 'compare_sampling_approaches.py',
+        'run_clearance_sweep.py', 'run_sampling_study.py', 'run_gmr_study.py', 'rerun_framework_study.py',
+        'replay_sampling_study.py', 'clearance_analysis.py', 'tp_gmm_node.py')]
+    paths += [workspace/'src/moveit2'/name for name in (
+        'moveit_core/constraint_samplers/include/moveit/constraint_samplers/constraint_sampler_allocator.hpp',
+        'moveit_core/constraint_samplers/include/moveit/constraint_samplers/constraint_sampler_manager.hpp',
+        'moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/model_based_planning_context.hpp',
+        'moveit_planners/ompl/ompl_interface/src/model_based_planning_context.cpp',
+        'moveit_planners/ompl/ompl_interface/src/detail/state_validity_checker.cpp')]
+
     for name in ('tp_gmm/lib/libgmm_constraint_sampler.so', 'tp_gmm/lib/tp_gmm/sampling_auditor',
                  'moveit_planners_ompl/lib/libmoveit_ompl_interface.so',
                  'moveit_planners_ompl/lib/libmoveit_ompl_planner_plugin.so'):
@@ -141,7 +149,7 @@ def main():
     parser.add_argument('--environments-per-layout', type=int, default=40)
     parser.add_argument('--repeats', type=int, default=5)
     parser.add_argument('--legacy-repeats', type=int, default=10)
-    parser.add_argument('--planning-time', type=float, default=3.)
+    parser.add_argument('--planning-time', type=float, default=10.)
     parser.add_argument('--seed', type=int, default=20261005)
     parser.add_argument('--resume', action='store_true')
     parser.add_argument('--design-only', action='store_true')
@@ -166,7 +174,7 @@ def main():
         runtime = runner.check_configuration()
         segment = runtime['ompl.panda_arm.longest_valid_segment_fraction']['double_value']
         simplify = runtime['ompl.planner_configs.RRTConnectkConfigDefault.simplify_solutions']
-        if segment != .0005 or simplify['type'] != 2 or simplify['integer_value'] != 0:
+        if segment != .00005 or simplify['type'] != 2 or simplify['integer_value'] != 0:
             raise RuntimeError(f'Unexpected edge checking or simplification: {segment}/{simplify}')
         runner.save_scene(); saved_scene = True
         if manifest_path.exists():
@@ -187,8 +195,8 @@ def main():
                 environment_ranges=DEFAULT_ENVIRONMENT,created_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
                 host=dict(platform=platform.platform(),cpus=os.cpu_count()),
                 analysis=dict(independent_unit='environment',bootstrap=20000,permutations=100000,alpha=.05,
-                    primary_family='All six paired method contrasts in success and PAR2; Holm correction across 12 tests',
-                    quality_family='Three RRT proposal pairs, matched-success joint/EE length, world clearance and reference deviation; Holm across 12 tests',
+                    primary_family='Success and PAR2, three pairwise contrasts, Holm six tests',
+                    quality_family='One GMM/GMR pair, matched-success joint/EE length, world clearance and reference deviation; Holm across four tests',
                     legacy='Three original scenes are descriptive and never pooled with randomized environments',
                     stopping='Fixed design, no outcome-based exclusions or extensions; endpoint failures retained for all methods',
                     reference_note='Sequential reference IK includes public IK/FK/validity service costs within budget; geometric path, no time parameterization',

@@ -6,6 +6,7 @@
 #include <shape_msgs/msg/solid_primitive.hpp>
 #include <random_numbers/random_numbers.h>
 #include <chrono>
+#include <atomic>
 #include <algorithm>
 #include <limits>
 #include <deque>
@@ -27,6 +28,7 @@ struct SamplingSession
   std::vector<double> weights, cutoffs;
   std::mutex mutex;
   Metrics metrics;
+  std::atomic<uint64_t> support_checks{0}, support_rejections{0};
   std::shared_ptr<const sampling::ReferencePath> reference;
   // Independently bounded buffers: raw GMM, valid FK, rejected FK, uniform valid, raw GMR.
   std::deque<geometry_msgs::msg::Point> points[5];

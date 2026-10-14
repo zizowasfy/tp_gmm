@@ -1,0 +1,21 @@
+Internal ctest changing into directory: /home/zizo/the_folder/ws_moveit/build/moveit_planners_ompl
+Test project /home/zizo/the_folder/ws_moveit/build/moveit_planners_ompl
+    Start 1: test_state_space
+1/6 Test #1: test_state_space ..........................   Passed    0.14 sec
+    Start 2: test_state_validity_checker
+2/6 Test #2: test_state_validity_checker ...............   Passed    0.17 sec
+    Start 3: test_planning_context_manager
+3/6 Test #3: test_planning_context_manager .............   Passed    0.28 sec
+    Start 4: test_constrained_planning_state_space
+4/6 Test #4: test_constrained_planning_state_space .....   Passed    0.17 sec
+    Start 5: test_constrained_state_validity_checker
+5/6 Test #5: test_constrained_state_validity_checker ...   Passed    0.15 sec
+    Start 6: test_threadsafe_state_storage
+6/6 Test #6: test_threadsafe_state_storage .............   Passed    0.08 sec
+
+100% tests passed, 0 tests failed out of 6
+
+Label Time Summary:
+gtest    =   1.00 sec*proc (6 tests)
+
+Total Test time (real) =   1.00 sec

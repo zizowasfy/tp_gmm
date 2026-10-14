@@ -14,7 +14,8 @@ import rclpy
 from geometry_msgs.msg import PoseArray
 from moveit_msgs.action import MoveGroup
 from moveit_msgs.msg import Constraints, JointConstraint, PlanningSceneComponents, RobotState
-from moveit_msgs.srv import GetPlanningScene, GetStateValidity
+from moveit_msgs.srv import GetPlanningScene, GetStateValidity, GetPositionFK
+from tp_gmm_sampling.corridors import contains, connect_reference
 from rcl_interfaces.srv import GetParameters
 from rosidl_runtime_py.convert import message_to_ordereddict as asdict
 from rosidl_runtime_py.set_message import set_message_fields
@@ -25,10 +26,10 @@ from clearance_analysis import DEFAULT_ENVIRONMENT, random_environment, curve_me
 from sampling_client import DEFAULTS
 
 MODES = ('cartesian_ik', 'joint_projected', 'ompl_uniform')
-PURE = DEFAULTS | dict(corridor_mode='covariance', cutoff=2., uniform_fraction=0., cartesian_fraction=0., proposal='gmm')
+PURE = DEFAULTS | dict(corridor_mode='covariance', corridor_geometry='gmm_ellipsoids', cutoff=3., uniform_fraction=0., cartesian_fraction=0., proposal='gmm')
 
 
-def pure_settings(cutoff=2.):
+def pure_settings(cutoff=3.):
     if not np.isfinite(cutoff) or not 1. <= cutoff <= 6.:
         raise ValueError('Covariance cutoff must be finite and in [1, 6]')
     return PURE | dict(cutoff=float(cutoff))
@@ -60,7 +61,7 @@ def message(kind, fields):
     return result
 
 
-def assert_pure(mode, stats, cutoff=2.):
+def assert_pure(mode, stats, cutoff=3.):
     if mode == 'ompl_uniform':
         assert not stats, 'Unrestricted baseline unexpectedly used GMM plugin'
         return
@@ -70,6 +71,8 @@ def assert_pure(mode, stats, cutoff=2.):
     forbidden = 'online_ik_calls' if mode == 'joint_projected' else 'projected_attempts'
     if stats.get(forbidden, 0) != 0:
         raise RuntimeError(f'Purity violation: {mode}: {forbidden}')
+    if stats.get('corridor_geometry') != 'gmm_ellipsoids':
+        raise RuntimeError('Requires exact ellipsoid support')
     if stats.get('proposal') != 'gmm' or not stats.get('component_cutoffs') or any(c != cutoff for c in stats['component_cutoffs']):
         raise RuntimeError('Proposal or cutoff changed')
 
@@ -77,7 +80,7 @@ def assert_pure(mode, stats, cutoff=2.):
 class StudyRunner(ClearanceRunner):
     def __init__(self, args):
         super().__init__(args)
-        self.sampler_options = pure_settings(getattr(args,'cutoff',2.))
+        self.sampler_options = pure_settings(getattr(args,'cutoff',3.))
         self.audit_client = self.create_client(AuditTrajectory, '/sampling_study/audit')
         self.parameter_client = self.create_client(GetParameters, '/move_group/get_parameters')
 
@@ -85,11 +88,41 @@ class StudyRunner(ClearanceRunner):
         names = ['ompl.panda_arm.allow_constraint_sampler_fallback',
                  'ompl.panda_arm.enforce_joint_model_state_space',
                  'ompl.panda_arm.longest_valid_segment_fraction',
-                 'ompl.planner_configs.RRTConnectkConfigDefault.simplify_solutions']
+                 'ompl.planner_configs.RRTConnectkConfigDefault.simplify_solutions',
+                 'ompl.planner_configs.RRTConnectkConfigDefault.range',
+                 'ompl.response_adapters']
         values = self.service(self.parameter_client, GetParameters.Request(names=names)).values
         if values[0].type != 1 or values[0].bool_value or values[1].type != 1 or not values[1].bool_value:
             raise RuntimeError('Requires strict fallback=false and enforced joint model state space; use sampling_demo.launch.py')
+        if values[2].type != 3 or values[2].double_value != .00005 or values[3].type != 2 or values[3].integer_value != 0 or values[4].type != 3 or values[4].double_value != 0.:
+            raise RuntimeError('Requires range=0, simplify_solutions=0 and longest_valid_segment_fraction=0.00005')
+        if list(values[5].string_array_value) != ['default_planning_response_adapters/ValidateSolution', 'default_planning_response_adapters/DisplayMotionPath']:
+            raise RuntimeError('Plan-only studies require geometry-preserving response adapters')
         return dict(zip(names, [asdict(v) for v in values]))
+
+    def endpoint_fk(self, state):
+        req = GetPositionFK.Request(robot_state=state, fk_link_names=[self.ee_link])
+        req.header.frame_id = self.frame_id
+        response = self.service(self.fk_client, req)
+        if response.error_code.val != 1 or len(response.pose_stamped) != 1:
+            raise RuntimeError('Endpoint FK failed')
+        return response.pose_stamped[0].pose
+
+    def prepare_for_plan(self, start, goal, case, mode, seed):
+        self.prepared_reference = self.deformed_reference
+        if self.sampler_options['corridor_geometry'] == 'gmr_tube':
+            self.prepared_reference = connect_reference(self.deformed_reference,
+                self.endpoint_fk(start), self.endpoint_fk(goal))
+        return self.prepare_sampling(pose(case['goal'], self.frame_id), mode=mode, seed=seed,
+                                     reference_path=self.prepared_reference)
+
+    def endpoint_valid(self, state, constraints, corridor_json=''):
+        valid = self.service(self.validity_client, GetStateValidity.Request(
+            robot_state=state, group_name=self.group_name, constraints=constraints)).valid
+        if valid and corridor_json and json.loads(corridor_json)['geometry'] == 'gmm_ellipsoids':
+            point = self.endpoint_fk(state).position
+            valid = bool(contains(corridor_json, [[point.x, point.y, point.z]])[0])
+        return valid
 
     def scene_snapshot(self):
         req = GetPlanningScene.Request()
@@ -109,15 +142,14 @@ class StudyRunner(ClearanceRunner):
         try:
             constraints = Constraints()
             if mode != 'ompl_uniform':
-                prepared = self.prepare_sampling(pose(case['goal'], self.frame_id), mode=mode, seed=seed)
+                prepared = self.prepare_for_plan(start, goal, case, mode, seed)
                 constraints = prepared.constraints
             row['prepare_service_wall_s'] = time.perf_counter()-begin
             row['path_constraints_sha256'] = digest(asdict(constraints))
+            row['corridor_json'] = prepared.corridor_json if prepared else ''
             # Invalid corridor endpoints are recorded as failures, never excluded from study.
             for label, state in [('start',start), ('goal',goal)]:
-                validity = self.service(self.validity_client, GetStateValidity.Request(
-                    robot_state=state, group_name=self.group_name, constraints=constraints))
-                if not validity.valid:
+                if not self.endpoint_valid(state, constraints, row['corridor_json']):
                     row['failure_stage'] = label+'_invalid_in_corridor' if prepared else label+'_invalid'
                     return row
             request = MoveGroup.Goal()
@@ -157,7 +189,7 @@ class StudyRunner(ClearanceRunner):
                 audit_begin = time.perf_counter()
                 audited = self.service(self.audit_client, AuditTrajectory.Request(scene=scene,
                     trajectory_start=result.trajectory_start, trajectory=result.planned_trajectory,
-                    constraints=constraints, group_name=self.group_name, link_name=self.ee_link, joint_step=.01), timeout=60)
+                    constraints=constraints, corridor_json=row['corridor_json'], group_name=self.group_name, link_name=self.ee_link, joint_step=.005), timeout=60)
                 if not audited.success:
                     raise RuntimeError('Audit failed: '+audited.message)
                 row['audit'] = json.loads(audited.json)
@@ -169,6 +201,8 @@ class StudyRunner(ClearanceRunner):
         finally:
             if prepared:
                 row['sampling'] = self.sampling.report(prepared.request_id, release=True)
+                if row['planner_success'] and self.sampler_options['corridor_geometry'] == 'gmm_ellipsoids' and not row['sampling'].get('exact_support_checks'):
+                    raise RuntimeError('Planner did not invoke the exact ellipsoid validator')
             self.validate_sampling(mode, row['sampling'])
             row.setdefault('planning_pipeline_wall_s', time.perf_counter()-begin)
 
@@ -178,8 +212,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--environments-per-stratum', type=int, default=10)
     parser.add_argument('--repeats', type=int, default=10)
-    parser.add_argument('--planning-time', type=float, default=3.)
-    parser.add_argument('--cutoff', type=float, default=2., help='Covariance cutoff; pure sampling and strict fallback remain enforced')
+    parser.add_argument('--planning-time', type=float, default=10.)
+    parser.add_argument('--cutoff', type=float, default=3., help='Covariance cutoff; pure sampling and strict fallback remain enforced')
     parser.add_argument('--seed', type=int, default=20260926)
     parser.add_argument('--task', default='franka_pick_cube')
     parser.add_argument('--study-phase', choices=['primary','path_quality_confirmation'], default='primary')

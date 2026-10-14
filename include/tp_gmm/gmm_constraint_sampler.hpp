@@ -11,12 +11,15 @@
 namespace tp_gmm
 {
 struct SamplingSession;
-class GMMConstraintSamplerAllocator : public constraint_samplers::ConstraintSamplerAllocator
+class GMMConstraintSamplerAllocator : public constraint_samplers::ConstraintSamplerAllocator,
+                                    public constraint_samplers::ConstraintStateValidatorAllocator
 {
 public:
   GMMConstraintSamplerAllocator();
   ~GMMConstraintSamplerAllocator() override;
   constraint_samplers::ConstraintSamplerPtr alloc(const planning_scene::PlanningSceneConstPtr& scene,
+      const std::string& group, const moveit_msgs::msg::Constraints& constraints) override;
+  Predicate allocStateValidator(const planning_scene::PlanningSceneConstPtr& scene,
       const std::string& group, const moveit_msgs::msg::Constraints& constraints) override;
   bool canService(const planning_scene::PlanningSceneConstPtr&, const std::string&,
       const moveit_msgs::msg::Constraints& constraints) const override;

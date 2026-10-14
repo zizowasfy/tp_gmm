@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <limits>
 #include <sstream>
+#include "audit_support.hpp"
 
 int main(int argc, char** argv)
 {
@@ -43,9 +44,20 @@ int main(int argc, char** argv)
         trajectory.setRobotTrajectoryMsg(start, req->trajectory);
         kinematic_constraints::KinematicConstraintSet constraints(model);
         constraints.add(req->constraints, scene.getTransforms());
+        tp_gmm::sampling::AuditSupport support(req->corridor_json, req->constraints.name);
+        Eigen::Isometry3d from_model = Eigen::Isometry3d::Identity();
+        if (support.exact)
+        {
+          if (req->constraints.position_constraints.size() != 1 ||
+              req->constraints.position_constraints.front().link_name != req->link_name)
+            throw std::invalid_argument("Exact audit requires the prepared link constraint");
+          const auto& frame = req->constraints.position_constraints.front().header.frame_id;
+          if (!scene.knowsFrameTransform(frame)) throw std::invalid_argument("Unknown exact audit frame");
+          from_model = scene.getFrameTransform(frame).inverse();
+        }
         moveit::core::RobotState state(start);
-        double length = 0, ee_length = 0, clearance = std::numeric_limits<double>::infinity();
-        unsigned samples = 0, invalid = 0, collisions = 0, violations = 0;
+        double length = 0, l2_length = 0, ee_length = 0, clearance = std::numeric_limits<double>::infinity();
+        unsigned samples = 0, invalid = 0, collisions = 0, violations = 0, exact_violations = 0;
         Eigen::Vector3d previous;
         std::ostringstream xyz;
         xyz << std::setprecision(12);
@@ -55,7 +67,11 @@ int main(int argc, char** argv)
           const auto& b = trajectory.getWayPoint(i);
           const double distance = a.distance(b, group);
           length += distance;
-          const unsigned steps = std::max(1u, static_cast<unsigned>(std::ceil(distance / req->joint_step)));
+          Eigen::VectorXd qa, qb;
+          a.copyJointGroupPositions(group, qa); b.copyJointGroupPositions(group, qb);
+          const double l2_distance = (qa-qb).norm();
+          l2_length += l2_distance;
+          const unsigned steps = std::max(1u, static_cast<unsigned>(std::ceil(l2_distance / req->joint_step)));
           if (samples + steps > 100000) throw std::invalid_argument("Audit exceeds sample limit");
           for (unsigned j = i ? 1 : 0; j <= (i ? steps : 0); ++j)
           {
@@ -66,7 +82,9 @@ int main(int argc, char** argv)
             previous = x;
             xyz << '[' << x.x() << ',' << x.y() << ',' << x.z() << ']';
             const bool collision = scene.isStateColliding(state, req->group_name, false);
-            const bool constrained = constraints.decide(state).satisfied;
+            const bool exact_valid = support.contains(from_model*x);
+            exact_violations += !exact_valid;
+            const bool constrained = constraints.decide(state).satisfied && exact_valid;
             ++samples; collisions += collision; violations += !constrained;
             invalid += collision || !constrained || !state.satisfiesBounds(group) || !scene.isStateFeasible(state, false);
             clearance = std::min(clearance, std::max(0.0, scene.distanceToCollision(state)));
@@ -75,6 +93,8 @@ int main(int argc, char** argv)
         std::ostringstream out;
         out << std::setprecision(12) << "{\"audit_samples\":" << samples
             << ",\"audit_invalid_samples\":" << invalid << ",\"collision_samples\":" << collisions
+            << ",\"exact_support_violations\":" << exact_violations
+            << ",\"audit_step_rad\":" << req->joint_step << ",\"joint_path_length_rad\":" << l2_length
             << ",\"constraint_violations\":" << violations << ",\"joint_path_length\":" << length
             << ",\"ee_path_length_m\":" << ee_length << ",\"min_world_clearance_m\":";
         if (std::isfinite(clearance)) out << clearance; else out << "null";

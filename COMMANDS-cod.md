@@ -1,5 +1,72 @@
 # TP-GMM & MoveIt 2 — Codex Branch Command Guide
 
+## Current paper framework and case-study reruns (13 October 2026)
+
+The completed results, figures and raw-data index are in [the 13 October result package](case_studies/2026-10-13-framework/README.md); start with its [findings](case_studies/2026-10-13-framework/FINDINGS.md).
+
+Use these commands for the aligned paper results. Earlier sections below document historical runs; their box corridors, four-method GMR design and 3-second budgets are not the current protocol. See [FRAMEWORK_ALIGNMENT.md](FRAMEWORK_ALIGNMENT.md).
+
+Build from the workspace root on `sampling-approaches-cod` in TP-GMM, MoveIt and moveit_resources:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+colcon build --packages-select moveit_core moveit_planners_ompl tp_gmm moveit_resources_panda_moveit_config \
+  --symlink-install --parallel-workers 2 --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+source install/setup.bash
+export ROS_DOMAIN_ID=83 ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1
+ros2 launch tp_gmm sampling_demo.launch.py rviz:=false \
+  policy_ckpt_path:=/home/zizo/the_folder/Reach_direct/logs/skrl/cartpole_direct/2026-09-11_21-20-28_ppo_torch/checkpoints/best_agent.pt
+```
+
+Use another terminal with the same sourced environment and domain. Run the validation and studies **sequentially** so they cannot change one another's planning scene or contend during timing:
+
+```bash
+python3 src/tp_gmm/tests/test_strict_sampling_runtime.py --cutoff 3.0
+python3 src/tp_gmm/tests/test_gmr_strict_runtime.py
+python3 src/tp_gmm/tests/test_exact_corridor_runtime.py
+
+# Case 1: same five scenes and joint endpoints, ten clearance values, 150 plans.
+python3 src/tp_gmm/scripts/run_clearance_sweep.py \
+  --trials 5 --samplers cartesian_ik joint_projected ompl_uniform \
+  --planning-time 10 --joint-step .005 --seed 42 \
+  --environments clearance_results/new_policy_cutoff3.0/environments.json \
+  --endpoint-states clearance_results/new_policy_cutoff3.0/results.json \
+  --sampler-config src/tp_gmm/config/sampling_pure.json \
+  --output clearance_results/2026-10-13-framework
+
+# Case 2: preserve primary and independent confirmation cohorts, 2,700 plans.
+python3 src/tp_gmm/scripts/rerun_framework_study.py --study mapping \
+  --source sampling_results/2026-09-29-cutoff3-primary \
+  --output sampling_results/2026-10-13-framework-primary
+python3 src/tp_gmm/scripts/rerun_framework_study.py --study mapping \
+  --source sampling_results/2026-09-29-cutoff3-confirmation \
+  --output sampling_results/2026-10-13-framework-confirmation
+
+# Case 3: GMM / GMR 30 mm / reference IK, 1,890 measured plans + 9 warmups.
+python3 src/tp_gmm/scripts/rerun_framework_study.py --study gmr \
+  --source gmr_results/2026-10-05-extensive \
+  --output gmr_results/2026-10-13-framework
+```
+
+Use a fresh output path for another run. Mapping/GMR replay supports `--design-only` and `--resume`; resume requires unchanged sources, binaries, runtime and input hashes. It remeasures deformation once per environment, verifies the saved model/reference, restores and reads back the scene, and retains every saved endpoint failure. Requested range is verified as 0.0; this means OMPL chooses its automatic positive extension range.
+
+After timed measurements finish:
+
+```bash
+python3 src/tp_gmm/scripts/analyze_sampling_study.py sampling_results/2026-10-13-framework-primary
+python3 src/tp_gmm/scripts/analyze_sampling_study.py sampling_results/2026-10-13-framework-confirmation
+python3 src/tp_gmm/scripts/summarize_sampler_case_study.py \
+  sampling_results/2026-10-13-framework-primary \
+  sampling_results/2026-10-13-framework-confirmation \
+  --output sampling_results/2026-10-13-framework-case-study
+python3 src/tp_gmm/scripts/analyze_gmr_study.py gmr_results/2026-10-13-framework
+```
+
+The clearance runner writes its plots automatically. All three studies disable sample visualization, uniform mixing/fallback, simplification and response retiming; use ellipsoid cutoff 3.0 and dense edge/audit checks. The GMR tube is 90 mm around the endpoint-connected reference. Clearance remains a normalized RL input, not a distance in metres. Historical archives remain separate.
+
+
 Command reference for **`sampling-approaches-cod`**: building, running Cartesian + IK and joint-projected GMM sampling, inspecting samples in RViz, comparing approaches, sweeping RL clearance, and testing the pipeline.
 
 The changed repositories are `tp_gmm`, `moveit2`, and `moveit_resources`. The validated robot is the fixed-base Franka Panda (`panda_arm` / `panda_hand`). For implementation details and mathematics, see [SAMPLING.md](/home/zizo/the_folder/ws_moveit/src/tp_gmm/SAMPLING.md). The separate [COMMANDS-gem.md](/home/zizo/the_folder/ws_moveit/src/COMMANDS-gem.md) describes the Gemini implementation.

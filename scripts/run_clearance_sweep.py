@@ -148,9 +148,10 @@ def main():
     parser.add_argument('--include-zero', action='store_true', help='Eleven levels 0.0–1.0 instead of ten 0.1–1.0')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--environment-config', type=Path, help='JSON sampling ranges (see config/clearance_environment.json)')
+    parser.add_argument('--endpoint-states', type=Path, help='Previous results.json whose frozen joint endpoints accompany --environments')
     parser.add_argument('--environments', type=Path, help='Replay the exact environments.json from a previous sweep')
     parser.add_argument('--max-environment-attempts', type=int, default=40)
-    parser.add_argument('--planning-time', type=float, default=5.)
+    parser.add_argument('--planning-time', type=float, default=10.)
     parser.add_argument('--task', default='franka_pick_cube')
     parser.add_argument('--ref-robot', default='native')
     parser.add_argument('--sampler-config', type=Path)
@@ -158,7 +159,7 @@ def main():
     parser.add_argument('--max-clearance-margin', type=float, default=0.30, help='Training normalization scale in metres')
     parser.add_argument('--base-buffer', type=float, default=0.08, help='Training reward base buffer in metres')
     parser.add_argument('--obstacle-reference', choices=['top', 'center'], default='top', help='Point sent to policy; top matches run_experiments.py')
-    parser.add_argument('--joint-step', type=float, default=0.02, help='Maximum joint-vector norm between FK/validity audit states')
+    parser.add_argument('--joint-step', type=float, default=0.005, help='Maximum joint-vector norm between FK/validity audit states')
     parser.add_argument('--curve-step', type=float, default=0.002, help='Maximum polyline distance for obstacle analysis (metres)')
     parser.add_argument('--trim-fraction', type=float, default=0.1, help='Exclude each endpoint fraction for the additional interior metric')
     parser.add_argument('--output', type=Path, default=Path('clearance_results')/time.strftime('%Y%m%d-%H%M%S'))
@@ -174,6 +175,8 @@ def main():
         parser.error('Do not repeat a sampler')
     if (args.output/'results.json').exists():
         parser.error('Output already contains a run; use a new directory')
+    if args.joint_step != .005:
+        parser.error('The aligned paper protocol requires --joint-step 0.005')
     config = DEFAULT_ENVIRONMENT | (json.loads(args.environment_config.read_text()) if args.environment_config else {})
     validate_environment(config)
     replay = json.loads(args.environments.read_text()) if args.environments else None
@@ -184,9 +187,17 @@ def main():
     order_rng = np.random.default_rng(args.seed+1)
     args.clearance = 0.1  # Parent runner initialization; each service request sets its own value.
     rclpy.init(args=ros_args)
-    runner = ClearanceRunner(args)
+    from run_sampling_study import StudyRunner
+    from run_gmr_study import runtime_fingerprint
+    runner = StudyRunner(args)
+    if args.sampler_config:
+        requested = json.loads(args.sampler_config.read_text())
+        if any(runner.sampler_options.get(k) != v for k,v in requested.items()):
+            raise ValueError('Sampler config differs from the strict aligned clearance protocol')
+    runtime = runner.check_configuration()
+    fixed_endpoints = json.loads(args.endpoint_states.read_text())['metadata']['endpoint_states'] if args.endpoint_states else None
     rows, environments = [], []
-    metadata = dict(schema_version=1, status='running', args={k:str(v) if isinstance(v, Path) else v for k,v in vars(args).items()},
+    metadata = dict(schema_version=2, status='running', runtime=runtime, source_sha256=runtime_fingerprint(Path(__file__).resolve().parents[1]), args={k:str(v) if isinstance(v, Path) else v for k,v in vars(args).items()},
                     settings=DEFAULTS | runner.sampler_options, environment_ranges=config, environments=environments,
                     rejected_environments=[], endpoint_states=[], clearance_values=clearances(args.include_zero),
                     seed_note='Seed controls environment/order/custom sampler draws. OMPL and IK may use independent RNGs.',
@@ -209,8 +220,15 @@ def main():
                 try:
                     if np.linalg.norm(np.array(case['goal'])-case['start']) < config['minimum_endpoint_separation']:
                         raise ValueError('Endpoints too close')
-                    start = runner.solve_state(pose(case['start'], runner.frame_id))
-                    goal = runner.solve_state(pose(case['goal'], runner.frame_id))
+                    if fixed_endpoints is not None:
+                        if replay is None or fixed_endpoints[trial]['trial'] != trial:
+                            raise ValueError('Frozen endpoints require matching environment replay')
+                        start, goal = RobotState(), RobotState()
+                        set_message_fields(start, fixed_endpoints[trial]['start'])
+                        set_message_fields(goal, fixed_endpoints[trial]['goal'])
+                    else:
+                        start = runner.solve_state(pose(case['start'], runner.frame_id))
+                        goal = runner.solve_state(pose(case['goal'], runner.frame_id))
                 except (RuntimeError, ValueError) as error:
                     if isinstance(error, RuntimeError) and not str(error).startswith('Benchmark endpoint IK failed'):
                         raise
@@ -260,12 +278,12 @@ def main():
                                deformed_min_clearance_m=curves['deformed']['min_clearance_m'],
                                deformation_gain_m=curves['deformed']['min_clearance_m']-curves['original']['min_clearance_m'],
                                deform_service_wall_s=service_wall)
-                    result = (runner.uniform_plan(start, goal, args.planning_time) if mode == 'ompl_uniform' else
-                              runner.plan(start, goal, pose(case['goal'],runner.frame_id), mode, seed, args.planning_time))
+                    result = runner.study_plan(start, goal, case, mode, seed, args.planning_time, runner.scene_snapshot())
                     row.update(result)
                     if result.get('planner_success'):
                         analysis_start = time.perf_counter()
-                        path, audit = runner.measure_path(result, args.joint_step)
+                        audit = {k:v for k,v in result['audit'].items() if k != 'ee_path'}
+                        path = result['audit']['ee_path']
                         row.update(audit)
                         row['analysis_wall_s'] = time.perf_counter()-analysis_start
                         row['path_audit_passed'] = row.get('path_audit_passed', True) and audit['audit_invalid_samples'] == 0

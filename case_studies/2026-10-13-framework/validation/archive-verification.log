@@ -1,0 +1,7 @@
+ARCHIVE sampling_results/2026-10-13-framework-primary
+VERIFIED raw-mapping-primary.tar.zst 146 files 1030.9 MiB 11.9 s
+ARCHIVE sampling_results/2026-10-13-framework-confirmation
+VERIFIED raw-mapping-confirmation.tar.zst 146 files 512.2 MiB 6.2 s
+ARCHIVE gmr_results/2026-10-13-framework
+VERIFIED raw-gmr.tar.zst 213 files 618.6 MiB 7.2 s
+ALL_ARCHIVES_VERIFIED

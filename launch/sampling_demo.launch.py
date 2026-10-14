@@ -18,6 +18,13 @@ def generate_launch_description():
     # Applies only to nonempty path constraints; an unconstrained request still
     # allocates OMPL's ordinary joint-space sampler. Keep the laboratory fail-closed.
     config.planning_pipelines['ompl']['panda_arm']['allow_constraint_sampler_fallback'] = False
+    config.planning_pipelines['ompl']['panda_arm']['longest_valid_segment_fraction'] = 0.00005
+    planner = config.planning_pipelines['ompl']['planner_configs']['RRTConnectkConfigDefault']
+    planner.update(range=0.0, simplify_solutions=0)
+    # Plan-only studies preserve geometric paths; no TOTG resampling/corner cutting.
+    config.planning_pipelines['ompl']['response_adapters'] = [
+        'default_planning_response_adapters/ValidateSolution',
+        'default_planning_response_adapters/DisplayMotionPath']
     return LaunchDescription([
         Node(package='tp_gmm', executable='sampling_auditor', output='screen',
              parameters=[config.to_dict()]),

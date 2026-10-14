@@ -15,9 +15,9 @@ import matplotlib.pyplot as plt
 from analyze_sampling_study import bootstrap_indices, sign_pvalue, interval, holm
 from clearance_analysis import resample_polyline
 
-MODES=('gmm','gmr_30mm','hybrid_30mm','reference_ik')
-LABELS=dict(zip(MODES,('GMM','GMR 30 mm','Hybrid 30 mm','Reference IK')))
-COLORS=('#0072B2','#D55E00','#009E73','#CC79A7')
+MODES=('gmm','gmr_30mm','reference_ik')
+LABELS=dict(zip(MODES,('GMM','GMR 30 mm','Reference IK')))
+COLORS=('#0072B2','#D55E00','#CC79A7')
 QUALITY=('joint_path_length','ee_path_length_m','min_world_clearance_m','reference_deviation_mean_m')
 
 
@@ -144,13 +144,13 @@ def analyze(root):
         stats['legacy'][m]=dict(n=len(legacy),successes=sum(r['success'] for r in legacy),
             by_scene={e['layout']:dict(n=sum(r['environment']==e['id'] for r in legacy),
                 successes=sum(r['environment']==e['id'] and r['success'] for r in legacy)) for e in manifest['environments'] if e['cohort']=='legacy'})
-    for a,b in itertools.combinations(range(4),2):
+    for a,b in itertools.combinations(range(len(MODES)),2):
         for metric in ('success','par2_s'):
             diff=means[metric][:,a]-means[metric][:,b]
             stats['primary'].append(dict(a=MODES[a],b=MODES[b],metric=metric,difference=float(diff.mean()),
                 ci95=interval(diff[boot].mean(axis=1)),p=sign_pvalue(diff,rng),environments=len(ids)))
     for row,p in zip(stats['primary'],holm([r['p'] for r in stats['primary']])):row['p_holm']=float(p)
-    for a,b in itertools.combinations(MODES[:3],2):
+    for a,b in itertools.combinations(MODES[:2],2):
         for metric in QUALITY:
             differences=[];groups=[];pairs=0
             for env in envs:
@@ -195,7 +195,7 @@ def plot(output,stats,rows,random_rows,lookup,ids,repeats,inputs,manifest):
     def save(name,fig):
         fig.savefig(output/(name+'.png'),dpi=200);fig.savefig(output/(name+'.pdf'));plt.close(fig)
     fig,axes=plt.subplots(1,3,figsize=(13.5,4.1))
-    x=np.arange(4)
+    x=np.arange(len(MODES))
     for ax,metric,title,scale in [(axes[0],'success','Audited success (%)',100),(axes[1],'par2_s','Failure-penalized time, PAR2 (s)',1)]:
         values=[];cis=[]
         for m in MODES:
@@ -215,33 +215,33 @@ def plot(output,stats,rows,random_rows,lookup,ids,repeats,inputs,manifest):
     titles=['Joint path length (MoveIt distance, rad)','End-effector path length (m)','Minimum robot–world clearance (m)','Mean distance to DSGMR reference (m)']
     for ax,metric,title in zip(axes.flat,QUALITY,titles):
         data=[]
-        for m in MODES[:3]:
+        for m in MODES[:2]:
             values=[]
             for e in ids:
-                paired=[j for j in range(repeats) if all(lookup[e,j,k]['success'] for k in MODES[:3])]
+                paired=[j for j in range(repeats) if all(lookup[e,j,k]['success'] for k in MODES[:2])]
                 if paired:values.append(np.mean([lookup[e,j,m][metric] for j in paired]))
             data.append(values)
-        boxes=ax.boxplot(data,tick_labels=[LABELS[m] for m in MODES[:3]],patch_artist=True,showfliers=False)
+        boxes=ax.boxplot(data,tick_labels=[LABELS[m] for m in MODES[:2]],patch_artist=True,showfliers=False)
         for patch,c in zip(boxes['boxes'],COLORS):patch.set_facecolor(c);patch.set_alpha(.7)
         ax.set_title(title);ax.grid(axis='y',alpha=.2)
-    fig.suptitle('Path quality on repeats successful for all three RRT proposals\nEach box uses environment means; reference IK shown in tables',fontsize=11)
+    fig.suptitle('Path quality on repeats successful for both RRT proposals\nEach box uses environment means; reference IK shown in tables',fontsize=11)
     fig.tight_layout();save('path_quality',fig)
     fig,axes=plt.subplots(1,2,figsize=(11,4.5))
     stages=['setup_s','draw_s','online_ik_s','validity_s']
     width=.18
     for i,stage in enumerate(stages):
-        axes[0].bar(np.arange(3)+(i-1.5)*width,[1000*stats['modes'][m][stage]['mean'] for m in MODES[:3]],width,label=stage.removesuffix('_s').replace('_',' '))
-    axes[0].set_xticks(np.arange(3),[LABELS[m] for m in MODES[:3]]);axes[0].set(ylabel='Mean recorded time per request (ms)',title='Sampler components (not additive to total)');axes[0].legend(fontsize=8)
-    axes[1].bar(np.arange(3),[100*stats['modes'][m]['acceptance'] if stats['modes'][m]['acceptance'] is not None else 0 for m in MODES[:3]],color=COLORS[:3])
-    axes[1].set_xticks(np.arange(3),[LABELS[m] for m in MODES[:3]]);axes[1].set(ylabel='Valid targets / proposal attempts (%)',title='Sampling efficiency')
+        axes[0].bar(np.arange(2)+(i-1.5)*width,[1000*stats['modes'][m][stage]['mean'] for m in MODES[:2]],width,label=stage.removesuffix('_s').replace('_',' '))
+    axes[0].set_xticks(np.arange(2),[LABELS[m] for m in MODES[:2]]);axes[0].set(ylabel='Mean recorded time per request (ms)',title='Sampler components (not additive to total)');axes[0].legend(fontsize=8)
+    axes[1].bar(np.arange(2),[100*stats['modes'][m]['acceptance'] if stats['modes'][m]['acceptance'] is not None else 0 for m in MODES[:2]],color=COLORS[:2])
+    axes[1].set_xticks(np.arange(2),[LABELS[m] for m in MODES[:2]]);axes[1].set(ylabel='Valid targets / proposal attempts (%)',title='Sampling efficiency')
     fig.tight_layout();save('sampling_diagnostics',fig)
     fig,ax=plt.subplots(figsize=(10,4.5))
     failure_stages=sorted({r['failure_stage'] for r in random_rows if not r['success']})
-    bottom=np.zeros(4)
+    bottom=np.zeros(len(MODES))
     for stage in failure_stages:
         counts=np.array([stats['modes'][m]['failure_stages'].get(stage,0) for m in MODES])
-        ax.bar(np.arange(4),counts,bottom=bottom,label=stage.replace('_',' '));bottom+=counts
-    ax.set_xticks(np.arange(4),[LABELS[m] for m in MODES]);ax.set(ylabel='Failed requests',title='Failures retained in all denominators')
+        ax.bar(np.arange(len(MODES)),counts,bottom=bottom,label=stage.replace('_',' '));bottom+=counts
+    ax.set_xticks(np.arange(len(MODES)),[LABELS[m] for m in MODES]);ax.set(ylabel='Failed requests',title='Failures retained in all denominators')
     if failure_stages:ax.legend(fontsize=8)
     fig.tight_layout();save('failure_stages',fig)
     # Fixed original scenes, first measured repeat: selection independent of outcome.
@@ -266,9 +266,10 @@ def plot(output,stats,rows,random_rows,lookup,ids,repeats,inputs,manifest):
 
 
 def report(output,stats,manifest,inputs):
+    environment_kind = 'frozen randomized' if 'framework_replay' in manifest else 'new randomized'
     lines=['# Strict GMM / GMR proposal comparison','',
-        f"Completed {stats['randomized_outcomes']} measured outcomes in {stats['randomized_environments']} new randomized environments, plus {stats['legacy_outcomes']} measured outcomes on the three original pilot scenes. {stats['excluded_warmups']} warmups excluded.",'',
-        '**Settings:** GMM cutoff 3.0; GMR radial cutoff 3.0; clearance input 0.7; GMR standard deviation 30 mm; hybrid 80% GMR / 20% GMM; Cartesian + IK mapping; RRTConnect, 3 s budget, no simplification. The reference is the frozen post-RL DSGMR rollout. Uniform mixture and MoveIt wrapper fallback are disabled.','',
+        f"Completed {stats['randomized_outcomes']} measured outcomes in {stats['randomized_environments']} {environment_kind} environments, plus {stats['legacy_outcomes']} measured outcomes on the three original pilot scenes. {stats['excluded_warmups']} warmups excluded.",'',
+        '**Settings:** GMM cutoff 3.0; GMR radial cutoff 3.0; clearance input 0.7; GMR standard deviation 30 mm; Cartesian + IK mapping; RRTConnect, range 0.0 (automatic), 10 s budget, no simplification. The reference is the frozen post-RL DSGMR rollout. Uniform mixture and MoveIt wrapper fallback are disabled.','',
         '| Method | Audited success | Environment-bootstrap 95% CI | Mean PAR2 (s) | Successful median action (ms) | Proposal acceptance |',
         '|---|---:|---:|---:|---:|---:|']
     for m in MODES:
@@ -277,13 +278,13 @@ def report(output,stats,manifest,inputs):
         acceptance_text=f"{s['acceptance']:.1%}" if s['acceptance'] is not None else 'n/a'
         lines.append(f"| {LABELS[m]} | {s['successes']}/{s['n']} ({s['success_rate']:.1%}) | {ci[0]:.1%}–{ci[1]:.1%} | {s['par2_s_mean']:.3f} | {median_text} | {acceptance_text} |")
     lines+=['','![Outcomes](outcomes.png)','','## Inference','',
-        'Environment is the independent unit. Confidence intervals use 20,000 layout-stratified cluster bootstrap samples. Primary comparisons use paired environment sign permutations and Holm correction across all six method pairs × two metrics. PAR2 assigns 6 s to every failure; successful action time is capped at 3 s. Repeats are not treated as independent experimental units.','',
+        'Environment is the independent unit. Confidence intervals use 20,000 layout-stratified cluster bootstrap samples. Primary comparisons use paired environment sign permutations and Holm correction across all three method pairs × two metrics. PAR2 assigns 20 s to every failure; successful action time is capped at 10 s. Repeats are not treated as independent experimental units.','',
         '| Contrast (A − B) | Metric | Difference [95% CI] | Holm p |','|---|---|---:|---:|']
     for r in stats['primary']:
         scale=100 if r['metric']=='success' else 1;unit='pp' if scale==100 else 's'
         lines.append(f"| {LABELS[r['a']]} − {LABELS[r['b']]} | {r['metric']} | {r['difference']*scale:.3f} [{r['ci95'][0]*scale:.3f}, {r['ci95'][1]*scale:.3f}] {unit} | {r['p_holm']:.4g} |")
     lines+=['','## Path quality on paired successes','',
-        'Each contrast uses repeats where both methods succeeded, averages the paired difference within each environment, then weights environments equally. These results are conditional on success and do not replace the reliability comparison. The separate 12-test secondary family covers three RRT proposal pairs × four quality metrics. Reference IK quality is descriptive.','',
+        'Each contrast uses repeats where both methods succeeded, averages the paired difference within each environment, then weights environments equally. These results are conditional on success and do not replace the reliability comparison. The separate four-test secondary family covers one RRT proposal pair × four quality metrics. Reference IK quality is descriptive.','',
         '| Contrast (A − B) | Metric | Mean difference [95% CI] | Matched repeats / environments | Holm p |','|---|---|---:|---:|---:|']
     for r in stats['quality']:
         if r['difference'] is not None:
@@ -303,11 +304,12 @@ def report(output,stats,manifest,inputs):
         lines.append(f"- **{LABELS[m]}:** randomized failures `{json.dumps(s['failure_stages'],sort_keys=True)}`; original scenes {legacy['successes']}/{legacy['n']} successes.")
     lines+=['','![Failures](failure_stages.png)','','![Sampler diagnostics](sampling_diagnostics.png)','','![Example paths](example_paths.png)','',
         '## Interpretation and limits','',
-        '- GMM explores the full truncated learned mixture. GMR concentrates its proposals around the reproduced reference, while the hybrid retains a broader GMM component. Accepted targets are also conditioned on IK feasibility, collisions and the hard GMM corridor; RRT vertices need not follow the proposal distribution.',
+        '- GMM explores the full truncated learned mixture. GMR concentrates its proposals around the reproduced reference, with a 90 mm hard tube connected to the actual FK endpoints. Accepted targets are also conditioned on IK feasibility, collisions and each method’s hard support (GMM ellipsoid union or GMR tube); RRT vertices need not follow the proposal distribution.',
         '- Reference IK follows the rollout without search or detour repair and must connect the actual task endpoints. Its timing includes public IK/FK/validity-service calls and it returns an untimed geometric path. It is a feasibility baseline; runtime differences also reflect architecture. It is not an unrestricted OMPL baseline.',
-        '- All four methods use identical frozen inputs and endpoints per environment. Endpoint IK failures count for every method; no candidate is replaced after observing difficulty. Inspect `reference_diagnostics.csv` for endpoint mismatch and cylinder intersections.',
+        '- All three methods use identical frozen inputs and endpoints per environment. Endpoint IK failures count for every method; no candidate is replaced after observing difficulty. Inspect `reference_diagnostics.csv` for endpoint mismatch and cylinder intersections.',
         '- Mean reference deviation uses the whole audited EE polyline, resampled at at most 2 mm, and exact point-to-reference-segment distances. World clearance is robot-versus-world and excludes self-distance; EE-cylinder clearance is a separate point metric.',
         '- Clearance 0.7 is normalized RL input, not 0.7 m guaranteed separation. The original table and goal-height range are retained. These conclusions are limited to this distribution and checkpoint.',
+        '- A framework replay reuses the saved environments and is not new independent confirmation. Only its fresh outcomes enter this report; historical outcomes are not pooled.',
         '- Deformation is run once per environment and its measured cost is attributed to each request. End-to-end figures are additive estimates, not repeated independent RL inference measurements. Offline audit and analysis time is excluded from planning timing.',
         '- Bootstrap intervals can collapse when every observed environment has the same outcome; this does not establish perfect population reliability. No equivalence claim follows from a nonsignificant difference.',
         '- Historical pilot results are not pooled: their outer MoveIt wrapper could silently fall back. This run checks the wrapper parameter, exhausted-sampler behavior, per-request source counters, scene readback and dense returned-path audits.','',

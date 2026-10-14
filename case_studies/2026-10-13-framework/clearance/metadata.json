@@ -1,0 +1,1169 @@
+{
+  "schema_version": 2,
+  "status": "complete",
+  "runtime": {
+    "ompl.panda_arm.allow_constraint_sampler_fallback": {
+      "type": 1,
+      "bool_value": false,
+      "integer_value": 0,
+      "double_value": 0.0,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": []
+    },
+    "ompl.panda_arm.enforce_joint_model_state_space": {
+      "type": 1,
+      "bool_value": true,
+      "integer_value": 0,
+      "double_value": 0.0,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": []
+    },
+    "ompl.panda_arm.longest_valid_segment_fraction": {
+      "type": 3,
+      "bool_value": false,
+      "integer_value": 0,
+      "double_value": 5e-05,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": []
+    },
+    "ompl.planner_configs.RRTConnectkConfigDefault.simplify_solutions": {
+      "type": 2,
+      "bool_value": false,
+      "integer_value": 0,
+      "double_value": 0.0,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": []
+    },
+    "ompl.planner_configs.RRTConnectkConfigDefault.range": {
+      "type": 3,
+      "bool_value": false,
+      "integer_value": 0,
+      "double_value": 0.0,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": []
+    },
+    "ompl.response_adapters": {
+      "type": 9,
+      "bool_value": false,
+      "integer_value": 0,
+      "double_value": 0.0,
+      "string_value": "",
+      "byte_array_value": [],
+      "bool_array_value": [],
+      "integer_array_value": [],
+      "double_array_value": [],
+      "string_array_value": [
+        "default_planning_response_adapters/ValidateSolution",
+        "default_planning_response_adapters/DisplayMotionPath"
+      ]
+    }
+  },
+  "source_sha256": {
+    "src/tp_gmm/src/sampling/gmr_path.cpp": "6402c690d72c080fb263cdeba29cbb3dae71166237ba3b1be85d1dda3f76f443",
+    "src/tp_gmm/src/sampling/sampler.hpp": "269fac50af3e0d214ab79123bef4b6a09a7365919df2eef7ea1edd15f70e0be6",
+    "src/tp_gmm/src/sampling/visualization.cpp": "7d92efe0872c164abca91d4be1d3298515ebb03f3fed79b2caa00928fb0bad43",
+    "src/tp_gmm/src/sampling/session.hpp": "cc211e115c5f183cddf9feda2d5ce5e38bc41a3888ae9440ce122c71aabee593",
+    "src/tp_gmm/src/sampling/request_registry.cpp": "0e938be66163b5dc7c393c01047003fabde50fd3975a5f605c654939e3157d08",
+    "src/tp_gmm/src/sampling/cartesian_ik.cpp": "34436ad479309397bb912ab1f7dbfbf13d7fadc6d872b2bdcf4133dcf1716a35",
+    "src/tp_gmm/src/sampling/sampler.cpp": "3baea25b64c822142181fe477b36f0f858776c18c9a0a8d566b4f5e3c9a6086d",
+    "src/tp_gmm/src/sampling/auditor.cpp": "7b35d7815fc72ff4ee289cbef01cdc73f3203d73fb11a2dd63547fa88834a31b",
+    "src/tp_gmm/src/sampling/joint_projected.cpp": "bc2b841626150b884a24119089576f48e0d60742352561338876a695970485dd",
+    "src/tp_gmm/src/sampling/reporting.cpp": "55dde3d9638d03ed88f01813c8cfdd22aef599e21dd3c921bb2163f78104b777",
+    "src/tp_gmm/src/sampling/audit_support.hpp": "4a9ef98f26b7fb7038347bcb89a54f0c159fe95209639322963a208b2eeb6d6f",
+    "src/tp_gmm/include/pClass.py": "d45f9644f66a26849942e1aa01f12b6d713c559d0cd9e66cb62a2af6f3669c20",
+    "src/tp_gmm/include/TPGMM_GMR.py": "c2b463ac52083cc3e674f2d6e5627b18d1caf90e0b55937a9ff144e0695bb000",
+    "src/tp_gmm/include/reproduction_DSGMR.py": "7409facdcdf3c0947156498581ba74ca558a90ea6b97c47aee440ba76b3541e0",
+    "src/tp_gmm/include/sClass.py": "2c4b81fdcc1bac82425913e460cf6ec73c0f2aad32f3b75e6ac2dccc463f109a",
+    "src/tp_gmm/include/gaussPDFfast.py": "ea794233700fe308491246a82b04efc19a73d11c6acd5504da7c321b1e318aa0",
+    "src/tp_gmm/include/init_proposedPGMM_timeBased.py": "efca3b6687d7f604b81c509c1a3d1b40663e01b783a87a3e62f4245fc52fd4d0",
+    "src/tp_gmm/include/plotGMM.py": "0d9ea713ca317b1a02ba2997a8f9d5b17de21011d859cb2dc89879ae29d3538e",
+    "src/tp_gmm/include/prodResClass.py": "c10870b92f2499ede485f59a65ff775468fcc153d9636e821a7f093f3baf47ab",
+    "src/tp_gmm/include/modelClass.py": "cb402289bb6dff4a1e67af1e665be27c9b5ad71a8ddf1d00798a415a717f3ed2",
+    "src/tp_gmm/include/EM_tensorGMM.py": "0e31000b6ecb03108370c67986d9bdd98dfb21b77b71aa4b795c6675efaa448f",
+    "src/tp_gmm/include/rClass.py": "9e2231b55fb91a7fd4017bc713083f919f6bcd184c73db6de9029e627c7d760e",
+    "src/tp_gmm/include/refClass.py": "bd4717ae9169cbd145f6a3c16890a895cb069e316ad695f1083da765129cea6c",
+    "src/tp_gmm/include/computeResultingGaussians.py": "18f1a0f95f15c154866e8598265e9ba270b1a609ac7a122e0e9d51f6af64ab7d",
+    "src/tp_gmm/include/tp_gmm/path_proposal.hpp": "a7c45fd89bc00a8cc3b470075455797664f81c5ee30f8b88ee40768ddd64301c",
+    "src/tp_gmm/include/tp_gmm/gmm_constraint_sampler.hpp": "8f4475c12971f734511bf09663ea4a89df3b6922cce880beaad85abea23746b1",
+    "src/tp_gmm/include/tp_gmm/sampling_math.hpp": "36e93b099cdc8bb6b8dd4887bd76d71df40f2ce29c173ed937610c09d7e6a57a",
+    "src/tp_gmm/python/tp_gmm_sampling/corridors.py": "b97f3ba9082f5686211785e9066440fa94bb5b5af386ff0914a39a91c345a74c",
+    "src/tp_gmm/python/tp_gmm_sampling/reference_baseline.py": "dc0ec2ac6411ddb2abe37657b6b67fe9280b49a9039220fbf5aecb41475c49b4",
+    "src/tp_gmm/python/tp_gmm_sampling/__init__.py": "5288c7a41967786dc10f622df1e19eaa7f51c49f7f8300af9cd4297c1e52530b",
+    "src/tp_gmm/python/tp_gmm_sampling/client.py": "36d56acf0bbfaf53ea6155a628a9d37e2431fd6426f203d7a38e306283aea811",
+    "src/tp_gmm/srv/DeformTPGMM.srv": "50af9ccf060f94df970361fdddda5f27525ca98b68ba20cdbb13e46d487034eb",
+    "src/tp_gmm/srv/ReproduceTPGMM.srv": "b5a9e72340e8b3ae1e9fc0fd00a04c5870c17b4c1a7fae8efd580d93fcccf6bb",
+    "src/tp_gmm/srv/AuditTrajectory.srv": "2a87f1bd4f1eecffa56df3eeaac2e05cc1a6a6c0ebf90e694f6632882313be64",
+    "src/tp_gmm/srv/StartTPGMM.srv": "334673b0d81c265bef6ddf4164f77b102309caf393f5a33ac60053fa3dab919d",
+    "src/tp_gmm/srv/SamplingReport.srv": "0ad0230c46feebe6c219ab381146128941be66fb7951dfa044f1ce44aa7f5033",
+    "src/tp_gmm/srv/PrepareSampling.srv": "701edf817c8c965993ed6b743dee265cbe37fc73a6151dbf11557ce0224a788f",
+    "src/tp_gmm/launch/collect_demons_launch.py": "a304702ba1df51f9b20d077548c10fc366e794a72fea86d1adff278b43ad1ce1",
+    "src/tp_gmm/launch/lfd_launch.py": "fca4758f273f5b658a44a5aa4315d8484295232402e74ef3f71ba8c20a8befaf",
+    "src/tp_gmm/launch/sampling_demo.launch.py": "5203b9d60bf0be6a3a4f1086abb2a37f58220cec9efa426a87e76232d2687dfd",
+    "src/tp_gmm/launch/collect_trajectories_launch.py": "43a53b03a0e90d8aac9098c3c15a68d4faeed1af9aa95edf2e3ee05e546e4a9d",
+    "src/tp_gmm/config/sampling.json": "8b16bbf41a04921d3acdb117bd8bf4864e9113a7a9b214e0fe770b4126a6c016",
+    "src/tp_gmm/config/clearance_environment.json": "a4c0722456a944b61adc4b6bf47f2e1204e6eb0f3c8f97a0580106e2a944eb6b",
+    "src/tp_gmm/config/sampling_gmr_hybrid.json": "7fed5705034ab54a3c57df251f04ebfac55d05382f465cd3ae193607b1361c55",
+    "src/tp_gmm/config/sampling_pure.json": "4f6caeccdd52b5bf35aba6628ada3111632952131abafb1aacd40835cadb2d70",
+    "src/tp_gmm/config/comparison_cases.json": "6f948f5db77c23cab8b02972675fd37a3d46c5e7d9896a2608ee760d34be5639",
+    "src/tp_gmm/config/sampling_gmr.json": "6a1f3dfc7be35c4bde5a5ea94f1eb67b16c179ec948672e77249e81a8267da17",
+    "src/tp_gmm/tasks/franka_pick_cube/TPGMM_model.pkl": "435f4f3a916f42abeeb63bc2f34d1ba7b36b6a17d137740e72d78beca9dc329b",
+    "src/tp_gmm/CMakeLists.txt": "939ef3b5c3863d58f1c34131c769b29b8d3d6055e0040acb332f0731fbfb66c8",
+    "src/tp_gmm/scripts/run_experiments.py": "17b1583284c85b3bc8859b4f910d6b03ee8ca5f55553250651ef815307ce920c",
+    "src/tp_gmm/scripts/compare_sampling_approaches.py": "8222e1c84cb9a99199258d466abc86004f17d4b2757427ec87bbef5a619e6bd6",
+    "src/tp_gmm/scripts/run_clearance_sweep.py": "29bd565026ef546a0517b284d45b835400466fa929ef92aa5689c0254823d622",
+    "src/tp_gmm/scripts/run_sampling_study.py": "6fcbedd8fe2b1f9a29e7228659e88f8823b71d5ac8ebd27a548ccb4b881ae26a",
+    "src/tp_gmm/scripts/run_gmr_study.py": "c34566f9a172872f78e3503d56a4e51487b79f0256bca26ff76d8541488ff073",
+    "src/tp_gmm/scripts/rerun_framework_study.py": "ddce22cf9739a7c596b53f10827d9b8e9cdb236ae44e59f3b6bbdd4837a1900c",
+    "src/tp_gmm/scripts/replay_sampling_study.py": "9e10cc6f286d85171b9b1baad9981c788962a8dc2fb1ab53f5fad3f842feb4ed",
+    "src/tp_gmm/scripts/clearance_analysis.py": "791ecd22ab79ed820694a044ba36b42a31eeb6d161a8d67c840a6d9e3bd9e195",
+    "src/tp_gmm/scripts/tp_gmm_node.py": "05079ceaf706b6f3baaf0cd1705586830fd8f8f3bd2b50d069705d5833a1d48b",
+    "src/moveit2/moveit_core/constraint_samplers/include/moveit/constraint_samplers/constraint_sampler_allocator.hpp": "d92ae76026a651911fa3342eed64ae6ec1749931e990470bf5258d1f6a7ed51b",
+    "src/moveit2/moveit_core/constraint_samplers/include/moveit/constraint_samplers/constraint_sampler_manager.hpp": "2a6373b7426df3f5c707d40601caff15b12cc2aea1b3bbd7f5f94faf09083394",
+    "src/moveit2/moveit_planners/ompl/ompl_interface/include/moveit/ompl_interface/model_based_planning_context.hpp": "90e00fc17dec8b95ac82c542720158c563874aa89999967ca7d0f7a3e0e81131",
+    "src/moveit2/moveit_planners/ompl/ompl_interface/src/model_based_planning_context.cpp": "11296c9796f51b5b8b81e364a142fe483133be1a80885a527be1009d3bcb314b",
+    "src/moveit2/moveit_planners/ompl/ompl_interface/src/detail/state_validity_checker.cpp": "200c342a51d7ea234e69d7babba23a512c5a73d6b2b575adf27a2b7b51132366",
+    "install/tp_gmm/lib/libgmm_constraint_sampler.so": "cefab7856fe68fe5b6e25b76a1fed0a9ded141706d8ca91d0210fea93b84d6ae",
+    "install/tp_gmm/lib/tp_gmm/sampling_auditor": "4b7c7ce9dfd2308b29053f71d6c2d95cae192be60365c339346cf8d15923fc5e",
+    "install/moveit_planners_ompl/lib/libmoveit_ompl_interface.so": "3ea30f79e13fa1b67923c56bc1718ffc09debe1110fec23dc476bec6fe191a27",
+    "install/moveit_planners_ompl/lib/libmoveit_ompl_planner_plugin.so": "e5c6dd5a485ab450797e029186341ba6c6bd4f55608231d3ee9bbf01d1d7f770"
+  },
+  "args": {
+    "trials": 5,
+    "samplers": [
+      "cartesian_ik",
+      "joint_projected",
+      "ompl_uniform"
+    ],
+    "include_zero": false,
+    "seed": 42,
+    "environment_config": null,
+    "endpoint_states": "clearance_results/new_policy_cutoff3.0/results.json",
+    "environments": "clearance_results/new_policy_cutoff3.0/environments.json",
+    "max_environment_attempts": 40,
+    "planning_time": 10.0,
+    "task": "franka_pick_cube",
+    "ref_robot": "native",
+    "sampler_config": "src/tp_gmm/config/sampling_pure.json",
+    "visualize": false,
+    "max_clearance_margin": 0.3,
+    "base_buffer": 0.08,
+    "obstacle_reference": "top",
+    "joint_step": 0.005,
+    "curve_step": 0.002,
+    "trim_fraction": 0.1,
+    "output": "clearance_results/2026-10-13-framework",
+    "clearance": 0.1
+  },
+  "settings": {
+    "corridor_mode": "covariance",
+    "corridor_scale": 10.0,
+    "cutoff": 3.0,
+    "covariance_floor": 1e-08,
+    "uniform_fraction": 0.0,
+    "cartesian_fraction": 0.0,
+    "ik_timeout": 0.005,
+    "branches": 3,
+    "anchor_attempts": 16,
+    "nullspace_stddev": 0.08,
+    "max_joint_delta": 0.6,
+    "linearization_tolerance": 0.01,
+    "proposal": "gmm",
+    "gmr_stddev": 0.01,
+    "gmr_cutoff": 2.0,
+    "gmr_fraction": 0.8,
+    "corridor_geometry": "gmm_ellipsoids"
+  },
+  "environment_ranges": {
+    "start_low": [
+      0.28,
+      -0.2,
+      0.57
+    ],
+    "start_high": [
+      0.38,
+      0.2,
+      0.66
+    ],
+    "goal_low": [
+      0.53,
+      -0.2,
+      0.45
+    ],
+    "goal_high": [
+      0.65,
+      0.2,
+      0.54
+    ],
+    "obstacle_fraction": [
+      0.4,
+      0.6
+    ],
+    "obstacle_offset_low": [
+      -0.025,
+      -0.035,
+      -0.025
+    ],
+    "obstacle_offset_high": [
+      0.025,
+      0.035,
+      0.025
+    ],
+    "radius": [
+      0.03,
+      0.05
+    ],
+    "height": [
+      0.25,
+      0.38
+    ],
+    "minimum_endpoint_separation": 0.2
+  },
+  "environments": [
+    {
+      "name": "trial_000",
+      "start": [
+        0.35739560485559635,
+        -0.024448624099179084,
+        0.6472738127920244
+      ],
+      "goal": [
+        0.6136841634871237,
+        -0.1623290608449402,
+        0.537806011647308
+      ],
+      "obstacle": [
+        0.5132285230001226,
+        -0.12662209941718897,
+        0.43524005974563273
+      ],
+      "radius": 0.04853529977697204,
+      "height": 0.29820374315023557,
+      "orientation_xyzw": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "trial_001",
+      "start": [
+        0.34438651200806647,
+        0.129104645308332,
+        0.6099072778944598
+      ],
+      "goal": [
+        0.5572686466141733,
+        0.021833914806333926,
+        0.4557435530493758
+      ],
+      "obstacle": [
+        0.4713601639186794,
+        0.08650637483233513,
+        0.3273545739227951
+      ],
+      "radius": 0.04786242242644395,
+      "height": 0.37619074317133744,
+      "orientation_xyzw": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "trial_002",
+      "start": [
+        0.2929921505335472,
+        -0.009718029509626497,
+        0.5904218414145795
+      ],
+      "goal": [
+        0.6103776793619012,
+        -0.025139232451067695,
+        0.5249410376452054
+      ],
+      "obstacle": [
+        0.45501549607779584,
+        0.005211889361303963,
+        0.4201108587985587
+      ],
+      "radius": 0.03576656207860488,
+      "height": 0.3003721892739227,
+      "orientation_xyzw": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "trial_003",
+      "start": [
+        0.34824955039749755,
+        -0.14409900655627608,
+        0.5879917382227597
+      ],
+      "goal": [
+        0.5308834723701207,
+        0.11476975100085535,
+        0.5098365770932829
+      ],
+      "obstacle": [
+        0.4610969944852127,
+        -0.006918342158278974,
+        0.415057465932422
+      ],
+      "radius": 0.032290601470719466,
+      "height": 0.2681736097565955,
+      "orientation_xyzw": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "trial_004",
+      "start": [
+        0.34684029617904716,
+        -0.01156151754274698,
+        0.620871249583307
+      ],
+      "goal": [
+        0.6217998628899231,
+        0.05388732800023632,
+        0.49982214605921965
+      ],
+      "obstacle": [
+        0.4777734994905638,
+        -0.01090483828776654,
+        0.41680116880352414
+      ],
+      "radius": 0.03817057287449272,
+      "height": 0.2778960074665388,
+      "orientation_xyzw": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "rejected_environments": [],
+  "endpoint_states": [
+    {
+      "trial": 0,
+      "start": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            -0.011183268144140958,
+            -0.5868570328751505,
+            -0.038210646533757664,
+            -2.078389627545406,
+            -0.021221492711588068,
+            1.4918869400219756,
+            0.7407196198656745,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      },
+      "goal": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            -0.07640166131420746,
+            0.2430419202886987,
+            -0.21211308707991858,
+            -1.482117535383881,
+            0.05125395943246342,
+            1.7197247416678454,
+            0.4953283332851184,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      }
+    },
+    {
+      "trial": 1,
+      "start": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            0.05908990684319596,
+            -0.6026203291859243,
+            0.2110713741401959,
+            -2.1736422523511436,
+            0.11903782596158272,
+            1.5813833019097634,
+            1.0179422356292995,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      },
+      "goal": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            1.9514301756653196,
+            -1.2981316067779873,
+            -1.222327039712517,
+            -1.8861216264312326,
+            -1.1941674998967213,
+            1.3396280365791595,
+            1.5738861282689893,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      }
+    },
+    {
+      "trial": 2,
+      "start": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            -0.0066879779090813895,
+            -0.8288372892031578,
+            -0.016578325878535798,
+            -2.3797544473888723,
+            -0.012222844484866173,
+            1.5509869050890468,
+            0.767265487503168,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      },
+      "goal": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            -0.01093809179923291,
+            0.154533230883312,
+            -0.03293969112412077,
+            -1.629505354308775,
+            0.00518661832871526,
+            1.7839533025482301,
+            0.7408149544005557,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      }
+    },
+    {
+      "trial": 3,
+      "start": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            -0.06650891753606696,
+            -0.5893423501246602,
+            -0.23923645953549483,
+            -2.2173999657721986,
+            -0.13241604189989198,
+            1.6407171541029517,
+            0.5281459984168306,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      },
+      "goal": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            0.03596125707452725,
+            -0.058789469475260606,
+            0.17248390722935839,
+            -1.9331389285779939,
+            0.010570369163618792,
+            1.8752038585175428,
+            0.9903829011414823,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      }
+    },
+    {
+      "trial": 4,
+      "start": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            -0.005956192295076147,
+            -0.6408320816542059,
+            -0.018417979749114684,
+            -2.186067354173546,
+            -0.01101459688764558,
+            1.5453181054321634,
+            0.764396934877941,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      },
+      "goal": {
+        "joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "name": [
+            "panda_joint1",
+            "panda_joint2",
+            "panda_joint3",
+            "panda_joint4",
+            "panda_joint5",
+            "panda_joint6",
+            "panda_joint7",
+            "panda_finger_joint1",
+            "panda_finger_joint2"
+          ],
+          "position": [
+            0.024252600349999882,
+            0.2011489253447629,
+            0.06911859581423845,
+            -1.6310659459367214,
+            -0.014282997860253091,
+            1.8317219425540376,
+            0.8810668821647879,
+            0.04,
+            0.04
+          ],
+          "velocity": [],
+          "effort": []
+        },
+        "multi_dof_joint_state": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": "world"
+          },
+          "joint_names": [],
+          "transforms": [],
+          "twist": [],
+          "wrench": []
+        },
+        "attached_collision_objects": [],
+        "is_diff": false
+      }
+    }
+  ],
+  "clearance_values": [
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
+    1.0
+  ],
+  "seed_note": "Seed controls environment/order/custom sampler draws. OMPL and IK may use independent RNGs.",
+  "sampler_note": "ompl_uniform has no GMM/path constraints and uses joint-space bounds; it is not uniform in Cartesian volume",
+  "distance_note": "Signed EE-point/DSGMR-polyline to finite cylinder surface; not whole-robot clearance. FK path audit is sampled.",
+  "target_note": "Training mean metric excludes endpoint components: 3-D reference distance minus radius >= base_buffer + clearance*max_margin",
+  "initial_scene": {
+    "name": "",
+    "robot_state": {
+      "joint_state": {
+        "header": {
+          "stamp": {
+            "sec": 0,
+            "nanosec": 0
+          },
+          "frame_id": ""
+        },
+        "name": [],
+        "position": [],
+        "velocity": [],
+        "effort": []
+      },
+      "multi_dof_joint_state": {
+        "header": {
+          "stamp": {
+            "sec": 0,
+            "nanosec": 0
+          },
+          "frame_id": ""
+        },
+        "joint_names": [],
+        "transforms": [],
+        "twist": [],
+        "wrench": []
+      },
+      "attached_collision_objects": [],
+      "is_diff": false
+    },
+    "robot_model_name": "",
+    "fixed_frame_transforms": [],
+    "allowed_collision_matrix": {
+      "entry_names": [
+        "panda_hand",
+        "panda_leftfinger",
+        "panda_link0",
+        "panda_link1",
+        "panda_link2",
+        "panda_link3",
+        "panda_link4",
+        "panda_link5",
+        "panda_link6",
+        "panda_link7",
+        "panda_rightfinger"
+      ],
+      "entry_values": [
+        {
+          "enabled": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            false,
+            false,
+            false,
+            true,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "enabled": [
+            false,
+            false,
+            true,
+            false,
+            true,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "enabled": [
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            false,
+            false
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            false,
+            false
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            false,
+            true
+          ]
+        },
+        {
+          "enabled": [
+            true,
+            true,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      ],
+      "default_entry_names": [],
+      "default_entry_values": []
+    },
+    "link_padding": [],
+    "link_scale": [],
+    "object_colors": [],
+    "world": {
+      "collision_objects": [],
+      "octomap": {
+        "header": {
+          "stamp": {
+            "sec": 0,
+            "nanosec": 0
+          },
+          "frame_id": ""
+        },
+        "origin": {
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          }
+        },
+        "octomap": {
+          "header": {
+            "stamp": {
+              "sec": 0,
+              "nanosec": 0
+            },
+            "frame_id": ""
+          },
+          "binary": false,
+          "id": "",
+          "resolution": 0.0,
+          "data": []
+        }
+      }
+    },
+    "is_diff": false
+  },
+  "policy_sha256": "d9ec51ff464b93f8ad87e4d5dc2b3bb649f89dbb5fa4155b5df46ed788d2e5ba"
+}

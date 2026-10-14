@@ -9,7 +9,7 @@ import rclpy
 from geometry_msgs.msg import PoseArray, Pose
 from tp_gmm.msg import Gaussian, GaussianMixture
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from run_gmr_study import GMRStudyRunner
+from run_gmr_study import GMRStudyRunner, settings
 from compare_sampling_approaches import pose
 
 def main():
@@ -27,7 +27,10 @@ def main():
         for x in (10.,10.1):
             p=Pose();p.position.x=x;p.position.z=.55;p.orientation.w=1.;reference.poses.append(p)
         node.deformed_reference=reference
-        row=node.compare_plan(start,goal,case,'gmr_30mm',71,.5,node.scene_snapshot())
+        # Broad legacy boxes admit both endpoints while every raw GMR proposal is unreachable.
+        # This isolates the exhausted-sampler wrapper from endpoint-connected tube geometry.
+        node.sampler_options = settings('gmr_30mm') | dict(corridor_geometry='gmm_boxes')
+        row=node.plan(start,goal,pose(case['goal'],node.frame_id),'cartesian_ik',71,.5)
         s=row['sampling']
         assert not row['success'] and row['error_code'] in (-6,99999),row
         assert s['attempts']==s['gmr_attempts'] and s['attempts']>3

@@ -1,0 +1,15 @@
+{
+  "all_statistics_identical_before_after_reporting_corrections": true,
+  "verified_outputs": [
+    "primary",
+    "confirmation",
+    "mapping",
+    "gmr"
+  ],
+  "changes": [
+    "Expanded success-plot axis to retain full confidence intervals",
+    "Labeled framework replays and exact ellipsoid support correctly",
+    "Corrected descriptive analysis-family and replay metadata; measurement source snapshots preserved"
+  ],
+  "measurements_changed": false
+}

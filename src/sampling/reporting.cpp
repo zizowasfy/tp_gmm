@@ -20,6 +20,8 @@ void GMMConstraintSamplerAllocator::report(const srv::SamplingReport::Request& r
     planning_scene::PlanningSceneConstPtr scene;
     { std::lock_guard<std::mutex> lock(session->mutex); metrics = session->metrics; scene = session->scene; }
     metrics["sampler_active"] = metrics["instances"] > 0;
+    metrics["exact_support_checks"] = session->support_checks.load(std::memory_order_relaxed);
+    metrics["exact_support_rejections"] = session->support_rejections.load(std::memory_order_relaxed);
     if (scene && !req.trajectory.joint_trajectory.points.empty())
     {
       moveit::core::RobotState start(scene->getCurrentState());
@@ -52,8 +54,8 @@ void GMMConstraintSamplerAllocator::report(const srv::SamplingReport::Request& r
         const auto& a = trajectory.getWayPoint(i ? i - 1 : 0); const auto& b = trajectory.getWayPoint(i);
         const double distance = a.distance(b, group);
         length += distance;
-        const unsigned steps = std::max(1u, static_cast<unsigned>(std::ceil(distance / 0.02)));
-        for (unsigned j = (i ? 1 : 0); j <= steps; ++j)
+        const unsigned steps = std::max(1u, static_cast<unsigned>(std::ceil(distance / 0.005)));
+        for (unsigned j = (i ? 1 : 0); j <= (i ? steps : 0); ++j)
         {
           a.interpolate(b, double(j) / steps, interpolated); interpolated.update();
           const Eigen::Vector3d x = interpolated.getGlobalLinkTransform(session->config.link_name).translation();
@@ -69,7 +71,9 @@ void GMMConstraintSamplerAllocator::report(const srv::SamplingReport::Request& r
           clearance = std::min(clearance, std::max(0.0, scene->distanceToCollision(interpolated)));
           metrics["path_validation_samples"]++;
           const bool collision = scene->isStateColliding(interpolated, session->config.group_name, false);
-          const bool constrained = path_constraints.decide(interpolated).satisfied;
+          const bool constrained = path_constraints.decide(interpolated).satisfied &&
+              (session->config.corridor_geometry != "gmm_ellipsoids" ||
+               sampling::unionContains(session->gaussians, session->weights, gmm_from_model*x, session->config.cutoff));
           if (collision) metrics["path_collision_samples"]++;
           if (!constrained) metrics["path_constraint_violations"]++;
           if (collision || !constrained || !interpolated.satisfiesBounds(group) || !scene->isStateFeasible(interpolated, false))
@@ -78,7 +82,7 @@ void GMMConstraintSamplerAllocator::report(const srv::SamplingReport::Request& r
       }
       metrics["joint_path_length"] = length; metrics["ee_path_length_m"] = cartesian_length;
       metrics["min_world_clearance_m"] = clearance;
-      metrics["path_interpolation_step"] = 0.02;
+      metrics["path_interpolation_step"] = 0.005;
       if (session->reference)
       {
         metrics["reference_deviation_mean_m"] = reference_sum / metrics["path_validation_samples"];
@@ -95,7 +99,8 @@ void GMMConstraintSamplerAllocator::report(const srv::SamplingReport::Request& r
     std::ostringstream json; json << std::setprecision(12) << "{\"request_id\":\"" << session->id << "\",\"mode\":\"" << session->config.mode << "\"";
     for (const auto& [key, value] : metrics)
     { json << ",\"" << key << "\":"; if (std::isfinite(value)) json << value; else json << "null"; }
-    json << ",\"proposal\":\"" << session->config.proposal << "\"";
+    json << ",\"proposal\":\"" << session->config.proposal << "\""
+         << ",\"corridor_geometry\":\"" << session->config.corridor_geometry << "\"";
     json << ",\"gmr_stddev\":" << session->config.gmr_stddev
          << ",\"gmr_cutoff\":" << session->config.gmr_cutoff
          << ",\"gmr_fraction\":" << session->config.gmr_fraction

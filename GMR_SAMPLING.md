@@ -1,3 +1,5 @@
+> Current paper comparison uses GMM and GMR only. See [framework alignment](FRAMEWORK_ALIGNMENT.md) for exact hard supports, endpoint connections, and the updated case-study protocol. Hybrid descriptions below document the retained compatibility API.
+
 # GMR reference-path sampling
 
 The `sampling-approaches-cod` branch supports three independent proposal choices with Cartesian IK: `gmm` (existing default), `gmr_path`, and `hybrid`. The reference is the request-matched **post-RL DSGMR rollout**, not a line through component means or the instantaneous GMR conditional mean. No model or policy retraining is required.

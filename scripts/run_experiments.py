@@ -130,7 +130,7 @@ class GazeboExperimentRunner(Node):
                 return SetParametersResult(successful=False, reason=f'Choose one of {MODES}')
         return SetParametersResult(successful=True)
 
-    def prepare_sampling(self, target_pose, use_deformed=True, mode=None, seed=None, proposal=None):
+    def prepare_sampling(self, target_pose, use_deformed=True, mode=None, seed=None, proposal=None, reference_path=None):
         model = self.deformed_model if use_deformed else self.original_model
         if model is None or not model.gaussians:
             raise RuntimeError('No request-matched GMM; deformation must succeed before constrained planning')
@@ -143,7 +143,7 @@ class GazeboExperimentRunner(Node):
             mode or self.get_parameter('sampling_mode').value,
             seed=self.sampling_sequence if seed is None else seed,
             visualize=self.visualize_samples, visualize_paths=self.visualize_paths,
-            reference_path=self.deformed_reference if use_deformed else self.original_reference, **options)
+            reference_path=reference_path if reference_path is not None else (self.deformed_reference if use_deformed else self.original_reference), **options)
 
     def gmm_constraint_cb(self, msg):
         self.gmm_bounding_volume = msg

@@ -2,6 +2,8 @@
 #include <Eigen/Dense>
 #include <random>
 #include <stdexcept>
+#include <limits>
+#include <vector>
 
 namespace tp_gmm::sampling
 {
@@ -69,5 +71,48 @@ inline Projection project(const Eigen::MatrixXd& jacobian)
 inline double mahalanobisSquared(const Gaussian& g, const Eigen::Vector3d& x)
 {
   return (g.axes.transpose() * (x - g.mean)).cwiseQuotient(g.eigenvalues.cwiseSqrt()).squaredNorm();
+}
+// Roundoff allowance in squared Mahalanobis units, not a geometric dilation.
+inline double supportRoundoff(double cutoff)
+{ return 64 * std::numeric_limits<double>::epsilon() * std::max(1., cutoff * cutoff); }
+inline double unionMahalanobisSquared(const std::vector<Gaussian>& gaussians,
+                                     const std::vector<double>& weights, const Eigen::Vector3d& x)
+{
+  double best = std::numeric_limits<double>::infinity();
+  if (!x.allFinite()) return best;
+  for (size_t i = 0; i < gaussians.size(); ++i)
+    if (weights.at(i) > 0) best = std::min(best, mahalanobisSquared(gaussians[i], x));
+  return best;
+}
+inline bool unionContains(const std::vector<Gaussian>& gaussians, const std::vector<double>& weights,
+                          const Eigen::Vector3d& x, double cutoff)
+{ return unionMahalanobisSquared(gaussians, weights, x) <= cutoff * cutoff + supportRoundoff(cutoff); }
+
+// Exact Euclidean projection onto an ellipsoid, solved by the monotone secular
+// equation. Outside points have a unique nonnegative Lagrange multiplier.
+inline double ellipsoidDistance(const Gaussian& g, const Eigen::Vector3d& x, double cutoff)
+{
+  const Eigen::Vector3d p = g.axes.transpose() * (x - g.mean);
+  const Eigen::Vector3d a2 = cutoff * cutoff * g.eigenvalues;
+  if ((p.array().square() / a2.array()).sum() <= 1.) return 0.;
+  double lo = 0., hi = (a2.array() * p.array().square()).sum();
+  hi = std::sqrt(hi); // This upper bound makes the secular sum <= 1.
+  for (unsigned i = 0; i < 80; ++i)
+  {
+    const double lambda = (lo + hi) / 2.;
+    const double value = (a2.array() * p.array().square() / (a2.array() + lambda).square()).sum();
+    if (value > 1.) lo = lambda; else hi = lambda;
+  }
+  const Eigen::Vector3d nearest = (a2.array() * p.array() / (a2.array() + (lo + hi) / 2.)).matrix();
+  return (p - nearest).norm();
+}
+inline double unionDistance(const std::vector<Gaussian>& gaussians, const std::vector<double>& weights,
+                            const Eigen::Vector3d& x, double cutoff)
+{
+  if (unionMahalanobisSquared(gaussians, weights, x) <= cutoff * cutoff) return 0.;
+  double best = std::numeric_limits<double>::infinity();
+  for (size_t i = 0; i < gaussians.size(); ++i)
+    if (weights.at(i) > 0) best = std::min(best, ellipsoidDistance(gaussians[i], x, cutoff));
+  return best;
 }
 }  // namespace tp_gmm::sampling

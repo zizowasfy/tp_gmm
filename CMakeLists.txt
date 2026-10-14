@@ -25,6 +25,7 @@ find_package(moveit_ros_planning_interface REQUIRED)
 find_package(moveit_msgs REQUIRED)
 
 find_package(Eigen3 REQUIRED)
+find_package(jsoncpp REQUIRED)
 
 # Generate messages and services
 rosidl_generate_interfaces(${PROJECT_NAME}
@@ -84,6 +85,7 @@ pluginlib_export_plugin_description_file(moveit_core gmm_constraint_sampler_plug
 
 add_executable(sampling_auditor src/sampling/auditor.cpp)
 target_compile_features(sampling_auditor PUBLIC cxx_std_17)
+target_link_libraries(sampling_auditor JsonCpp::JsonCpp)
 ament_target_dependencies(sampling_auditor rclcpp moveit_core moveit_ros_planning moveit_msgs)
 rosidl_target_interfaces(sampling_auditor ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
@@ -107,6 +109,7 @@ install(PROGRAMS
   scripts/summarize_sampler_case_study.py
   scripts/compare_sampling_approaches.py
   scripts/compare_gmr_proposals.py
+  scripts/rerun_framework_study.py
   scripts/run_gmr_study.py
   scripts/analyze_gmr_study.py
   scripts/run_clearance_sweep.py
@@ -139,6 +142,8 @@ install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY tasks DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY include DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY include/tp_gmm/ DESTINATION include/${PROJECT_NAME}/${PROJECT_NAME})
+ament_export_include_directories(include/${PROJECT_NAME})
 install(DIRECTORY scripts DESTINATION share/${PROJECT_NAME})
 
 ament_export_dependencies(

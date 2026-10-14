@@ -273,8 +273,14 @@ def main():
     for ext in ('png','pdf'): fig.savefig(figures/f'timing_breakdown.{ext}',dpi=200)
     plt.close(fig)
     def f(value): return '—' if value is None else f'{value:.4f}'
+    is_replay = 'replay' in manifest or 'framework_replay' in manifest
     replay_label={'goal_height':'goal/table-height sensitivity','cutoff':'covariance-cutoff sensitivity',
                   'clearance_and_cutoff':'clearance/cutoff sensitivity'}.get(manifest.get('replay',{}).get('kind'),'clearance sensitivity')
+    if 'framework_replay' in manifest:
+        replay_label = 'benchmark-framework alignment'
+    geometry_note = ('The custom hard corridor is an exact union of covariance ellipsoids; sampler targets, planner states and interpolated edges must satisfy it.'
+                     if manifest['settings'].get('corridor_geometry') == 'gmm_ellipsoids' else
+                     'The custom hard corridor is a union of oriented boxes enclosing the cutoff ellipsoids; accepted targets obey the ellipsoidal cutoff, while tree edges may enter box corners.')
     lines=['# Pure sampling case study results','',f'{n} source environments, {repeats} repeats per method, {len(rows)} request outcomes; fixed {manifest["design"]["planning_time"]:g} s planning budget.',
         '', '| Method | Audited success | Cluster 95% CI | Mean PAR2 (s) | Success median action (s) | Median EE length (m) | Median world clearance (m) |',
         '|---|---:|---:|---:|---:|---:|---:|']
@@ -299,12 +305,12 @@ def main():
     for stage,values in results['preparation'].items():
         lines.append(f'| {stage} | {values["mean"]:.6f} | {values["median"]:.6f} |')
     lines+=['','Pure sampler counters: zero internal uniform attempts and missing-anchor Cartesian rescues are required. The separate strict runtime regression verifies the MoveIt wrapper failure path. The unrestricted baseline has no GMM session/counters.',
-        '', (f'This is a {replay_label} replay of previously used environments, not new independent confirmation. All path-quality results below are conditional on success.' if 'replay' in manifest else 'Path quality is conditional on success; only the prespecified confirmation endpoints have confirmatory status.')+' Matched-pair effects and retained sample counts are in `statistics.json`. Minimum world clearance includes the table and all robot links; it is not the RL reward or only an EE-to-cylinder distance.',
-        '', 'The custom hard corridor is a union of oriented boxes enclosing the cutoff ellipsoids; accepted targets obey the ellipsoidal cutoff, while tree edges may enter box corners. The baseline has no GMM corridor, so its contrasts are between different feasible-region configurations. Projected proposals only approximate the Cartesian Gaussian under a local linearization. The two custom methods also differ in proposal orientation behavior.',
+        '', (f'This is a {replay_label} replay of previously used environments, not new independent confirmation. All path-quality results below are conditional on success.' if is_replay else 'Path quality is conditional on success; only the prespecified confirmation endpoints have confirmatory status.')+' Matched-pair effects and retained sample counts are in `statistics.json`. Minimum world clearance includes the table and all robot links; it is not the RL reward or only an EE-to-cylinder distance.',
+        '', geometry_note+' The baseline has no GMM corridor, so its contrasts are between different feasible-region configurations. Projected proposals only approximate the Cartesian Gaussian under a local linearization. The two custom methods also differ in proposal orientation behavior.',
         '', 'Raw inputs and outputs: `manifest.json`, `environments/*.json`, `results.jsonl`, `trials.csv`. Primary figures are supplied as PDF and PNG. No result from this study alone establishes transfer to EV battery disassembly.']
     if 'confirmation_primary' in results:
-        lines+=['', ('## Replayed confirmation cohort (sensitivity analysis)' if 'replay' in manifest else '## Prespecified independent confirmation'), '',
-            (f'This rerun reuses the original confirmation environments for {replay_label}, so it is not another independent confirmation. The original directional path-length tests are reproduced below as sensitivity analyses.' if 'replay' in manifest else 'This phase tests the exploratory path-quality observation on new environments. Its primary family comprises the two directional path-length tests below; the success/PAR2 tests above are secondary in this phase.'), '',
+        lines+=['', ('## Replayed confirmation cohort (sensitivity analysis)' if is_replay else '## Prespecified independent confirmation'), '',
+            (f'This rerun reuses the original confirmation environments for {replay_label}, so it is not another independent confirmation. The original directional path-length tests are reproduced below as sensitivity analyses.' if is_replay else 'This phase tests the exploratory path-quality observation on new environments. Its primary family comprises the two directional path-length tests below; the success/PAR2 tests above are secondary in this phase.'), '',
             '| Outcome (Cartesian minus projected) | Effect | 95% cluster CI | One-sided Holm p | Matched pairs / environments |',
             '|---|---:|---:|---:|---:|']
         for c in results['confirmation_primary']:

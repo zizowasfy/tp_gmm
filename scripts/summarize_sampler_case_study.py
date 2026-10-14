@@ -203,7 +203,8 @@ def figures(root,results,cases):
         ax.set_xticks(range(3),short);ax.set_xlim(-.4,2.4);ax.set_title(title,fontsize=11)
         ax.set_ylabel('%' if key=='success' else 'ms');ax.grid(axis='y',alpha=.2)
         if key=='success':
-            ax.set_ylim(98.8,100.45);ax.set_yticks([99,99.5,100])
+            lower = 100 * min(results['modes'][m]['metrics'][key]['ci95'][0] for m in MODES)
+            ax.set_ylim(max(0, lower - .25), 100.45)
     fig.suptitle('Sampler comparison | environment means and 95% cluster intervals')
     save(fig,'sampler_outcomes')
     fig,axes=plt.subplots(1,3,figsize=(12,4.1),layout='constrained')

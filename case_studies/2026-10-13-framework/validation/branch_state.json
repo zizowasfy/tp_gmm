@@ -1,0 +1,18 @@
+{
+  "tp_gmm": {
+    "branch": "sampling-approaches-cod",
+    "head": "9515278868ec2ce659600e8d99905abd54b1a3a0",
+    "uncommitted": true,
+    "gazebo_exps": "829391eae7d6b4a481ea5257b8ae571f58257e4b"
+  },
+  "moveit2": {
+    "branch": "sampling-approaches-cod",
+    "head": "ef439afda57bc15348964132f9ff170f039d250b",
+    "uncommitted": true
+  },
+  "moveit_resources": {
+    "branch": "sampling-approaches-cod",
+    "head": "54e81f6a46a4e1e1ad28b30ad0f7313c62aad0f5",
+    "uncommitted": true
+  }
+}
